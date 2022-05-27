@@ -432,13 +432,13 @@ function pdi_paywall_settings_init()
         ),
         array(
             'uid' => '_pdi_paywall_payment_client_id',
-            'label' => 'Client ID',
+            'label' => 'PDI KEY',
             'section' => '_pdi_paywall_payments_section',
             'type' => 'text',
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'Client ID da Juno',
+            'supplemental' => 'PDI key',
             'default' => null
         ),
         array(
@@ -449,7 +449,18 @@ function pdi_paywall_settings_init()
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'Client Secret da Juno',
+            'supplemental' => 'Client Secret da Mercado Pago',
+            'default' => null
+        ),
+        array(
+            'uid' => '_pdi_paywall_payment_public_key',
+            'label' => 'Public Key',
+            'section' => '_pdi_paywall_payments_section',
+            'type' => 'text',
+            'options' => false,
+            'placeholder' => null,
+            'helper' => null,
+            'supplemental' => 'Public Key Mercado Pago',
             'default' => null
         ),
         array(
@@ -460,7 +471,7 @@ function pdi_paywall_settings_init()
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'Token público da Juno',
+            'supplemental' => 'Token público da Mercado Pago',
             'default' => null
         ),
         array(
@@ -471,7 +482,7 @@ function pdi_paywall_settings_init()
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'Token privado da Juno',
+            'supplemental' => 'Token privado da Mercado Pago',
             'default' => null
         ),
     );
@@ -728,45 +739,24 @@ function pdi_paywall_update_plans()
         if (!empty($plans)) {
 
             for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-                $plan = $plans[$i];
-                if (!empty($plan['reason'])) {
-                    if (empty($plan['plan_id'])) {
-                        $response = pdi_paywall_api_post('plans', $plan);
-
-
-                        if (!empty($response)) {
-                            $plan_res = json_decode($response,true);
-                            $id_save = '_pdi_paywall_plan_id_' . $i;
-                            add_option($id_save, $plan_res['data']['id']);
-                            $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . $i;
-                            add_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
+                if (isset($plans[$i])){
+                    $plan = $plans[$i];
+                    if (!!$plan['reason']) {
+                        if (!$plan['plan_id']) {
+                            $response = pdi_paywall_api_post('plans', $plan);
+                            if (!empty($response)) {
+                                $plan_res = json_decode($response,true);
+                                $id_save = '_pdi_paywall_plan_id_' . $i;
+                                add_option($id_save, $plan_res['data']['id']);
+                                $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . $i;
+                                add_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
+                            }
+                        } else {
+                            pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
                         }
-                    } else {
-                        var_dump($plan);exit();
-                        $response = pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
-
-                        var_dump($response, 'update');
                     }
                 }
             }
-//            exit();
-//            foreach ($plans as $key_plan => $plan) {
-//                if (!empty($plan['reason'])) {
-//                    if (empty($plan['plan_id'])) {
-//                        $response = pdi_paywall_api_post('plans', $plan);
-//                        if (!empty($response)) {
-//                            $plan_res = json_decode($response,true);
-//                            $id_save = '_pdi_paywall_plan_id_' . ($key_plan + 1);
-//                            add_option($id_save, $plan_res['data']['id']);
-//                            $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . ($key_plan + 1);
-//                            add_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
-//                        }
-//                    } else {
-//                        $response = pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
-//                    }
-//                }
-//                sleep(1);
-//            }
         }
     }
 }

@@ -198,7 +198,6 @@
 }
 
 .pdi-paywall-card-container {
-    display: flex;
     gap: 30px;
     margin-bottom: 30px;
 }
@@ -214,3 +213,4 @@
 .pdi-paywall-profile-subscription-details td {
     text-align: center;
 }
+

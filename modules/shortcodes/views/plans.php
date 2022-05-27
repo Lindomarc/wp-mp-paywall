@@ -13,7 +13,9 @@
             </div>
             <div class="pdi-paywall-payment">
                 <div class="pdi-paywall-payment-button">
-                    <a href="<?php echo $page_register ?>?plan=<?php print base64_encode($key); ?>">Assinar</a>
+                    <a href="<?php echo $page_register ?>?plan=<?php echo base64_encode($plan['extern_plan_id']); ?>">
+                        Assinar
+                    </a>
                 </div>
             </div>
         </div>

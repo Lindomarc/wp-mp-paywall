@@ -50,21 +50,24 @@ if (!function_exists('pdi_paywall_get_plans')) {
     function pdi_paywall_get_plans()
     {
         $plans = [];
-
         for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
             $plan = get_option('_pdi_paywall_plan_name_' . $i);
+            $item = pdi_paywall_array_plan($i, $plan);
+
             if (!empty($plan)) {
-                $plans[$i] = pdi_paywall_array_plan($i, $plan);
+                $plans[$item['extern_plan_id']] = $item;
             }
         }
-
         return $plans;
     }
 }
 
 function pdi_paywall_format_money($value)
 {
-    return number_format(str_replace(',', '.', str_replace('.', '', $value)), 2);
+    if ($value) {
+        $value = number_format(str_replace(',', '.', str_replace('.', '', $value)), 2);
+    }
+    return $value;
 }
 
 function pdi_paywall_array_plan($i, $plan)
@@ -80,7 +83,7 @@ function pdi_paywall_array_plan($i, $plan)
             'frequency_type' => get_option('_pdi_paywall_plan_frequency_type_' . $i),
             'billing_day_proportional' => (bool)get_option('_pdi_paywall_plan_billing_day_proportional_' . $i),
             'billing_day' => (int)get_option('_pdi_paywall_plan_billing_day_' . $i),
-            'transaction_amount' => (float)pdi_paywall_format_money($price),
+            'transaction_amount' => pdi_paywall_format_money($price),
             'free_trial' => [
                 'frequency' => (int)get_option('_pdi_paywall_plan_free_trial_frequency_' . $i),
                 'frequency_type' => get_option('_pdi_paywall_plan_free_trial_frequency_type' . $i)
@@ -116,10 +119,8 @@ if (!function_exists('pdi_paywall_get_plans_period')) {
     function pdi_paywall_get_plans_period()
     {
         $periods = [
-            '' => '',
             'days' => 'Dias',
-            'months' => 'Mensal',
-            'years' => 'Anual',
+            'months' => 'Mensal'
         ];
 
         return $periods;

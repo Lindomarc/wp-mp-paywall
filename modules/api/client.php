@@ -6,23 +6,12 @@ if (!function_exists('pdi_paywall_api_get')) {
         $api_key = get_option('_pdi_paywall_payment_key');
 
         if (!empty($api_key)) {
-//            $args = array(
-//                'headers' => array(
-//                    'Accept' => 'application/json',
-//                    'Access-Control-Allow-Credentials' => true,
-//                    'Authorization' => 'Bearer ' . $api_key
-//                ),
-//
-//            );
-//            $timeout = apply_filters("memberlite_get_update_info_timeout", 5);
-//            $response = wp_remote_get(PDI_PAYWALL_API_URI . $path, $args);
             $response = pdi_curl([
                 'path' => $path,
                 'bearer_token' => $api_key,
                 'method' => 'GET'
             ]);
             $http_code = wp_remote_retrieve_response_code($response);
-
 
             if ($http_code == '200') {
                 return wp_remote_retrieve_body($response);
@@ -60,9 +49,8 @@ function pdi_curl($options)
     ];
 
     if (isset($options['data'])){
-        $curlData[CURLOPT_POSTFIELDS] = wp_json_encode($options['data']);
+        $curlData[CURLOPT_POSTFIELDS] = json_encode($options['data'],true);
     }
-
 
     curl_setopt_array($curl,$curlData );
 
@@ -95,16 +83,8 @@ if (!function_exists('pdi_paywall_api_put')) {
     {
         $api_key = get_option('_pdi_paywall_payment_key');
 
-        if (!empty($api_key)) {
-//            $args = array(
-//                'method' => 'PUT',
-//                'body' => wp_json_encode($data),
-//                'headers' => array(
-//                    'Accept' => 'application/json',
-//                    'Access-Control-Allow-Credentials' => true,
-//                    'Authorization' => 'Bearer ' . $api_key
-//                ),
-//            );
+        if (!!$api_key) {
+
             $response = pdi_curl([
                 'path' => $path,
                 'bearer_token' => $api_key,
@@ -112,11 +92,11 @@ if (!function_exists('pdi_paywall_api_put')) {
                 'data' => $data
             ]);
 //            $response = wp_remote_request(PDI_PAYWALL_API_URI . $path, $args);
-            $http_code = wp_remote_retrieve_response_code($response);
+//            $http_code = wp_remote_retrieve_response_code($response);
 
-            if ($http_code == '200') {
+//            if ($http_code == '200') {
                 return wp_remote_retrieve_body($response);
-            }
+//            }
         }
 
         return [];

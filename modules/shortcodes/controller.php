@@ -3,16 +3,26 @@
 if (!function_exists('pdi_paywall_shortcodes_scripts')) {
     function pdi_paywall_shortcodes_scripts()
     {
+        echo '<script> </script>';
         echo '<link href="' . plugins_url('/css/pdi_paywall_card.css', __FILE__) . '" rel="stylesheet" />';
         echo '<link href="' . plugins_url('/css/pdi_paywall_shortcodes.css', __FILE__) . '" rel="stylesheet" />';
         echo '<script src="' . plugins_url('/js/pdi_paywall_card.js', __FILE__) . '"></script>';
         echo '<script src="' . plugins_url('/js/pdi.jquery.mask.min.js', __FILE__) . '"></script>';
+        echo '
+<script>
+    const PDI_PAYWALL_PAYMENT_PUBLIC_TOKEN = "'.get_option('_pdi_paywall_payment_public_token').'"; 
+    const PDI_PAYWALL_PAYMENT_PUBLIC_KEY = "'.get_option('_pdi_paywall_payment_public_key').'"; 
+    const PDI_PAYWALL_PAYMENT_KEY = "'.get_option('_pdi_paywall_payment_key').'"; 
+    const PDI_PAYWALL_PAYMENT_CLIENT_ID = "'.get_option('_pdi_paywall_payment_client_id').'"; 
+</script>
+        <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-        if (!empty(get_option('_pdi_paywall_payment_sandbox'))) {
-            echo '<script src="https://sandbox.boletobancario.com/boletofacil/wro/direct-checkout.min.js"></script>';
-        } else {
-            echo '<script src="https://www.boletobancario.com/boletofacil/wro/direct-checkout.min.js"></script>';
-        }
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
+        ';
+
     }
     add_action('wp_head', 'pdi_paywall_shortcodes_scripts');
 }
@@ -81,9 +91,7 @@ function pdi_paywall_register_shortcode($atts, $content = null)
     $users_can_register = get_option('users_can_register');
 
     if (empty($plan) && $users_can_register === '0') {
-        $content .= '<
-
-p>Por favor, <a href="' . get_page_link(get_option('_pdi_paywall_page_plans')) . '">vá para a página de Planos</a> para escolher um, e poder se registrar.</p>';
+        $content .= '<p>Por favor, <a href="' . get_page_link(get_option('_pdi_paywall_page_plans')) . '">vá para a página de Planos</a> para escolher um, e poder se registrar.</p>';
         return $content;
     }
 
