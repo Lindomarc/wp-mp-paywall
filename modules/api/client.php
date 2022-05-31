@@ -3,22 +3,10 @@
 if (!function_exists('pdi_paywall_api_get')) {
     function pdi_paywall_api_get($path)
     {
-        $api_key = get_option('_pdi_paywall_payment_key');
-
-        if (!empty($api_key)) {
-            $response = pdi_curl([
-                'path' => $path,
-                'bearer_token' => $api_key,
-                'method' => 'GET'
-            ]);
-            $http_code = wp_remote_retrieve_response_code($response);
-
-            if ($http_code == '200') {
-                return wp_remote_retrieve_body($response);
-            }
-        }
-
-        return [];
+        return pdi_curl([
+            'path' => $path,
+            'method' => 'GET'
+        ]);
     }
 }
 
@@ -29,12 +17,12 @@ if (!function_exists('pdi_paywall_api_get')) {
 *        'method' => 'POST',
 *        'data' => $data
 *    ]
-*/
+
 function pdi_curl($options)
 {
-    $curl = curl_init();
+    $curl = curl_init(PDI_PAYWALL_API_URI . $options['path']);
     $curlData = [
-        CURLOPT_URL => PDI_PAYWALL_API_URI . $options['path'],
+        CURLOPT_HEADER => 1,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
@@ -42,12 +30,12 @@ function pdi_curl($options)
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => $options['method'],
         CURLOPT_HTTPHEADER => [
-            "Accept: application/json",
-            "Content-Type: application/json",
-            "Authorization: Bearer " . $options['bearer_token'],
+            "Accept:application/json",
+            "Content-Type:application/json",
+            "Authorization:Bearer " . $options['bearer_token'],
+            "x-customer-key:".get_option('_pdi_paywall_payment_client_id'),
         ],
     ];
-
     if (isset($options['data'])){
         $curlData[CURLOPT_POSTFIELDS] = json_encode($options['data'],true);
     }
@@ -55,53 +43,127 @@ function pdi_curl($options)
     curl_setopt_array($curl,$curlData );
 
     $response = curl_exec($curl);
+
     $err = curl_error($curl);
     curl_close($curl);
-
+    if ($err){
+        var_dump($err);
+    }
     return $response;
+}
+*/
+function pdi_curl($options)
+{
+    $api_key = get_option('_pdi_paywall_payment_key');
+    if (!empty($api_key)) {
+        $data = '';
+        if (isset($options['data'])){
+            $data = wp_json_encode($options['data']);
+        }
+        $args = array(
+            'method' => $options['method'],
+            'body' => $data,
+            'headers' => array(
+                "Accept" => "application/json",
+                "Content-Type" => "application/json",
+                "Authorization"=> "Bearer " . $api_key,
+                "x-customer-key" => get_option('_pdi_paywall_payment_client_id'),
+            ),
+        );
+
+        $response = wp_remote_request(PDI_PAYWALL_API_URI . $options['path'], $args);
+        $http_code = wp_remote_retrieve_response_code($response);
+
+        if ($http_code == '200' || $http_code == '201') {
+            return wp_remote_retrieve_body($response);
+        } else {
+             var_dump($http_code);
+             var_dump(wp_remote_retrieve_body($response));
+            exit('erro: mcsmxcmso');
+        }
+    }
+
+    return [];
 }
 
 if (!function_exists('pdi_paywall_api_post')) {
     function pdi_paywall_api_post($path, $data)
     {
-        $api_key = get_option('_pdi_paywall_payment_key');
-        if (!empty($api_key)) {
-            return pdi_curl([
-                'path' => $path,
-                'bearer_token' => $api_key,
-                'method' => 'POST',
-                'data' => $data
-            ]);
-        }
-
-        return [];
+        return pdi_curl([
+            'path' => $path,
+            'method' => 'POST',
+            'data' => $data
+        ]);
     }
 }
+
+//if (!function_exists('pdi_paywall_api_post')) {
+//    function pdi_paywall_api_post($path, $data)
+//    {
+//        $api_key = get_option('_pdi_paywall_payment_key');
+//
+//        if (!empty($api_key)) {
+//            $args = array(
+//                'body' => wp_json_encode($data),
+//                'headers' => array(
+//                    "Accept" => "application/json",
+//                    "Content-Type" => "application/json",
+//                    "Authorization"=> "Bearer " . $api_key,
+//                    "x-customer-key" => get_option('_pdi_paywall_payment_client_id'),
+//                ),
+//            );
+//
+//            $response = wp_remote_post(PDI_PAYWALL_API_URI . $path, $args);
+//            $http_code = wp_remote_retrieve_response_code($response);
+//
+//            if ($http_code == '200') {
+//                return wp_remote_retrieve_body($response);
+//            }
+//        }
+//
+//        return [];
+//    }
+//}
 
 if (!function_exists('pdi_paywall_api_put')) {
     function pdi_paywall_api_put($path, $data)
     {
-        $api_key = get_option('_pdi_paywall_payment_key');
-
-        if (!!$api_key) {
-
-            $response = pdi_curl([
-                'path' => $path,
-                'bearer_token' => $api_key,
-                'method' => 'PUT',
-                'data' => $data
-            ]);
-//            $response = wp_remote_request(PDI_PAYWALL_API_URI . $path, $args);
-//            $http_code = wp_remote_retrieve_response_code($response);
-
-//            if ($http_code == '200') {
-                return wp_remote_retrieve_body($response);
-//            }
-        }
-
-        return [];
+        $options = [
+            'path' => $path,
+            'method' => 'PUT',
+            'data' => $data
+        ];
+        return pdi_curl($options);
     }
 }
+
+//if (!function_exists('pdi_paywall_api_put')) {
+//    function pdi_paywall_api_put($path, $data)
+//    {
+//        $api_key = get_option('_pdi_paywall_payment_key');
+//
+//        if (!empty($api_key)) {
+//            $args = array(
+//                'method' => 'PUT',
+//                'body' => wp_json_encode($data),
+//                'headers' => array(
+//                    "Accept" => "application/json",
+//                    "Authorization"=> "Bearer " . $api_key,
+//                    "x-customer-key" => get_option('_pdi_paywall_payment_client_id'),
+//                ),
+//            );
+//            $response = wp_remote_request(PDI_PAYWALL_API_URI . $path, $args);
+//            $http_code = wp_remote_retrieve_response_code($response);
+////            var_dump($response);
+//            var_dump(wp_remote_retrieve_body($response));exit(1);
+//             if ($http_code == '200') {
+//                return wp_remote_retrieve_body($response);
+//            }
+//        }
+//
+//        return [];
+//    }
+//}
 
 if (!function_exists('pdi_paywall_api_delete')) {
     function pdi_paywall_api_delete($path)

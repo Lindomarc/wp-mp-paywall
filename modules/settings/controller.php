@@ -252,6 +252,7 @@ function pdi_paywall_settings_init()
     for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++){
         add_settings_section('_pdi_paywall_plans_'.$i.'_section', 'Plano '.$i, 'pdi_paywall_section_callback', '_pdi_paywall_plans');
         $fields = array(
+
             array(
                 'uid' => '_pdi_paywall_plan_name_'.$i,
                 'label' => 'Nome',
@@ -275,17 +276,17 @@ function pdi_paywall_settings_init()
                 'default' => null
             ),
 
-            array(
-                'uid' => '_pdi_paywall_plan_billing_day_proportional_'.$i,
-                'label' => 'Valor proporcional ao dia',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
-                'type' => 'checkbox',
-                'options' => false,
-                'placeholder' => null,
-                'helper' => null,
-                'supplemental' => '',
-                'default' => 1
-            ),
+//            array(
+//                'uid' => '_pdi_paywall_plan_billing_day_proportional_'.$i,
+//                'label' => 'Valor proporcional ao dia',
+//                'section' => '_pdi_paywall_plans_'.$i.'_section',
+//                'type' => 'checkbox',
+//                'options' => false,
+//                'placeholder' => null,
+//                'helper' => null,
+//                'supplemental' => '',
+//                'default' => 0
+//            ),
             array(
                 'uid' => '_pdi_paywall_plan_repetitions_'.$i,
                 'label' => 'Repetir',
@@ -410,13 +411,13 @@ function pdi_paywall_settings_init()
     $fields = array(
         array(
             'uid' => '_pdi_paywall_payment_key',
-            'label' => 'API Key',
+            'label' => 'PDI Token',
             'section' => '_pdi_paywall_payments_section',
             'type' => 'text',
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'API KEY para comunicação com a API de Pagamentos',
+            'supplemental' => 'Token de acesso ao API',
             'default' => null
         ),
         array(
@@ -438,18 +439,7 @@ function pdi_paywall_settings_init()
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'PDI key',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_payment_client_secret',
-            'label' => 'Client Secret',
-            'section' => '_pdi_paywall_payments_section',
-            'type' => 'password',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Client Secret da Mercado Pago',
+            'supplemental' => 'Chave do cliente PDI',
             'default' => null
         ),
         array(
@@ -465,7 +455,7 @@ function pdi_paywall_settings_init()
         ),
         array(
             'uid' => '_pdi_paywall_payment_public_token',
-            'label' => 'Token público',
+            'label' => 'Access Token',
             'section' => '_pdi_paywall_payments_section',
             'type' => 'text',
             'options' => false,
@@ -475,14 +465,25 @@ function pdi_paywall_settings_init()
             'default' => null
         ),
         array(
-            'uid' => '_pdi_paywall_payment_private_token',
-            'label' => 'Token privado',
+            'uid' => '_pdi_paywall_payment_public_key_test',
+            'label' => 'Public Key Test',
             'section' => '_pdi_paywall_payments_section',
-            'type' => 'password',
+            'type' => 'text',
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'Token privado da Mercado Pago',
+            'supplemental' => 'Public Key Mercado Pago',
+            'default' => null
+        ),
+        array(
+            'uid' => '_pdi_paywall_payment_public_token_test',
+            'label' => 'Access Token Test',
+            'section' => '_pdi_paywall_payments_section',
+            'type' => 'text',
+            'options' => false,
+            'placeholder' => null,
+            'helper' => null,
+            'supplemental' => 'Token público da Mercado Pago',
             'default' => null
         ),
     );
@@ -719,6 +720,17 @@ function pdi_paywall_update_options($option_name)
             $data['private_token'] = $option;
         }
 
+
+        if ($option_name = '_pdi_paywall_payment_public_token_test') {
+            $option = get_option($option_name);
+            $data['public_token_test'] = $option;
+        }
+
+        if ($option_name = '_pdi_paywall_payment_private_token_test') {
+            $option = get_option($option_name);
+            $data['private_token_test'] = $option;
+        }
+
         if (!empty($data)) {
             $response = pdi_paywall_api_post('settings', $data);
         }
@@ -729,35 +741,41 @@ add_action('update_option__pdi_paywall_payment_client_id', 'pdi_paywall_update_o
 add_action('update_option__pdi_paywall_payment_client_secret', 'pdi_paywall_update_options');
 add_action('update_option__pdi_paywall_payment_public_token', 'pdi_paywall_update_options');
 add_action('update_option__pdi_paywall_payment_private_token', 'pdi_paywall_update_options');
+add_action('update_option__pdi_paywall_payment_public_token_test', 'pdi_paywall_update_options');
+add_action('update_option__pdi_paywall_payment_private_token_test', 'pdi_paywall_update_options');
 
 function pdi_paywall_update_plans()
 {
     $api_key = get_option('_pdi_paywall_payment_key');
+
     if (!empty($api_key)) {
         $plans = pdi_paywall_get_plans();
-
+        $response = [];
         if (!empty($plans)) {
+//            for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
+            $i = 0;
+            foreach ($plans as $key  => $plan){
+                $i++;
 
-            for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-                if (isset($plans[$i])){
-                    $plan = $plans[$i];
-                    if (!!$plan['reason']) {
-                        if (!$plan['plan_id']) {
-                            $response = pdi_paywall_api_post('plans', $plan);
-                            if (!empty($response)) {
-                                $plan_res = json_decode($response,true);
+                if (isset($plan['extern_plan_id']) && $plan['extern_plan_id']){
+                    $response = pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
+                } else {
+                    if (isset($plan['reason']) && !!$plan['reason']) {
+                        $response = pdi_paywall_api_post('plans', $plan);
+                        if (!empty($response)) {
+                            $plan_res = json_decode($response,true);
+                            if (isset($plan_res['data']['id'])){
                                 $id_save = '_pdi_paywall_plan_id_' . $i;
                                 add_option($id_save, $plan_res['data']['id']);
                                 $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . $i;
                                 add_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
                             }
-                        } else {
-                            pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
                         }
                     }
                 }
             }
         }
+        return $response;
     }
 }
 for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++){

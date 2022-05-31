@@ -53,10 +53,13 @@ if (!function_exists('pdi_paywall_get_plans')) {
         for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
             $plan = get_option('_pdi_paywall_plan_name_' . $i);
             $item = pdi_paywall_array_plan($i, $plan);
+             if (isset($item['extern_plan_id']) && !!$item['extern_plan_id']){
 
-            if (!empty($plan)) {
-                $plans[$item['extern_plan_id']] = $item;
-            }
+                 $plans[$item['extern_plan_id']] =$item;
+            }else {
+
+                 $plans[$i] =$item;
+             }
         }
         return $plans;
     }
@@ -73,29 +76,30 @@ function pdi_paywall_format_money($value)
 function pdi_paywall_array_plan($i, $plan)
 {
     $price = get_option('_pdi_paywall_plan_price_' . $i);
-    return [
-        'customer_key' => get_option('_pdi_paywall_payment_client_id'),
-        'reason' => $plan,
-        'description' => get_option('_pdi_paywall_plan_description_' . $i),
-        'auto_recurring' => [
-            'repetitions' => (int)get_option('_pdi_paywall_plan_repetitions_' . $i),
-            'frequency' => (int)get_option('_pdi_paywall_plan_frequency_' . $i),
-            'frequency_type' => get_option('_pdi_paywall_plan_frequency_type_' . $i),
-            'billing_day_proportional' => (bool)get_option('_pdi_paywall_plan_billing_day_proportional_' . $i),
-            'billing_day' => (int)get_option('_pdi_paywall_plan_billing_day_' . $i),
-            'transaction_amount' => pdi_paywall_format_money($price),
-            'free_trial' => [
-                'frequency' => (int)get_option('_pdi_paywall_plan_free_trial_frequency_' . $i),
-                'frequency_type' => get_option('_pdi_paywall_plan_free_trial_frequency_type' . $i)
+        return [
+            'customer_key' => get_option('_pdi_paywall_payment_client_id'),
+            'reason' => $plan,
+            'description' => get_option('_pdi_paywall_plan_description_' . $i),
+            'auto_recurring' => [
+                'repetitions' => (int)get_option('_pdi_paywall_plan_repetitions_' . $i),
+                'frequency' => (int)get_option('_pdi_paywall_plan_frequency_' . $i),
+                'frequency_type' => get_option('_pdi_paywall_plan_frequency_type_' . $i),
+                'billing_day_proportional' => (bool)get_option('_pdi_paywall_plan_billing_day_proportional_' . $i),
+                'billing_day' => (int)get_option('_pdi_paywall_plan_billing_day_' . $i),
+                'transaction_amount' => pdi_paywall_format_money($price),
+                'free_trial' => [
+                    'frequency' => (int)get_option('_pdi_paywall_plan_free_trial_frequency_' . $i),
+                    'frequency_type' => get_option('_pdi_paywall_plan_free_trial_frequency_type' . $i)
+                ],
+                'currency_id' => 'BRL'
             ],
-            'currency_id' => 'BRL'
-        ],
-        'free_trial' => (bool)get_option('_pdi_paywall_plan_free_trial_' . $i),
-        'active' => (bool)get_option('_pdi_paywall_plan_active_' . $i),
-        'back_url' => get_option('_pdi_paywall_plan_back_url_' . $i),
-        'plan_id' => get_option('_pdi_paywall_plan_id_' . $i),
-        'extern_plan_id' => get_option('_pdi_paywall_plan_extern_plan_id_' . $i),
-    ];
+            'free_trial' => (bool)get_option('_pdi_paywall_plan_free_trial_' . $i),
+            'active' => (bool)get_option('_pdi_paywall_plan_active_' . $i),
+            'back_url' => get_option('_pdi_paywall_plan_back_url_' . $i),
+            'plan_id' => get_option('_pdi_paywall_plan_id_' . $i),
+            'extern_plan_id' => get_option('_pdi_paywall_plan_extern_plan_id_' . $i),
+        ];
+
 }
 
 if (!function_exists('pdi_paywall_get_plans_by_id')) {
@@ -104,10 +108,12 @@ if (!function_exists('pdi_paywall_get_plans_by_id')) {
         $plans = [];
 
         for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-
             $plan = get_option('_pdi_paywall_plan_name_' . $i);
             if (!empty($plan)) {
-                $plans[get_option('_pdi_paywall_plan_id_' . $i)] = pdi_paywall_array_plan($i, $plan);
+                $extern_plan_id = get_option('_pdi_paywall_plan_extern_plan_id_' . $i);
+                if ($extern_plan_id){
+                    $plans[$extern_plan_id] = pdi_paywall_array_plan($i, $plan);
+                }
             }
         }
 
@@ -165,3 +171,53 @@ if (!function_exists('pdi_paywall_get_free_restrictions')) {
         return $restrictions;
     }
 }
+
+if (!function_exists('pdi_paywall_admin_notice')) {
+    function pdi_paywall_admin_notice($message, $status = 'success')
+    {
+        echo '<div class="notice notice-' . $status . ' is-dismissible\"><p>' . $message . '</p></div>';
+    }
+}
+
+/*
+ * $options = [
+ *  path: url
+ *  method: POST, GET, PUT
+ *  data: array
+ * ]
+ */
+function pdi_fetch_curl_post()
+{
+    $api_key = get_option('_pdi_paywall_payment_key');
+
+    if (isset( $_POST['data'])){
+        $_POST['data'] = json_decode(str_replace('\"','"', $_POST['data']),true);
+        return pdi_curl([
+            'path' => $_POST['path'],
+            'bearer_token' => $api_key,
+            'method' => $_POST['method'],
+            'data' => $_POST['data']
+        ]);
+    }
+    return pdi_curl([
+        'path' => isset($_GET['path'])?$_GET['path']:'',
+        'bearer_token' => $api_key,
+        'method' => 'get',
+    ]);
+
+}
+function pdi_fetch_curl_callback()
+{
+ return true;
+}
+add_action('rest_api_init', function () {
+    register_rest_route('pdi-paywall/v1', '/curl', array(
+        'headers' => ['Content-Type' => 'application/json'],
+        'methods' => 'post,get',
+        'callback' => 'pdi_fetch_curl_post',
+        'permission_callback' => 'pdi_fetch_curl_callback'
+    ));
+});
+
+
+

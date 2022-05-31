@@ -15,8 +15,7 @@ function send_smtp_email($phpmailer)
 }
 
 if (!function_exists('pdi_paywall_subscription_success')) {
-    function pdi_paywall_subscription_success($user_email)
-    {
+    function pdi_paywall_subscription_success($user_email)    {
         wp_mail($user_email, "Assinatura confirmada", get_option('_pdi_paywall_smtp_message_success'));
     }
 }

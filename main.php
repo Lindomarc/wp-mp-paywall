@@ -1,11 +1,10 @@
 <?php
 
 /**
- * Plugin Name:       PDI Paywall
+ * Plugin Name:       PDI Paywall (MP)
  * Plugin URI:        https://publicadordigital.com.br/
  * Description:       PDI Paywall
  * Version:           0.2.3
- * Requires at least: 5.7
  * Requires PHP:      7.4
  * Author:            MSWi Soluções Web Inteligentes
  * Author URI:        https://mswi.com.br/
@@ -25,8 +24,8 @@ define('PDI_PAYWALL_VISIBILITY_EXCLUSIVE', 'exclusive');
 define('PDI_PAYWALL_COOKIE', '_ppcrl');
 
 //define('PDI_PAYWALL_API_URI', 'https://pag-api.herokuapp.com/');
-// define('PDI_PAYWALL_API_URI', 'https://planos.applicanda.com.br/api/');
-define('PDI_PAYWALL_API_URI', 'https://planos.test/api/');
+ define('PDI_PAYWALL_API_URI', 'https://planos.applicanda.com.br/api/');
+//define('PDI_PAYWALL_API_URI', 'https://planos.test/api/');
 define('PDI_PAYWALL_PLAN_LIMIT', 3);
 
 function pdi_paywall_activate()

@@ -214,3 +214,12 @@
     text-align: center;
 }
 
+ul.pdi-list{
+    list-style:none;
+}
+ul.pdi-list li{
+    font-size: 1.9rem!important;
+}
+.panel-title{
+    font-size: 1.5em!important;
+}
