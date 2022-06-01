@@ -139,23 +139,20 @@ if (!function_exists('pdi_paywall_content_restriction')) {
                 $login = get_page_link(get_option('_pdi_paywall_page_login'));
                 $register = get_page_link(get_option('_pdi_paywall_page_register'));
                 $plans = get_page_link(get_option('_pdi_paywall_page_plans'));
-
                 if (is_user_logged_in()) {
-                    ob_start();
                     require_once(PDI_PAYWALL_MODULES_PATH . 'restriction/views/registered.php');
-                    $content .= ob_get_clean();
                 } else {
-                    ob_start();
                     require_once(PDI_PAYWALL_MODULES_PATH . 'restriction/views/guest.php');
-                    $content .= ob_get_clean();
                 }
+
             }
         }
+        return  $content;
 
-        return $content;
     }
     add_filter('the_content', 'pdi_paywall_content_restriction');
 }
+
 
 if (!function_exists('pdi_paywall_cookie_script')) {
     function pdi_paywall_cookie_script()
