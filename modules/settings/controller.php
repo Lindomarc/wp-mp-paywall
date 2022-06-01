@@ -410,7 +410,7 @@ function pdi_paywall_settings_init()
     add_settings_section('_pdi_paywall_payments_section', 'Configurações de pagamento', 'pdi_paywall_section_callback', '_pdi_paywall_payments');
     $fields = array(
         array(
-            'uid' => '_pdi_paywall_payment_key',
+            'uid' => '_pdi_paywall_payment_pdi_token',
             'label' => 'PDI Token',
             'section' => '_pdi_paywall_payments_section',
             'type' => 'text',
@@ -432,7 +432,7 @@ function pdi_paywall_settings_init()
             'default' => null
         ),
         array(
-            'uid' => '_pdi_paywall_payment_client_id',
+            'uid' => '_pdi_paywall_payment_pdi_key',
             'label' => 'PDI KEY',
             'section' => '_pdi_paywall_payments_section',
             'type' => 'text',
@@ -454,14 +454,14 @@ function pdi_paywall_settings_init()
             'default' => null
         ),
         array(
-            'uid' => '_pdi_paywall_payment_public_token',
+            'uid' => '_pdi_paywall_payment_access_token',
             'label' => 'Access Token',
             'section' => '_pdi_paywall_payments_section',
             'type' => 'text',
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'Token público da Mercado Pago',
+            'supplemental' => 'Token privado da Mercado Pago',
             'default' => null
         ),
         array(
@@ -476,14 +476,14 @@ function pdi_paywall_settings_init()
             'default' => null
         ),
         array(
-            'uid' => '_pdi_paywall_payment_public_token_test',
+            'uid' => '_pdi_paywall_payment_access_token_test',
             'label' => 'Access Token Test',
             'section' => '_pdi_paywall_payments_section',
             'type' => 'text',
             'options' => false,
             'placeholder' => null,
             'helper' => null,
-            'supplemental' => 'Token público da Mercado Pago',
+            'supplemental' => 'Access Token	 de teste Mercado Pago',
             'default' => null
         ),
     );
@@ -691,7 +691,7 @@ function pdi_paywall_field_callback($arguments)
 
 function pdi_paywall_update_options($option_name)
 {
-    $api_key = get_option('_pdi_paywall_payment_key');
+    $api_key = get_option('_pdi_paywall_payment_pdi_token');
     if (!empty($api_key)) {
         $data = [];
 
@@ -700,7 +700,7 @@ function pdi_paywall_update_options($option_name)
             $data['sandbox'] = $option;
         }
 
-        if ($option_name = '_pdi_paywall_payment_client_id') {
+        if ($option_name = '_pdi_paywall_payment_pdi_key') {
             $option = get_option($option_name);
             $data['client_id'] = $option;
         }
@@ -710,23 +710,23 @@ function pdi_paywall_update_options($option_name)
             $data['client_secret'] = $option;
         }
 
-        if ($option_name = '_pdi_paywall_payment_public_token') {
+        if ($option_name = '_pdi_paywall_payment_public_key') {
             $option = get_option($option_name);
             $data['public_token'] = $option;
         }
 
-        if ($option_name = '_pdi_paywall_payment_private_token') {
+        if ($option_name = '_pdi_paywall_payment_access_token') {
             $option = get_option($option_name);
             $data['private_token'] = $option;
         }
 
 
-        if ($option_name = '_pdi_paywall_payment_public_token_test') {
+        if ($option_name = '_pdi_paywall_payment_public_key_test') {
             $option = get_option($option_name);
             $data['public_token_test'] = $option;
         }
 
-        if ($option_name = '_pdi_paywall_payment_private_token_test') {
+        if ($option_name = '_pdi_paywall_payment_access_token_test') {
             $option = get_option($option_name);
             $data['private_token_test'] = $option;
         }
@@ -737,16 +737,16 @@ function pdi_paywall_update_options($option_name)
     }
 }
 add_action('update_option__pdi_paywall_payment_sandbox', 'pdi_paywall_update_options');
-add_action('update_option__pdi_paywall_payment_client_id', 'pdi_paywall_update_options');
+add_action('update_option__pdi_paywall_payment_pdi_key', 'pdi_paywall_update_options');
 add_action('update_option__pdi_paywall_payment_client_secret', 'pdi_paywall_update_options');
-add_action('update_option__pdi_paywall_payment_public_token', 'pdi_paywall_update_options');
-add_action('update_option__pdi_paywall_payment_private_token', 'pdi_paywall_update_options');
-add_action('update_option__pdi_paywall_payment_public_token_test', 'pdi_paywall_update_options');
-add_action('update_option__pdi_paywall_payment_private_token_test', 'pdi_paywall_update_options');
+add_action('update_option__pdi_paywall_payment_public_key', 'pdi_paywall_update_options');
+add_action('update_option__pdi_paywall_payment_access_token', 'pdi_paywall_update_options');
+add_action('update_option__pdi_paywall_payment_public_key_test', 'pdi_paywall_update_options');
+add_action('update_option__pdi_paywall_payment_access_token_test', 'pdi_paywall_update_options');
 
 function pdi_paywall_update_plans()
 {
-    $api_key = get_option('_pdi_paywall_payment_key');
+    $api_key = get_option('_pdi_paywall_payment_pdi_token');
 
     if (!empty($api_key)) {
         $plans = pdi_paywall_get_plans();

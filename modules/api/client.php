@@ -33,7 +33,7 @@ function pdi_curl($options)
             "Accept:application/json",
             "Content-Type:application/json",
             "Authorization:Bearer " . $options['bearer_token'],
-            "x-customer-key:".get_option('_pdi_paywall_payment_client_id'),
+            "x-customer-key:".get_option('_pdi_paywall_payment_pdi_key'),
         ],
     ];
     if (isset($options['data'])){
@@ -54,7 +54,7 @@ function pdi_curl($options)
 */
 function pdi_curl($options)
 {
-    $api_key = get_option('_pdi_paywall_payment_key');
+    $api_key = get_option('_pdi_paywall_payment_pdi_token');
     if (!empty($api_key)) {
         $data = '';
         if (isset($options['data'])){
@@ -67,7 +67,7 @@ function pdi_curl($options)
                 "Accept" => "application/json",
                 "Content-Type" => "application/json",
                 "Authorization"=> "Bearer " . $api_key,
-                "x-customer-key" => get_option('_pdi_paywall_payment_client_id'),
+                "x-customer-key" => get_option('_pdi_paywall_payment_pdi_key'),
             ),
         );
 
@@ -100,7 +100,7 @@ if (!function_exists('pdi_paywall_api_post')) {
 //if (!function_exists('pdi_paywall_api_post')) {
 //    function pdi_paywall_api_post($path, $data)
 //    {
-//        $api_key = get_option('_pdi_paywall_payment_key');
+//        $api_key = get_option('_pdi_paywall_payment_pdi_token');
 //
 //        if (!empty($api_key)) {
 //            $args = array(
@@ -109,7 +109,7 @@ if (!function_exists('pdi_paywall_api_post')) {
 //                    "Accept" => "application/json",
 //                    "Content-Type" => "application/json",
 //                    "Authorization"=> "Bearer " . $api_key,
-//                    "x-customer-key" => get_option('_pdi_paywall_payment_client_id'),
+//                    "x-customer-key" => get_option('_pdi_paywall_payment_pdi_key'),
 //                ),
 //            );
 //
@@ -140,7 +140,7 @@ if (!function_exists('pdi_paywall_api_put')) {
 //if (!function_exists('pdi_paywall_api_put')) {
 //    function pdi_paywall_api_put($path, $data)
 //    {
-//        $api_key = get_option('_pdi_paywall_payment_key');
+//        $api_key = get_option('_pdi_paywall_payment_pdi_token');
 //
 //        if (!empty($api_key)) {
 //            $args = array(
@@ -149,7 +149,7 @@ if (!function_exists('pdi_paywall_api_put')) {
 //                'headers' => array(
 //                    "Accept" => "application/json",
 //                    "Authorization"=> "Bearer " . $api_key,
-//                    "x-customer-key" => get_option('_pdi_paywall_payment_client_id'),
+//                    "x-customer-key" => get_option('_pdi_paywall_payment_pdi_key'),
 //                ),
 //            );
 //            $response = wp_remote_request(PDI_PAYWALL_API_URI . $path, $args);
@@ -168,7 +168,7 @@ if (!function_exists('pdi_paywall_api_put')) {
 if (!function_exists('pdi_paywall_api_delete')) {
     function pdi_paywall_api_delete($path)
     {
-        $api_key = get_option('_pdi_paywall_payment_key');
+        $api_key = get_option('_pdi_paywall_payment_pdi_token');
 
         if (!empty($api_key)) {
             $args = array(

@@ -3,7 +3,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'general_options';
 ?>
 <link href="<?php echo plugins_url('/css/pdi_paywall_custom.css', __FILE__) ?>" rel="stylesheet" />
 <script src="<?php echo plugins_url('/js/pdi_paywall_custom.js', __FILE__) ?>"></script>
-
+<script src="<?php echo plugins_url('../../../vendor/js/tinymce/tinymce.min.js', __FILE__)?>"></script>
 <div class="wrap">
     <h2>PDI Paywall</h2>
 
@@ -50,3 +50,19 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'general_options';
         </form>
     </div>
 </div>
+<script>
+    tinymce.init({
+        selector: 'textarea#_pdi_paywall_smtp_message_cancel,textarea#_pdi_paywall_smtp_message_success',
+        width: 600,
+        height: 400,
+        menubar: false,
+
+    });
+    tinymce.init({
+        selector: 'textarea#_pdi_paywall_plan_description_1,textarea#_pdi_paywall_plan_description_2,textarea#_pdi_paywall_plan_description_3',
+        width:350,
+        height: 500,
+        menubar: false,
+
+    });
+</script>

@@ -17,21 +17,21 @@ if (!function_exists('pdi_paywall_shortcodes_scripts')) {
         echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>';
         echo '            
                 <script>
-                    const PDI_PAYWALL_PAYMENT_KEY = "' . get_option('_pdi_paywall_payment_key') . '"; 
-                    const PDI_PAYWALL_PAYMENT_CLIENT_ID = "' . get_option('_pdi_paywall_payment_client_id') . '"; 
+                    const PDI_PAYWALL_PAYMENT_KEY = "' . get_option('_pdi_paywall_payment_pdi_token') . '"; 
+                    const PDI_PAYWALL_PAYMENT_CLIENT_ID = "' . get_option('_pdi_paywall_payment_pdi_key') . '"; 
                 </script>
             ';
         if (get_option('_pdi_paywall_payment_sandbox')) {
             echo '
                 <script>
-                    const PDI_PAYWALL_PAYMENT_PUBLIC_TOKEN = "' . get_option('_pdi_paywall_payment_public_token_test') . '";
+                    const PDI_PAYWALL_PAYMENT_PUBLIC_TOKEN = "' . get_option('_pdi_paywall_payment_public_key_test') . '";
                     const PDI_PAYWALL_PAYMENT_PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key_test') . '";
                 </script>
             ';
         } else {
             echo '
                 <script>
-                    const PDI_PAYWALL_PAYMENT_PUBLIC_TOKEN = "' . get_option('_pdi_paywall_payment_public_token') . '";
+                    const PDI_PAYWALL_PAYMENT_PUBLIC_TOKEN = "' . get_option('_pdi_paywall_payment_public_key') . '";
                     const PDI_PAYWALL_PAYMENT_PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key') . '";
                 </script>
             ';
@@ -133,7 +133,7 @@ function pdi_paywall_register_shortcode($atts, $content = null)
     $plans = pdi_paywall_get_plans();
     $plan = $plans[base64_decode($plan)];
 
-    $public_token = get_option('_pdi_paywall_payment_public_token');
+    $public_token = get_option('_pdi_paywall_payment_public_key');
     $is_sandbox = get_option('_pdi_paywall_payment_sandbox');
 
     ob_start();
@@ -156,7 +156,7 @@ function pdi_paywall_profile_shortcode($atts, $content = null)
     $document = get_user_meta($user->ID, '_pdi_paywall_document', true);
 
     if (!empty($subscriber_id)) {
-        $response = pdi_paywall_api_get('consumers/' . $subscriber_id);
+        $response = pdi_paywall_api_get('subscribers/' . $subscriber_id);
         if (!empty($response)) {
             $subscriber = json_decode($response);
         }
@@ -196,7 +196,7 @@ function pdi_paywall_register_new_user($data)
     if (!is_wp_error($user_id)) {
         add_user_meta($user_id, '_pdi_paywall_plan_id', $data['plan_id']);
         add_user_meta($user_id, '_pdi_paywall_document', trim($data['document']));
-        $user = [
+        $subscribers = [
             'preapproval_plan_id' => $data['extern_plan_id'],
             'external_reference' => $data['pdi_paywall_register_nonce'] . '_' . $user_id,
             'first_name' => trim($data['first_name']),
@@ -222,16 +222,20 @@ function pdi_paywall_register_new_user($data)
             'card_token_id' => trim($data['MPHiddenInputToken']),
         ];
 
-        $response = pdi_paywall_api_post('subscribers', $user);
 
-        var_dump($response);
-        if (!empty($response)) {
+        $response = pdi_paywall_api_post('subscribers', $subscribers);
+
+        if ($response->status = 'active') {
 
             $subscriber_res = json_decode($response);
 
             add_user_meta($user_id, '_pdi_paywall_subscriber_id', $subscriber_res->id);
 
-            pdi_paywall_subscription_success($user['email']);
+            pdi_paywall_subscription_success($subscribers['payer_email']);
         }
+        var_dump($user_id);
+        var_dump($response);
+        var_dump($subscriber_res);
+        exit('ddd');
     }
 }

@@ -39,6 +39,7 @@ function pdi_paywall_subscriptions_view()
     $subscribers = [];
 
     $response = pdi_paywall_api_get('subscribers');
+
     if (!empty($response)) {
         $subscribers = json_decode($response);
     }

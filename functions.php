@@ -77,7 +77,7 @@ function pdi_paywall_array_plan($i, $plan)
 {
     $price = get_option('_pdi_paywall_plan_price_' . $i);
         return [
-            'customer_key' => get_option('_pdi_paywall_payment_client_id'),
+            'customer_key' => get_option('_pdi_paywall_payment_pdi_key'),
             'reason' => $plan,
             'description' => get_option('_pdi_paywall_plan_description_' . $i),
             'auto_recurring' => [
@@ -188,7 +188,7 @@ if (!function_exists('pdi_paywall_admin_notice')) {
  */
 function pdi_fetch_curl_post()
 {
-    $api_key = get_option('_pdi_paywall_payment_key');
+    $api_key = get_option('_pdi_paywall_payment_pdi_token');
 
     if (isset( $_POST['data'])){
         $_POST['data'] = json_decode(str_replace('\"','"', $_POST['data']),true);
