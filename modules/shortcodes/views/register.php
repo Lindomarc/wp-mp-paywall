@@ -1,6 +1,5 @@
 <?php
 
-
 if ($users_can_register) { ?>
     <div class="pdi-paywall-form">
         <form name="registerform" id="registerform"
@@ -21,7 +20,7 @@ if ($users_can_register) { ?>
                 <?php _e('Registration confirmation will be emailed to you.'); ?>
             </p>
             <br class="clear"/>
-            <input type="hidden" name="redirect_to" value="<?php  wp_redirect($_REQUEST['redirect_to']) ?>"/>
+            <input type="hidden" name="redirect_to" value="<?php wp_redirect($_REQUEST['redirect_to']) ?>"/>
             <p class="submit">
                 <input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large"
                        value="<?php esc_attr_e('Register'); ?>"/>
@@ -332,8 +331,8 @@ if ($users_can_register) { ?>
                     <div class="col aling-end">
                         <div class="bottons-group">
                             <progress value="0" class="progress-bar">Assinando...</progress>
-                            <input type="submit" name="wp-submit" id="wp-submit"
-                                   class="btn btn-primary btn-lg" value="Assinar"/>
+                            <button id="wp-submit" class="btn btn-primary btn-lg" >Assinar</button>
+
 
                         </div>
                     </div>
@@ -348,6 +347,9 @@ if ($users_can_register) { ?>
 
         <script>
 
+            const plan = <?php echo json_encode($plan); ?>;
+            const price = "<?php echo $price; ?>";
+            console.log(plan)
             var card = new Card({
                 form: 'form#pdi-paywall-payment-form',
                 container: '.pdi-paywall-card-wrapper',
@@ -443,48 +445,9 @@ if ($users_can_register) { ?>
                 locale: 'pt-BR'
             })
 
-
-            const createCardToken = async () => {
-                const expirationDate = document.getElementById('form-checkout__expirationDate');
-
-                const cardFields = {
-                    card_number: document.getElementById('form-checkout__cardNumber').value,
-                    email: document.querySelector('input[name="user_email"]').value.trim(),
-                    cardholder: {
-                        name: document.getElementById('form-checkout__cardholderName').value,
-                        identification: {
-                            type: pdiTools.typeDocument(
-                                document.getElementById('form-checkout__identificationNumber').value
-                            ),
-                            number: pdiTools.onlyNumber(
-                                document.getElementById('form-checkout__identificationNumber').value
-                            ),
-                        }
-                    },
-                    security_code: document.getElementById('form-checkout__securityCode').value,
-                    expiration_month: expirationDate.value.split("/")[0].trim(),
-                    expiration_year: expirationDate.value.split("/")[1].trim()
-                }
-
-                try {
-                    const response = await fetch('<?php echo PDI_PAYWALL_API_URI . 'cards';?>', {
-                        headers: {
-                            "Accept": "application/json",
-                            "Content-Type": "application/json",
-                            "Authorization": "Bearer " + PDI_PAYWALL_PAYMENT_KEY,
-                            "x-customer-key": PDI_PAYWALL_PAYMENT_CLIENT_ID,
-                        },
-                        method: "POST",
-                        body: JSON.stringify(cardFields),
-                    })
-                    return await response.json();
-                } catch (e) {
-                    console.error('error creating card token: ', e)
-                }
-            }
             const cardForm = mp.cardForm({
-                amount: "<?php echo $price; ?>",
-                reason: "<?php echo $plan['reason']; ?>",
+                amount: price,
+                reason: plan.reason,
                 autoMount: true,
                 form: {
                     id: "pdi-paywall-payment-form",
@@ -525,17 +488,18 @@ if ($users_can_register) { ?>
                         placeholder: "Parcelas",
                     },
                 },
+
                 callbacks: {
                     onFormMounted: error => {
                         if (error) return console.warn("Form Mounted handling error: ", error);
                         console.log("Form mounted");
                     },
-
-                    onSubmit: event => {
-                        let card_token = createCardToken();
-                        if (!!card_token.id) {
-                            async function setSubscriber() {
-                                const apiUrl = "<?php echo PDI_PAYWALL_API_URI?>subscribers";
+                    /*
+                                        onSubmit: event => {
+                                            let card_token = createCardToken();
+                                            if (!!card_token.id) {
+                                                async function setSubscriber() {
+                                                    const apiUrl = "<?php echo PDI_PAYWALL_API_URI?>subscribers";
                                 const form = {
                                     payer_email: cardFields.email,
                                     username: document.querySelector('input[name="username"]').value.trim(),
@@ -569,8 +533,8 @@ if ($users_can_register) { ?>
                                         headers: {
                                             "Accept": "application/json",
                                             "Content-Type": "application/json",
-                                            "Authorization": "Bearer " + PDI_PAYWALL_PAYMENT_KEY,
-                                            "x-customer-key": PDI_PAYWALL_PAYMENT_CLIENT_ID,
+                                            "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
+                                            "x-customer-key": _pdi_paywall_payment_pdi_key,
                                         },
                                         method: "POST",
                                         body: JSON.stringify(form),
@@ -587,7 +551,7 @@ if ($users_can_register) { ?>
                         }
 
                     },
-
+*/
                     onFetching: (resource) => {
                         console.log("Fetching resource: ", resource);
 
@@ -600,7 +564,146 @@ if ($users_can_register) { ?>
                         };
                     }
                 },
+
             });
+
+            async function newWpUser(cardToken){
+                let identification =  JSON.stringify({
+                    type: pdiTools.typeDocument(
+                        document.getElementById('form-checkout__identificationNumber').value
+                    ),
+                    number: pdiTools.onlyNumber(
+                        document.getElementById('form-checkout__identificationNumber').value
+                    ),
+                })
+                let planData = JSON.stringify(plan)
+
+                let display_name = document.querySelector('input[name="first_name"]').value.trim()
+                display_name += ' ' + document.querySelector('input[name="last_name"]').value.trim()
+                try {
+
+                    const dataUser = {
+                        password: document.querySelector('input[name="password"]').value.trim(),
+                        username: document.querySelector('input[name="username"]').value.trim(),
+                        user_email: document.querySelector('input[name="user_email"]').value.trim(),
+                        display_name: display_name,
+                        nickname: document.querySelector('input[name="username"]').value.trim(),
+                        first_name: document.querySelector('input[name="first_name"]').value.trim(),
+                        last_name: document.querySelector('input[name="last_name"]').value.trim(),
+                        document: document.querySelector('input[name="document"]').value.trim(),
+                        pdi_paywall_register_nonce: document.querySelector('input[name="pdi_paywall_register_nonce"]').value.trim(),
+                        amount: price,
+                        planData: `${planData}`,
+                        card_token_id: cardToken.id,
+                        identification: identification
+                    }
+
+                    return sendData('/wp-json/pdi-paywall/v1/new_wp_user', dataUser)
+                } catch (e) {
+                    console.error('error creating card token: ', e)
+                }
+            }
+
+            async function sendData(url, data) {
+                const formData = new FormData();
+
+                for (const name in data) {
+                    formData.append(name, data[name]);
+                }
+
+                return await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+            }
+
+            const createCardToken = async () => {
+                const expirationDate = document.getElementById('form-checkout__expirationDate');
+                const cardFields = {
+                    card_number: document.getElementById('form-checkout__cardNumber').value,
+                    email: document.querySelector('input[name="user_email"]').value.trim(),
+                    cardholder: {
+                        name: document.getElementById('form-checkout__cardholderName').value,
+                        identification: {
+                            type: pdiTools.typeDocument(
+                                document.getElementById('form-checkout__identificationNumber').value
+                            ),
+                            number: pdiTools.onlyNumber(
+                                document.getElementById('form-checkout__identificationNumber').value
+                            ),
+                        }
+                    },
+                    security_code: document.getElementById('form-checkout__securityCode').value,
+                    expiration_month: expirationDate.value.split("/")[0].trim(),
+                    expiration_year: expirationDate.value.split("/")[1].trim()
+                }
+                try {
+                    return fetch('<?php echo PDI_PAYWALL_API_URI . 'cards';?>', {
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json",
+                            "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
+                            "x-customer-key": _pdi_paywall_payment_pdi_key,
+                        },
+                        method: "POST",
+                        body: JSON.stringify(cardFields),
+                    }).then(function (response) {
+                        return response.json();
+                    });
+
+                } catch (e) {
+                    console.error('error creating card token: ', e)
+                }
+            }
+
+            async function setSubscriber(event) {
+                event.preventDefault();
+
+                let cardToken = await createCardToken();
+
+                let responseUser = await newWpUser(cardToken);
+
+                if (cardToken.id) {
+                    const form = {
+                        payer_email: document.querySelector('input[name="user_email"]').value.trim(),
+                        username: document.querySelector('input[name="username"]').value.trim(),
+                        password: document.querySelector('input[name="password"]').value.trim(),
+                        first_name: document.querySelector('input[name="first_name"]').value.trim(),
+                        last_name: document.querySelector('input[name="last_name"]').value.trim(),
+                        preapproval_plan_id: plan['extern_plan_id'],
+                        card_token_id: cardToken.id,
+                        identification: {
+                            type: pdiTools.typeDocument(
+                                document.getElementById('form-checkout__identificationNumber').value
+                            ),
+                            number: pdiTools.onlyNumber(
+                                document.getElementById('form-checkout__identificationNumber').value
+                            ),
+                        }
+                    };
+                    try {
+                        const response = await fetch("<?php echo PDI_PAYWALL_API_URI?>subscribers", {
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
+                                "x-customer-key": _pdi_paywall_payment_pdi_key,
+                            },
+                            method: "POST",
+                            body: JSON.stringify(form),
+                        })
+                        const data = await response.json();
+                        console.log({data});
+
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            }
+
+            document.addEventListener('submit', setSubscriber);
+
+
         </script>
     <?php } ?>
 <?php } ?>

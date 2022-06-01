@@ -17,8 +17,8 @@ if (!function_exists('pdi_paywall_shortcodes_scripts')) {
         echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>';
         echo '            
                 <script>
-                    const PDI_PAYWALL_PAYMENT_KEY = "' . get_option('_pdi_paywall_payment_pdi_token') . '"; 
-                    const PDI_PAYWALL_PAYMENT_CLIENT_ID = "' . get_option('_pdi_paywall_payment_pdi_key') . '"; 
+                    const _pdi_paywall_payment_pdi_token = "' . get_option('_pdi_paywall_payment_pdi_token') . '"; 
+                    const _pdi_paywall_payment_pdi_key = "' . get_option('_pdi_paywall_payment_pdi_key') . '"; 
                 </script>
             ';
         if (get_option('_pdi_paywall_payment_sandbox')) {
@@ -46,18 +46,18 @@ add_shortcode('pdi_paywall_login', 'pdi_paywall_login_shortcode');
 function pdi_paywall_login_shortcode($atts, $content = null)
 {
 
-    if (!empty(get_option('_pdi_paywall_page_profile'))) {
-        $page_link = $_REQUEST['redirect_to'];
-    } else if (!empty(get_option('_pdi_paywall_page_plans'))) {
+    if(get_option('_pdi_paywall_page_plans')) {
         $page_link = get_page_link(get_option('_pdi_paywall_page_plans'));
     }
 
+    if(isset($_SERVER['HTTP_REFERER'])) {
+        $page_link = $_SERVER['HTTP_REFERER'];
+    }
     $content .= '</div><div class="pdi-paywall-form">';
 
     if (isset($_GET['login']) && $_GET['login'] == 'failed') {
         $content .= '<div class="pdi-paywall-message error"><p>Email ou senha incorretos.</p></div>';
     }
-
     $args = array(
         'echo' => false,
         'redirect' => $page_link,
@@ -178,7 +178,6 @@ function pdi_paywall_register_new_user($data)
     $plans = pdi_paywall_get_plans_by_id();
     $plan = $plans[$data['extern_plan_id']];
 
-
     $userdata = [
         'user_pass' => trim($data['password']),
         'user_login' => trim($data['username']),
@@ -193,11 +192,13 @@ function pdi_paywall_register_new_user($data)
     ];
     $user_id = wp_insert_user($userdata);
 
-    if (!is_wp_error($user_id)) {
+    if (!is_wp_error($user_id)){
+
         add_user_meta($user_id, '_pdi_paywall_plan_id', $data['plan_id']);
         add_user_meta($user_id, '_pdi_paywall_document', trim($data['document']));
+
         $subscribers = [
-            'preapproval_plan_id' => $data['extern_plan_id'],
+            'preapproval_plan_id' => $data['plan']['extern_plan_id'],
             'external_reference' => $data['pdi_paywall_register_nonce'] . '_' . $user_id,
             'first_name' => trim($data['first_name']),
             'last_name' => trim($data['last_name']),
@@ -222,20 +223,13 @@ function pdi_paywall_register_new_user($data)
             'card_token_id' => trim($data['MPHiddenInputToken']),
         ];
 
+        $response = json_decode(pdi_paywall_api_post('subscribers', $subscribers));
 
-        $response = pdi_paywall_api_post('subscribers', $subscribers);
+        if ($response['status'] = 'active') {
 
-        if ($response->status = 'active') {
-
-            $subscriber_res = json_decode($response);
-
-            add_user_meta($user_id, '_pdi_paywall_subscriber_id', $subscriber_res->id);
+            add_user_meta($user_id, '_pdi_paywall_subscriber_id', $response->id);
 
             pdi_paywall_subscription_success($subscribers['payer_email']);
         }
-        var_dump($user_id);
-        var_dump($response);
-        var_dump($subscriber_res);
-        exit('ddd');
     }
 }

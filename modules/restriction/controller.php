@@ -125,13 +125,16 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
         return $is_restriction;
     }
 }
-
 if (!function_exists('pdi_paywall_content_restriction')) {
     function pdi_paywall_content_restriction($content)
     {
         if (pdi_paywall_verify_singular()) {
             if (pdi_paywall_verify_restrictions()) {
-                $content = substr(strip_tags($content), 0, 100); // verificar para colocar um valor custom ao invés de somente 100
+                $limit_content = get_option('_pdi_paywall_page_limit_content');
+                if (!$limit_content){
+                    $limit_content = 200;
+                }
+                $content = substr(strip_tags($content), 0, $limit_content); // verificar para colocar um valor custom ao invés de somente 100
 
                 $login = get_page_link(get_option('_pdi_paywall_page_login'));
                 $register = get_page_link(get_option('_pdi_paywall_page_register'));

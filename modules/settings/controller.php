@@ -5,6 +5,17 @@ function pdi_paywall_settings_init()
     add_settings_section('_pdi_paywall_read_section', 'Configurações de leitura', 'pdi_paywall_section_callback', '_pdi_paywall_general');
     $fields = array(
         array(
+            'uid' => '_pdi_paywall_page_limit_content',
+            'label' => 'Limite de caracaters antes do "ler mais"',
+            'section' => '_pdi_paywall_read_section',
+            'type' => 'number',
+            'options' => false,
+            'placeholder' => null,
+            'helper' => null,
+            'supplemental' => 'Limite de texto visivel em posts',
+            'default' => 200
+        ),
+        array(
             'uid' => '_pdi_paywall_read_limit_guest',
             'label' => 'Limite de leitura (Anônimo)',
             'section' => '_pdi_paywall_read_section',
