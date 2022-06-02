@@ -4,7 +4,7 @@
  * Plugin Name:       PDI Paywall (MP)
  * Plugin URI:        https://publicadordigital.com.br/
  * Description:       PDI Paywall
- * Version:           0.2.3
+ * Version:           0.2.4
  * Requires PHP:      7.4
  * Author:            MSWi Soluções Web Inteligentes
  * Author URI:        https://mswi.com.br/

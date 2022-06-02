@@ -1,6 +1,6 @@
 .pdi-paywall-form {
     padding: 6em 2em 1em;
-    max-width: 27rem;
+    max-width: 45rem;
     box-shadow: 2px 2px 3px 3px rgba(0, 0, 0, 0.13);
     margin: 0 auto;
     border-radius: 25px;
@@ -14,6 +14,8 @@
 .pdi-paywall-form #loginform .input,
 .pdi-paywall-form #registerform .input {
     width: 98%;
+    font-size: 3rem;
+    height: 6rem;
     padding: 0.6rem;
 }
 .pdi-paywall-plan h3 {
@@ -44,7 +46,7 @@
 }
 
 .pdi-paywall-plan {
-    min-width: 20rem;
+    max-width: 28rem;
     -webkit-border-radius: 2em;
     -moz-border-radius: 2em;
     background: #ffffff;
