@@ -31,7 +31,7 @@
 <div class="pdi_paywall_restriction_wrap">
     <div class="pdi_paywall_restriction_message" st>
 		<a href="/planos"  class="btn btn-info btn-lg">* Assinatura para acesso completo.</a> <br><br>
-		<a href="/log-in" class="btn btn-info btn-lg">Login para ler o conteúdo.</a>
+		<a href="/login" class="btn btn-info btn-lg">Login para ler o conteúdo.</a>
     </div>
 </div>
 
