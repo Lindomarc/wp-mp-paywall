@@ -743,7 +743,7 @@ function pdi_paywall_update_options($option_name)
         }
 
         if (!empty($data)) {
-            $response = pdi_paywall_api_post('settings', $data);
+            //TODO: $response = pdi_paywall_api_post('settings', $data);
         }
     }
 }

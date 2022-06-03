@@ -308,3 +308,9 @@ add_action('rest_api_init', function () {
 
 
 
+add_action( 'admin_menu', 'register_newpage' );
+
+function register_newpage(){
+    add_menu_page('custom_page', 'custom', 'administrator','custom', 'custompage');
+    remove_menu_page('custom');
+}

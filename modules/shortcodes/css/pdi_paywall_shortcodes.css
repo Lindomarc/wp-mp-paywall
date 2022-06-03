@@ -82,7 +82,10 @@
     line-height: 1.2;
     font-size: 2.6rem;
 }
-
+.pdi-paywall-plans-container .real{
+    font-size: 10.2rem;
+    font-weight: bold;
+}
 .pdi-paywall-plan .pdi-paywall-payment-button {
     margin: 0 25px;
 }

@@ -70,7 +70,7 @@ function pdi_curl($options)
                 "x-customer-key" => get_option('_pdi_paywall_payment_pdi_key'),
             ),
         );
-
+var_dump($options);
         $response = wp_remote_request(PDI_PAYWALL_API_URI . $options['path'], $args);
         $http_code = wp_remote_retrieve_response_code($response);
 

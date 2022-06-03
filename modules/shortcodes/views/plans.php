@@ -42,6 +42,9 @@
 header.entry-header{
     display: none!important;
 }
+.pdi-paywall-plan h3{
+    
+}
 
 </style>
 

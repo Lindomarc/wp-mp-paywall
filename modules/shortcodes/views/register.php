@@ -108,6 +108,7 @@ if ($users_can_register) { ?>
                                     <input
                                             class="form-control"
                                             type="email"
+                                            placeholder="E-mail"
                                             name="user_email"
                                             id="form-checkout__cardholderEmail"/>
                                 </label>
@@ -240,43 +241,56 @@ if ($users_can_register) { ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="input-group">
+
+                                        <label>Título no cartão
                                         <input
                                                 class="form-control"
-                                                id="form-checkout__cardholderName"
+                                                id="cardholderName"
                                                 type="text"
+                                                placeholder="Título no cartão"
                                                 name="cardholderName"
                                                 required/>
+                                        </label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="input-group">
+                                        <label>Número do Cartão
                                         <input class="form-control"
                                                id="form-checkout__cardNumber"
                                                type="text"
+                                               placeholder="Número do Cartão"
                                                name="cardNumber"
                                                required/>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-6 col-md-4">
                                     <div class="input-group">
+                                        <label>Expiração
                                         <input
                                                 class="form-control"
                                                 id="form-checkout__expirationDate"
                                                 type="text"
+                                                placeholder="DD/YYYY"
                                                 name="expirationDate" required>
+                                        </label>
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-md-4">
                                     <div class="input-group">
+                                        <label>Código
                                         <input
                                                 class="form-control"
                                                 id="form-checkout__securityCode"
                                                 type="number"
+                                                placeholder="Cód."
                                                 name="securityCode"
                                                 required/>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -288,9 +302,8 @@ if ($users_can_register) { ?>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="input-group">
-
                                         <select class="form-control" name="identificationType"
-                                                id="form-checkout__identificationType"></select>
+                                                id="identificationType"></select>
 
                                     </div>
                                 </div>
@@ -300,12 +313,15 @@ if ($users_can_register) { ?>
 
                                 <div class="col-md-12">
                                     <div class="input-group">
+                                        <label>Documento
                                         <input
                                                 class="form-control"
                                                 type="text"
                                                 name="document"
-                                                id="form-checkout__identificationNumber"
+                                                placeholder="CPF ou CNPJ"
+                                                id="identificationNumber"
                                                 required/>
+                                        </label>
                                     </div>
                                 </div>
 
@@ -331,7 +347,7 @@ if ($users_can_register) { ?>
                     <div class="col aling-end">
                         <div class="bottons-group">
                             <progress value="0" class="progress-bar">Assinando...</progress>
-                            <button id="wp-submit" class="btn btn-primary btn-lg" >Assinar</button>
+                            <button id="wp-submit" class="btn btn-primary btn-lg">Assinar</button>
 
 
                         </div>
@@ -343,13 +359,13 @@ if ($users_can_register) { ?>
 
     </form>
     <?php if ($price > 0) { ?>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script src="https://sdk.mercadopago.com/js/v2"></script>
 
         <script>
 
             const plan = <?php echo json_encode($plan); ?>;
             const price = "<?php echo $price; ?>";
-            console.log(plan)
             var card = new Card({
                 form: 'form#pdi-paywall-payment-form',
                 container: '.pdi-paywall-card-wrapper',
@@ -445,135 +461,136 @@ if ($users_can_register) { ?>
                 locale: 'pt-BR'
             })
 
-            const cardForm = mp.cardForm({
-                amount: price,
-                reason: plan.reason,
-                autoMount: true,
-                form: {
-                    id: "pdi-paywall-payment-form",
-                    cardholderName: {
-                        id: "form-checkout__cardholderName",
-                        placeholder: "Titular do cartão",
-                    },
-                    cardholderEmail: {
-                        id: "form-checkout__cardholderEmail",
-                        placeholder: "E-mail",
-                    },
-                    cardNumber: {
-                        id: "form-checkout__cardNumber",
-                        placeholder: "Número do cartão",
-                    },
-                    expirationDate: {
-                        id: "form-checkout__expirationDate",
-                        placeholder: "MM/AAAA",
-                    },
-                    securityCode: {
-                        id: "form-checkout__securityCode",
-                        placeholder: "CVV",
-                    },
-                    identificationType: {
-                        id: "form-checkout__identificationType",
-                        placeholder: "Tipo de documento",
-                    },
-                    identificationNumber: {
-                        id: "form-checkout__identificationNumber",
-                        placeholder: "Número do (CPF/CNPJ)",
-                    },
-                    issuer: {
-                        id: "form-checkout__issuer",
-                        placeholder: "Banco emissor",
-                    },
-                    installments: {
-                        id: "form-checkout__installments",
-                        placeholder: "Parcelas",
-                    },
-                },
 
-                callbacks: {
-                    onFormMounted: error => {
-                        if (error) return console.warn("Form Mounted handling error: ", error);
-                        console.log("Form mounted");
-                    },
-                    /*
-                                        onSubmit: event => {
-                                            let card_token = createCardToken();
-                                            if (!!card_token.id) {
-                                                async function setSubscriber() {
-                                                    const apiUrl = "<?php echo PDI_PAYWALL_API_URI?>subscribers";
-                                const form = {
-                                    payer_email: cardFields.email,
-                                    username: document.querySelector('input[name="username"]').value.trim(),
-                                    password: document.querySelector('input[name="password"]').value.trim(),
-                                    first_name: document.querySelector('input[name="first_name"]').value.trim(),
-                                    last_name: document.querySelector('input[name="last_name"]').value.trim(),
-                                    preapproval_plan_id: "<?php echo $plan['extern_plan_id']; ?>",
-                                    card_token_id: card_token.id,
-                                    identification: {
-                                        type: pdiTools.typeDocument(
-                                            document.getElementById('form-checkout__identificationNumber').value
-                                        ),
-                                        number: pdiTools.onlyNumber(
-                                            document.getElementById('form-checkout__identificationNumber').value
-                                        ),
-                                    }
-                                };
+            //            const cardForm = mp.cardForm({
+            //                amount: price,
+            //                reason: plan.reason,
+            //                autoMount: true,
+            //                form: {
+            //                    id: "pdi-paywall-payment-form",
+            //                    cardholderName: {
+            //                        id: "cardholderName",
+            //                        placeholder: "Titular do cartão",
+            //                    },
+            //                    cardholderEmail: {
+            //                        id: "form-checkout__cardholderEmail",
+            //                        placeholder: "E-mail",
+            //                    },
+            //                    cardNumber: {
+            //                        id: "form-checkout__cardNumber",
+            //                        placeholder: "Número do cartão",
+            //                    },
+            //                    expirationDate: {
+            //                        id: "form-checkout__expirationDate",
+            //                        placeholder: "MM/AAAA",
+            //                    },
+            //                    securityCode: {
+            //                        id: "form-checkout__securityCode",
+            //                        placeholder: "CVV",
+            //                    },
+            //                    identificationType: {
+            //                        id: "identificationType",
+            //                        placeholder: "Tipo de documento",
+            //                    },
+            //                    identificationNumber: {
+            //                        id: "identificationNumber",
+            //                        placeholder: "Número do (CPF/CNPJ)",
+            //                    },
+            //                    issuer: {
+            //                        id: "form-checkout__issuer",
+            //                        placeholder: "Banco emissor",
+            //                    },
+            //                    installments: {
+            //                        id: "form-checkout__installments",
+            //                        placeholder: "Parcelas",
+            //                    },
+            //                },
+            //
+            //                callbacks: {
+            //                    onFormMounted: error => {
+            //                        if (error) return console.warn("Form Mounted handling error: ", error);
+            //                        console.log("Form mounted");
+            //                    },
+            //                    /*
+            //                                        onSubmit: event => {
+            //                                            let card_token = createCardToken();
+            //                                            if (!!card_token.id) {
+            //                                                async function setSubscriber() {
+            //                                                    const apiUrl = "<?php //echo PDI_PAYWALL_API_URI?>//subscribers";
+            //                                const form = {
+            //                                    payer_email: cardFields.email,
+            //                                    username: document.querySelector('input[name="username"]').value.trim(),
+            //                                    password: document.querySelector('input[name="password"]').value.trim(),
+            //                                    first_name: document.querySelector('input[name="first_name"]').value.trim(),
+            //                                    last_name: document.querySelector('input[name="last_name"]').value.trim(),
+            //                                    preapproval_plan_id: "<?php //echo $plan['extern_plan_id']; ?>//",
+            //                                    card_token_id: card_token.id,
+            //                                    identification: {
+            //                                        type: pdiTools.typeDocument(
+            //                                            document.getElementById('identificationNumber').value
+            //                                        ),
+            //                                        number: pdiTools.onlyNumber(
+            //                                            document.getElementById('identificationNumber').value
+            //                                        ),
+            //                                    }
+            //                                };
+            //
+            //                                const options = {
+            //                                    path: 'subscribers',
+            //                                    method: 'post',
+            //                                    data: JSON.stringify(form)
+            //                                }
+            //
+            //                                // let Form = new FormData();
+            //                                // Object.keys(options).forEach(key => {
+            //                                //     Form.append(key, options[key])
+            //                                // });
+            //                                try {
+            //                                    const response = await fetch(apiUrl, {
+            //                                        headers: {
+            //                                            "Accept": "application/json",
+            //                                            "Content-Type": "application/json",
+            //                                            "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
+            //                                            "x-customer-key": _pdi_paywall_payment_pdi_key,
+            //                                        },
+            //                                        method: "POST",
+            //                                        body: JSON.stringify(form),
+            //                                    })
+            //                                    const data = await response.json();
+            //                                    console.log({data});
+            //
+            //                                } catch (error) {
+            //                                    console.log(error);
+            //                                }
+            //                            }
+            //
+            //                            setSubscriber()
+            //                        }
+            //
+            //                    },
+            //*/
+            //                    onFetching: (resource) => {
+            //                        console.log("Fetching resource: ", resource);
+            //
+            //                        // Animate progress bar
+            //                        const progressBar = document.querySelector(".progress-bar");
+            //                        progressBar.removeAttribute("value");
+            //
+            //                        return () => {
+            //                            progressBar.setAttribute("value", "0");
+            //                        };
+            //                    }
+            //                },
+            //
+            //            });
 
-                                const options = {
-                                    path: 'subscribers',
-                                    method: 'post',
-                                    data: JSON.stringify(form)
-                                }
-
-                                // let Form = new FormData();
-                                // Object.keys(options).forEach(key => {
-                                //     Form.append(key, options[key])
-                                // });
-                                try {
-                                    const response = await fetch(apiUrl, {
-                                        headers: {
-                                            "Accept": "application/json",
-                                            "Content-Type": "application/json",
-                                            "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
-                                            "x-customer-key": _pdi_paywall_payment_pdi_key,
-                                        },
-                                        method: "POST",
-                                        body: JSON.stringify(form),
-                                    })
-                                    const data = await response.json();
-                                    console.log({data});
-
-                                } catch (error) {
-                                    console.log(error);
-                                }
-                            }
-
-                            setSubscriber()
-                        }
-
-                    },
-*/
-                    onFetching: (resource) => {
-                        console.log("Fetching resource: ", resource);
-
-                        // Animate progress bar
-                        const progressBar = document.querySelector(".progress-bar");
-                        progressBar.removeAttribute("value");
-
-                        return () => {
-                            progressBar.setAttribute("value", "0");
-                        };
-                    }
-                },
-
-            });
-
-            async function newWpUser(cardToken){
-                let identification =  JSON.stringify({
+            async function newWpUser(cardToken) {
+                let identification = JSON.stringify({
                     type: pdiTools.typeDocument(
-                        document.getElementById('form-checkout__identificationNumber').value
+                        document.getElementById('identificationNumber').value
                     ),
                     number: pdiTools.onlyNumber(
-                        document.getElementById('form-checkout__identificationNumber').value
+                        document.getElementById('identificationNumber').value
                     ),
                 })
                 let planData = JSON.stringify(plan)
@@ -620,16 +637,16 @@ if ($users_can_register) { ?>
             const createCardToken = async () => {
                 const expirationDate = document.getElementById('form-checkout__expirationDate');
                 const cardFields = {
-                    card_number: document.getElementById('form-checkout__cardNumber').value,
+                    card_number: pdiTools.onlyNumber(document.getElementById('form-checkout__cardNumber').value),
                     email: document.querySelector('input[name="user_email"]').value.trim(),
                     cardholder: {
-                        name: document.getElementById('form-checkout__cardholderName').value,
+                        name: document.getElementById('cardholderName').value,
                         identification: {
                             type: pdiTools.typeDocument(
-                                document.getElementById('form-checkout__identificationNumber').value
+                                document.getElementById('identificationNumber').value
                             ),
                             number: pdiTools.onlyNumber(
-                                document.getElementById('form-checkout__identificationNumber').value
+                                document.getElementById('identificationNumber').value
                             ),
                         }
                     },
@@ -638,7 +655,7 @@ if ($users_can_register) { ?>
                     expiration_year: expirationDate.value.split("/")[1].trim()
                 }
                 try {
-                    return fetch('<?php echo PDI_PAYWALL_API_URI . 'cards';?>', {
+                    const response = await fetch('<?php echo PDI_PAYWALL_API_URI . 'cards';?>', {
                         headers: {
                             "Accept": "application/json",
                             "Content-Type": "application/json",
@@ -647,13 +664,41 @@ if ($users_can_register) { ?>
                         },
                         method: "POST",
                         body: JSON.stringify(cardFields),
-                    }).then(function (response) {
-                        return response.json();
-                    });
+                    })
 
+                    const data = await response.json();
+                    if ((!!data.status && data.status !== 200) && !!data.message){
+                        pdiTools._pdi_alert_error(data)
+                    }
+                    return data;
                 } catch (e) {
                     console.error('error creating card token: ', e)
                 }
+            }
+            async function getToken() {
+                const expirationDate = document.getElementById('form-checkout__expirationDate');
+
+                return mp.createCardToken({
+                    cardholderName: document.getElementById('cardholderName').value,
+                    identificationNumber: pdiTools.onlyNumber(
+                        document.getElementById('identificationNumber').value
+                    ),
+                    identificationType: pdiTools.typeDocument(
+                        document.getElementById('identificationNumber').value
+                    ),
+                    securityCode: document.getElementById('form-checkout__securityCode').value,
+                    expiration_month: ()=>{
+                        let expiration_month = expirationDate.value.split("/")[0].trim()
+                        console.log(expiration_month);
+                        return expiration_month;
+                    },
+                    expiration_year: expirationDate.value.split("/")[1].trim()
+
+                }).then(result => {
+                    return result
+                }).catch((e) => {
+                    console.error(e)
+                })
             }
 
             async function setSubscriber(event) {
@@ -661,9 +706,10 @@ if ($users_can_register) { ?>
 
                 let cardToken = await createCardToken();
 
-                let responseUser = await newWpUser(cardToken);
 
-                if (cardToken.id) {
+                if (!!cardToken.id) {
+                    ///let responseUser = await newWpUser(cardToken);
+
                     const form = {
                         payer_email: document.querySelector('input[name="user_email"]').value.trim(),
                         username: document.querySelector('input[name="username"]').value.trim(),
@@ -674,10 +720,10 @@ if ($users_can_register) { ?>
                         card_token_id: cardToken.id,
                         identification: {
                             type: pdiTools.typeDocument(
-                                document.getElementById('form-checkout__identificationNumber').value
+                                document.getElementById('identificationNumber').value
                             ),
                             number: pdiTools.onlyNumber(
-                                document.getElementById('form-checkout__identificationNumber').value
+                                document.getElementById('identificationNumber').value
                             ),
                         }
                     };
@@ -693,16 +739,22 @@ if ($users_can_register) { ?>
                             body: JSON.stringify(form),
                         })
                         const data = await response.json();
-                        console.log({data});
+                        if ((!!data.status && data.status !== 200) && !!data.message){
+                            pdiTools._pdi_alert_error(data)
+                        }
 
                     } catch (error) {
                         console.log(error);
                     }
+                } else {
+                    pdiTools._pdi_alert_error({
+                        message: "Parece que não foi possivel identificar o se cartão",
+                        status:400
+                    })
                 }
             }
 
             document.addEventListener('submit', setSubscriber);
-
 
         </script>
     <?php } ?>
