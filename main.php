@@ -11,7 +11,12 @@
  * Text Domain:       pdi-paywall
  * Domain Path:       /i18n
  */
+if( ! function_exists( 'get_plugin_data' ) ) {
+    require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
+$plugin_data = get_plugin_data( __FILE__ );
 
+define('PDI_PAIWALL_VERSION', $plugin_data['Version']);
 define('PDI_PAYWALL_URL', plugin_dir_url(__FILE__));
 define('PDI_PAYWALL_PATH', plugin_dir_path(__FILE__));
 define('PDI_PAYWALL_MODULES_PATH', PDI_PAYWALL_PATH . 'modules' . DIRECTORY_SEPARATOR);

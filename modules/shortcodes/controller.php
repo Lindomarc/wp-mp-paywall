@@ -10,10 +10,10 @@ if (!function_exists('pdi_paywall_shortcodes_scripts')) {
             crossorigin="anonymous" />';
 
         echo '<link href="' . plugins_url('/css/pdi_paywall_card.css', __FILE__) . '" rel="stylesheet" />';
-        echo '<link href="' . plugins_url('/css/pdi_paywall_shortcodes.css', __FILE__) . '" rel="stylesheet" />';
-        echo '<script src="' . plugins_url('/js/pdi_paywall_card.js', __FILE__) . '"></script>';
+        echo '<link href="' . plugins_url('/css/pdi_paywall_shortcodes.css?v='.PDI_PAIWALL_VERSION, __FILE__) . '" rel="stylesheet" />';
+        echo '<script src="' . plugins_url('/js/pdi_paywall_card.js?v='.PDI_PAIWALL_VERSION, __FILE__) . '"></script>';
         echo '<script src="' . plugins_url('/js/pdi.jquery.mask.min.js', __FILE__) . '"></script>';
-        echo '<script src="' . plugins_url('/js/pdi_paywall_custom.js', __FILE__) . '"></script>';
+        echo '<script src="' . plugins_url('/js/pdi_paywall_custom.js?v='.PDI_PAIWALL_VERSION, __FILE__) . '"></script>';
         echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>';
         echo '            
                 <script>
