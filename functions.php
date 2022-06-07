@@ -126,7 +126,9 @@ if (!function_exists('pdi_paywall_get_plans_period')) {
     {
         $periods = [
             'days' => 'Dias',
-            'months' => 'Mensal'
+            'months' => 'Mensal',
+            'semesters' => 'Semestral',
+            'annual' => 'Anual'
         ];
 
         return $periods;

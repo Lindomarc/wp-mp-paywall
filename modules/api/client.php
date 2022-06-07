@@ -17,10 +17,21 @@ if (!function_exists('pdi_paywall_api_get')) {
 *        'method' => 'POST',
 *        'data' => $data
 *    ]
-
+*/
+/*
 function pdi_curl($options)
 {
+    $data = [];
+    if (isset($options['data'])){
+        $data = wp_json_encode($options['data']);
+    }
     $curl = curl_init(PDI_PAYWALL_API_URI . $options['path']);
+
+    if (get_option('_pdi_paywall_payment_sandbox')){
+        $token = get_option('_pdi_paywall_payment_access_token_test');
+    }else{
+        $token = get_option('_pdi_paywall_payment_access_token');
+    }
     $curlData = [
         CURLOPT_HEADER => 1,
         CURLOPT_RETURNTRANSFER => true,
@@ -32,12 +43,12 @@ function pdi_curl($options)
         CURLOPT_HTTPHEADER => [
             "Accept:application/json",
             "Content-Type:application/json",
-            "Authorization:Bearer " . $options['bearer_token'],
+            "Authorization:Bearer " . $token,
             "x-customer-key:".get_option('_pdi_paywall_payment_pdi_key'),
         ],
     ];
     if (isset($options['data'])){
-        $curlData[CURLOPT_POSTFIELDS] = json_encode($options['data'],true);
+        $curlData[CURLOPT_POSTFIELDS] = json_encode($data,true);
     }
 
     curl_setopt_array($curl,$curlData );
@@ -49,6 +60,7 @@ function pdi_curl($options)
     if ($err){
         var_dump($err);
     }
+    var_dump($response);exit;
     return $response;
 }
 */
@@ -70,7 +82,6 @@ function pdi_curl($options)
                 "x-customer-key" => get_option('_pdi_paywall_payment_pdi_key'),
             ),
         );
-var_dump($options);
         $response = wp_remote_request(PDI_PAYWALL_API_URI . $options['path'], $args);
         $http_code = wp_remote_retrieve_response_code($response);
 
@@ -78,8 +89,8 @@ var_dump($options);
             return wp_remote_retrieve_body($response);
         } else {
              var_dump($http_code);
-             var_dump(wp_remote_retrieve_body($response));
-            exit('erro: mcsmxcmso');
+             var_dump($response);
+            exit('erro: pdi_curl');
         }
     }
 

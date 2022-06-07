@@ -309,28 +309,7 @@ function pdi_paywall_settings_init()
                 'supplemental' => '',
                 'default' => 12
             ),
-            array(
-                'uid' => '_pdi_paywall_plan_frequency_'.$i,
-                'label' => 'Frequência',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
-                'type' => 'number',
-                'options' => false,
-                'placeholder' => null,
-                'helper' => null,
-                'supplemental' => '',
-                'default' => 1
-            ),
-            array(
-                'uid' => '_pdi_paywall_plan_billing_day_'.$i,
-                'label' => 'Dia da fatura',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
-                'type' => 'number',
-                'options' => false,
-                'placeholder' => null,
-                'helper' => null,
-                'supplemental' => '',
-                'default' => 10
-            ),
+
             array(
                 'uid' => '_pdi_paywall_plan_frequency_type_'.$i,
                 'label' => 'Tipo de Frequência',
@@ -773,6 +752,7 @@ function pdi_paywall_update_plans()
                 } else {
                     if (isset($plan['reason']) && !!$plan['reason']) {
                         $response = pdi_paywall_api_post('plans', $plan);
+                        var_dump($response);exit();
                         if (!empty($response)) {
                             $plan_res = json_decode($response,true);
                             if (isset($plan_res['data']['id'])){
