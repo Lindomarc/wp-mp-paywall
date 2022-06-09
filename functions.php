@@ -68,7 +68,8 @@ if (!function_exists('pdi_paywall_get_plans')) {
 function pdi_paywall_format_money($value)
 {
     if ($value) {
-        $value = number_format(str_replace(',', '.', str_replace('.', '', $value)), 2);
+        $value = str_replace('.', '',$value);
+        $value = number_format(str_replace(',', '.', $value), 2);
     }
     return $value;
 }
@@ -82,16 +83,12 @@ function pdi_paywall_array_plan($i, $plan)
         'description' => get_option('_pdi_paywall_plan_description_' . $i),
         'auto_recurring' => [
             'repetitions' => (int)get_option('_pdi_paywall_plan_repetitions_' . $i),
-            'frequency' => (int)get_option('_pdi_paywall_plan_frequency_' . $i),
             'frequency_type' => get_option('_pdi_paywall_plan_frequency_type_' . $i),
-            'billing_day_proportional' => (bool)get_option('_pdi_paywall_plan_billing_day_proportional_' . $i),
-            'billing_day' => (int)get_option('_pdi_paywall_plan_billing_day_' . $i),
             'transaction_amount' => pdi_paywall_format_money($price),
             'free_trial' => [
                 'frequency' => (int)get_option('_pdi_paywall_plan_free_trial_frequency_' . $i),
                 'frequency_type' => get_option('_pdi_paywall_plan_free_trial_frequency_type' . $i)
-            ],
-            'currency_id' => 'BRL'
+            ]
         ],
         'free_trial' => (bool)get_option('_pdi_paywall_plan_free_trial_' . $i),
         'active' => (bool)get_option('_pdi_paywall_plan_active_' . $i),

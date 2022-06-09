@@ -29,8 +29,8 @@ define('PDI_PAYWALL_VISIBILITY_EXCLUSIVE', 'exclusive');
 define('PDI_PAYWALL_COOKIE', '_ppcrl');
 
 //define('PDI_PAYWALL_API_URI', 'https://pag-api.herokuapp.com/');
-// define('PDI_PAYWALL_API_URI', 'https://planos.applicanda.com.br/api/');
-define('PDI_PAYWALL_API_URI', 'https://planos.test/api/');
+ define('PDI_PAYWALL_API_URI', 'https://planos.applicanda.com.br/api/');
+//define('PDI_PAYWALL_API_URI', 'https://planos.test/api/');
 define('PDI_PAYWALL_PLAN_LIMIT', 1);
 
 function pdi_paywall_activate()

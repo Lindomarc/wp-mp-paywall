@@ -85,6 +85,14 @@ function pdi_curl($options)
         $response = wp_remote_request(PDI_PAYWALL_API_URI . $options['path'], $args);
         $http_code = wp_remote_retrieve_response_code($response);
 
+
+
+        if(isset($response['body'])){
+            $body = json_decode($response['body'],true);
+            if (isset($body['message'])){
+                add_settings_error('pdi-settings-save-error','pdi-error', $body['message']);
+            }
+        }
         if ($http_code == '200' || $http_code == '201') {
             return wp_remote_retrieve_body($response);
         } else {

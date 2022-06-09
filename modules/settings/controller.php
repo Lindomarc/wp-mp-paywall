@@ -752,7 +752,6 @@ function pdi_paywall_update_plans()
                 } else {
                     if (isset($plan['reason']) && !!$plan['reason']) {
                         $response = pdi_paywall_api_post('plans', $plan);
-                        var_dump($response);exit();
                         if (!empty($response)) {
                             $plan_res = json_decode($response,true);
                             if (isset($plan_res['data']['id'])){
