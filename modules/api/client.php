@@ -108,6 +108,7 @@ function pdi_curl($options)
 if (!function_exists('pdi_paywall_api_post')) {
     function pdi_paywall_api_post($path, $data)
     {
+
         return pdi_curl([
             'path' => $path,
             'method' => 'POST',

@@ -1,4 +1,5 @@
 <p class="pdi-paywall-logout-link"><?php printf('Bem vindo %s, você está logado. <a href="%s">Clique aqui, para sair.</a>', $user->user_login, wp_logout_url(get_page_link(get_option('_pdi_paywall_page_login')))); ?></p>
+<div>TESTE</div>
 
 <?php if (isset($subscriber) && !empty($subscriber)) { ?>
     <h2 class="pdi-paywall-profile-subscription-title">Sua assinatura</h2>
@@ -70,7 +71,7 @@ if (!empty($_POST['pdi-paywall-profile-nonce'])) {
             if (is_wp_error($user_id)) {
                 throw new Exception($user_id->get_error_message());
             } else {
-                $user = get_userdata($user_id); //Refresh the user object				
+                $user = get_userdata($user_id); //Refresh the user object
                 echo '<div class="pdi_paywall_message success"><p>' . __('Profile Changes Saved.', 'pdi-paywall') . '</p></div>';
 
                 do_action('pdi_paywall_after_profile_changes_saved', $user_id, $args, $userdata);

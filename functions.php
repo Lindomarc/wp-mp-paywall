@@ -68,8 +68,8 @@ if (!function_exists('pdi_paywall_get_plans')) {
 function pdi_paywall_format_money($value)
 {
     if ($value) {
-        $value = str_replace('.', '',$value);
-        $value = number_format(str_replace(',', '.', $value), 2);
+        $value = str_replace(".","",$value);
+        $value = str_replace(",",".",$value);
     }
     return $value;
 }

@@ -88,6 +88,7 @@
         <?php } ?>
     </div>
 
+
 </div>
 
 <script src="https://sdk.mercadopago.com/js/v2"></script>
@@ -111,7 +112,6 @@ echo '<script>
     mp.bricks('dark').create('cardPayment', 'cardPaymentBrick_container' , {
         initialization: {
             amount: amount
-
         },
         customization: {
             visual: {
