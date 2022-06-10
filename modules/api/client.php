@@ -86,19 +86,22 @@ function pdi_curl($options)
         $http_code = wp_remote_retrieve_response_code($response);
 
 
+        if (isset($response->{'errors'}['http_request_failed'])){
+            foreach ($response->{'errors'}['http_request_failed'] as $key => $message){
 
-        if(isset($response['body'])){
+                add_settings_error('pdi-settings-save-error','pdi-error', $message. ' #456712840');
+            }
+        }
+        if(isset($response->{'body'})){
             $body = json_decode($response['body'],true);
             if (isset($body['message'])){
-                add_settings_error('pdi-settings-save-error','pdi-error', $body['message']);
+                add_settings_error('pdi-settings-save-error','pdi-error', $body['message']. ' #456712842');
             }
         }
         if ($http_code == '200' || $http_code == '201') {
             return wp_remote_retrieve_body($response);
         } else {
-             var_dump($http_code);
-             var_dump($response);
-            exit('erro: pdi_curl');
+            add_settings_error('pdi-settings-save-error','pdi-error', 'Erro curl: #456712841');
         }
     }
 

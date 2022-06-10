@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name:       PDI Paywall (MP)
  * Plugin URI:        https://publicadordigital.com.br/
@@ -11,6 +10,22 @@
  * Text Domain:       pdi-paywall
  * Domain Path:       /i18n
  */
+
+//function pdi_paywall_number_format_us($value, $tipo = 'us')
+//{
+//    	if ($value) {
+//            if ($tipo == 'us') {
+//                $value = str_replace('.', '', $value);
+//                $value = str_replace(',', '.', $value);
+//            } else {
+//                $value = number_format($value, 2, ',', '.');
+//            }
+//        }
+//		return $value;
+//}
+//
+//echo pdi_paywall_number_format_us('2,29');
+//exit();
 if( ! function_exists( 'get_plugin_data' ) ) {
     require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 }

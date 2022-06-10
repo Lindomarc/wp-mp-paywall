@@ -95,7 +95,7 @@
 
 <?php
 echo '<script>
-    const PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key_test') . '";
+    const PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key') . '";
 </script>';
 ?>
 <script src="https://sdk.mercadopago.com/js/v2"></script>
@@ -142,7 +142,6 @@ echo '<script>
                 cardData.preapproval_plan_id = plan['extern_plan_id'];
                 cardData.first_name = document.getElementById('first_name').value;
                 cardData.last_name = document.getElementById('last_name').value;
-                console.log(cardData)
                 return new Promise((resolve, reject) => {
                     fetch("<?php echo PDI_PAYWALL_API_URI?>subscribers", {
                         method: "POST",
@@ -155,17 +154,20 @@ echo '<script>
                         body: JSON.stringify(cardData)
                     })
                         .then((response) => {
-                            console.log(response)
                             resolve();
+                            console.log(response)
                         })
                         .catch((error) => {
-                            console.log(error)
                             // get payment result error
                             reject();
+
+                            console.log(error)
                         })
                 });
             },
             onError: (error) => {
+                console.log(error)
+
                 // handle error
             }
         }

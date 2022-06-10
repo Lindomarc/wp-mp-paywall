@@ -2,7 +2,7 @@
     <h2>PDI Paywall - Assinantes</h2>
 
     <p></p>
-    <table class="widefat fixed" cellspacing="0">
+    <table class="widefat fixed">
         <thead>
         <tr>
             <!-- <th id="cb" class="manage-column column-cb check-column" scope="col"></th> this column contains checkboxes -->
