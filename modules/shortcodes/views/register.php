@@ -1,175 +1,167 @@
-
-<div id="cardPaymentBrick_container">
-
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <label for="first_name">Nome <i class="required">*</i>
-                        <input
-                                class="form-control"
-                                type="text"
-                                size="20"
-                                placeholder="Nome"
-                                id="first_name"
-                                name="first_name"
-                                required
-                                value="<?php echo $first; ?>"/>
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-
-                <div class="input-group">
-                    <label for="last_name">Sobrenome <i class="required">*</i>
-                        <input
-                                class="form-control"
-                                type="text"
-                                size="20"
-                                id="last_name"
-                                name="last_name"
-                                placeholder="Sobrenome"
-                                value="<?php echo $last; ?>"
-                                required/>
-                    </label>
-                </div>
-            </div>
+<?php if (!is_user_logged_in()): ?>
+<?php else: ?>
+    <?php $price = $plan['auto_recurring']['transaction_amount']; ?>
+    <div class="row pdi-paywall-plan ">
+        <div class="pdi-paywall-header  panel panel-header panel-info ">
+            <h3 class="panel-title"><?php print $plan['reason']; ?></h3>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <label for="username">Nome de usuário <i class="required">*</i>
-                        <input
-                                class="form-control"
-                                type="text"
-                                size="20"
-                                name="username"
-                                placeholder="Nome de usuário"
-                                id="username" required
-                                value="<?php echo $username; ?>" <?php echo !empty($username) && !empty($userdata) ? 'disabled="disabled"' : ''; ?>
-                        />
-                    </label>
-                </div>
-            </div>
-        </div>
-        <?php if (!is_user_logged_in()) { ?>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <label for="password">Senha <i class="required">*</i>
-                            <input
-                                    class="form-control"
-                                    type="password"
-                                    size="20"
-                                    id="password"
-                                    required
-                                    placeholder="Senha"
-                                    name="password"/>
-                        </label>
+        <div class="col-md-6">
+            <div class="panel-body">
+                <div class="pdi-paywall-price">
+                    <?php list($real, $cent) = explode(',', number_format($price, 2, ',', '')); ?>
+                    <p>
+                        <span class="signal">R$</span><span class="real"> <?php echo $real ?></span>
+                        <span class="cent">,<?php echo $cent; ?></span>
+                    </p>
+                    <div class="pdi-paywall-allowed-content">
+                        <p><?php print nl2br($plan['description']); ?></p>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="input-group">
+                    <div class="row">
+                        <div class="col">
 
-                        <label for="confirm_password">Confirmação de senha <i class="required">*</i>
+                            <div class="form-group">
                             <input
+                                    type="text"
                                     class="form-control"
-                                    type="password"
-                                    size="20"
-                                    id="confirm_password"
-                                    placeholder="Confirmação de senha"
-                                    required
-                                    name="confirm_password"/>
-                        </label>
+                                    id="first_name"
+                                    placeholder="Nome"
+                                    value="<?php echo $first ?? '' ?>"
+                                    required="required"
+                            />
+                        </div>
+                        </div>
+                        <div class="col">
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    name="last_name"
+                                    value="<?php echo $last ?? '' ?>"
+                                    placeholder="Sobrenome"
+                                    required="required"
+                            />
+                        </div>
+                        <div class="col">
+
+                            <div class="form-group">
+                            <input
+                                    type="email"
+                                    class="form-control"
+                                    value="<?php echo $email ?>"
+                                    placeholder="Sobrenome"
+                                    disabled
+                            />
+
+                            <input
+                                    type="hidden"
+                                    id="pdi_paywall_register_nonce"
+                                    value="<?php echo wp_create_nonce('pdi-paywall-register-nonce').'_'.$userID; ?>"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
-        <?php } ?>
+        </div>
+        <div class="col-md-6">
+            <div id="cardPaymentBrick_container">
+            </div>
+        </div>
     </div>
 
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
 
-</div>
+    <script>
+        const mp = new MercadoPago('<?php echo $public_token?>', {
+            locale: 'pt-BR'
+        });
 
-<script src="https://sdk.mercadopago.com/js/v2"></script>
+        const plan = <?php echo json_encode($plan, true); ?>;
 
-<?php
-echo '<script>
-    const PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key') . '";
-</script>';
-?>
-<script src="https://sdk.mercadopago.com/js/v2"></script>
-<?php $price = $plan['auto_recurring']['transaction_amount']; ?>
+        const amount = plan['auto_recurring']['transaction_amount'];
 
-<script>
-    const mp = new MercadoPago(PUBLIC_KEY, {
-        locale: 'pt-BR'
-    })
-    const plan = <?php echo json_encode($plan, true); ?>;
+        const userEmail = "<?php echo $email?>";
 
-    const amount = <?php echo $price; ?>;
-
-    mp.bricks('dark').create('cardPayment', 'cardPaymentBrick_container' , {
-        initialization: {
-            amount: amount
-        },
-        customization: {
-            visual: {
-                style: {
-                    theme: 'default' // 'default' |'dark' | 'bootstrap' | 'flat'
-                },
-                texts: {
-                    formTitle: 'Informações de pagamento',
-                    cardholderName: {
-                        placeholder: ''
+        mp.bricks('dark').create('cardPayment', 'cardPaymentBrick_container', {
+            initialization: {
+                amount: amount,
+                payer: {
+                    email: userEmail,
+                }
+            },
+            customization: {
+                visual: {
+                    style: {
+                        theme: 'bootstrap' // 'default' |'dark' | 'bootstrap' | 'flat'
                     },
-                    formSubmit: 'Assinar'
-                }
-            },
-            paymentMethods: {
-                maxInstallments: 1,
-                types: {
-                    excluded: 'debit_card'
-                }
-            }
-        },
-        callbacks: {
-            onReady: (cardData) => {
-                // handle form ready
-
-            },
-            onSubmit: (cardData) => {
-                cardData.preapproval_plan_id = plan['extern_plan_id'];
-                cardData.first_name = document.getElementById('first_name').value;
-                cardData.last_name = document.getElementById('last_name').value;
-                return new Promise((resolve, reject) => {
-                    fetch("<?php echo PDI_PAYWALL_API_URI?>subscribers", {
-                        method: "POST",
-                        headers: {
-                            "Accept": "application/json",
-                            "Content-Type": "application/json",
-                            "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
-                            "x-customer-key": _pdi_paywall_payment_pdi_key,
+                    texts: {
+                        formTitle: 'Informações de pagamento',
+                        cardholderName: {
+                            placeholder: 'Nome do titula'
                         },
-                        body: JSON.stringify(cardData)
-                    })
-                        .then((response) => {
-                            resolve();
-                            console.log(response)
-                        })
-                        .catch((error) => {
-                            // get payment result error
-                            reject();
-
-                            console.log(error)
-                        })
-                });
+                        formSubmit: 'Assinar'
+                    }
+                },
+                paymentMethods: {
+                    maxInstallments: 1,
+                    types: {
+                        excluded: 'debit_card'
+                    }
+                }
             },
-            onError: (error) => {
-                console.log(error)
+            callbacks: {
+                onReady: (cardData) => {
+                    // handle form ready
 
-                // handle error
+                },
+                onSubmit: (cardData) => {
+                    cardData.preapproval_plan_id = plan['extern_plan_id'];
+                    cardData.plan_id = plan['id'];
+                    cardData.first_name = document.getElementById('first_name').value;
+                    cardData.last_name = document.getElementById('last_name').value;
+                    cardData.external_reference = document.getElementById('pdi_paywall_register_nonce').value;
+                    return new Promise((resolve, reject) => {
+                        fetch("<?php echo PDI_PAYWALL_API_URI?>subscribers", {
+                            method: "POST",
+                            headers: {
+                                "Accept": "application/json",
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
+                                "x-customer-key": _pdi_paywall_payment_pdi_key,
+                            },
+                            body: JSON.stringify(cardData)
+                        })
+                            .then((response) => {
+                                resolve()
+                                const result = response.json()
+                                result.then((data) => {
+                                    console.log(data)
+                                    if ((!!data.status && data.status !== 200) && !!data.message) {
+                                        pdiTools._pdi_alert_error(data)
+                                    }
+                                })
+                            })
+                            .catch((error) => {
+                                // get payment result error
+                                reject();
+
+                                console.log(error)
+                            })
+                    });
+                },
+                onError: (error) => {
+                    console.log(error)
+                    // handle error
+                }
             }
+        });
+    </script>
+    <style>
+        .pdi-paywall-plan {
+            width: 100% !important;
         }
-    });
-</script>
+
+        .pdi-paywall-plan .pdi-paywall-price p {
+            font-size: 5rem;
+        }
+    </style>
+<?php endif; ?>

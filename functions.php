@@ -83,7 +83,7 @@ function pdi_paywall_array_plan($i, $reason)
     return [
         'customer_key' => get_option('_pdi_paywall_payment_pdi_key'),
         'reason' => $reason,
-        //'description' => get_option('_pdi_paywall_plan_description_' . $i),
+        'description' => get_option('_pdi_paywall_plan_description_' . $i),
         'auto_recurring' => [
             'repetitions' => (int)get_option('_pdi_paywall_plan_repetitions_' . $i),
             'frequency_type' => get_option('_pdi_paywall_plan_frequency_type_' . $i),
@@ -310,9 +310,9 @@ add_action('rest_api_init', function () {
 
 
 
-add_action( 'admin_menu', 'register_newpage' );
-
-function register_newpage(){
-    add_menu_page('custom_page', 'custom', 'administrator','custom', 'custompage');
-    remove_menu_page('custom');
-}
+function get_before_login_url(){
+    if( !is_user_logged_in() && $_SERVER['REQUEST_URI'] !='/login/' ):
+        $_REQUEST['referer_url'] = get_the_permalink();
+    endif;
+ }
+add_action( 'wp', 'get_before_login_url' );

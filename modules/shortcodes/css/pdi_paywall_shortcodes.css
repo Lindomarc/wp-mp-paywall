@@ -227,3 +227,6 @@ ul.pdi-list li{
 .panel-title{
     font-size: 1.5em!important;
 }
+input[type="text"], input[type="email"], input[type="password"], input[type="url"], textarea{
+    margin:0!important;
+}

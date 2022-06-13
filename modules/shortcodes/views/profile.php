@@ -1,5 +1,4 @@
 <p class="pdi-paywall-logout-link"><?php printf('Bem vindo %s, você está logado. <a href="%s">Clique aqui, para sair.</a>', $user->user_login, wp_logout_url(get_page_link(get_option('_pdi_paywall_page_login')))); ?></p>
-<div>TESTE</div>
 
 <?php if (isset($subscriber) && !empty($subscriber)) { ?>
     <h2 class="pdi-paywall-profile-subscription-title">Sua assinatura</h2>
@@ -109,6 +108,18 @@ if (!empty($_POST['pdi-paywall-profile-nonce'])) {
     <p>
         <label class="pdi-paywall-field-label" for="pdi-paywall-display-name">Nome de exibição</label>
         <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="displayname" value="<?php echo $user->display_name; ?>" />
+    </p>
+
+    <p>
+    <p>
+        <label class="pdi-paywall-field-label" for="pdi-paywall-display-name">Nome</label>
+        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="firs_name" value="<?php echo $user->firs_name; ?>" />
+    </p>
+
+    <p>
+    <p>
+        <label class="pdi-paywall-field-label" for="pdi-paywall-display-name">Sobrenome</label>
+        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="last_name" value="<?php echo $user->last_name; ?>" />
     </p>
 
     <p>
