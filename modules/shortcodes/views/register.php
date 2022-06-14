@@ -94,7 +94,19 @@
                                 resolve()
                                 const result = response.json()
                                 result.then((data) => {
-                                    console.log(data)
+                                    if (!!data.card_token_id){
+                                        swal({
+                                            title:"Bem Vindo!",
+                                            text: "Agora você é nosso assinante e terá acesso a conteúdo exclusivo"
+                                            icon: "success"
+                                        })
+                                            .then((response)=>{
+                                                if(response){
+                                                    Response.redirect(plan['back_url']);
+                                                }
+                                            })
+                                    }
+
                                     if ((!!data.status && data.status !== 200) && !!data.message) {
                                         pdiTools._pdi_alert_error(data)
                                     }
@@ -103,11 +115,18 @@
                             .catch((error) => {
                                 // get payment result error
                                 reject();
-
                                 console.log(error)
+
+                                error.then((data) => {
+                                    console.log(data)
+
+                                    if ((!!data.status && data.status !== 200) && !!data.message) {
+                                        pdiTools._pdi_alert_error(data)
+                                    }
+                                })
                             })
-                            .finally((resolve)=>{
-                                console.log(resolve)
+                            .finally((response)=>{
+                                console.log(response)
                             })
                     });
                 },
