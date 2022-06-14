@@ -17,49 +17,6 @@
                         <p><?php print nl2br($plan['description']); ?></p>
                     </div>
                 </div>
-                    <div class="row">
-                        <div class="col">
-
-                            <div class="form-group">
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="first_name"
-                                    placeholder="Nome"
-                                    value="<?php echo $first ?? '' ?>"
-                                    required="required"
-                            />
-                        </div>
-                        </div>
-                        <div class="col">
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    name="last_name"
-                                    value="<?php echo $last ?? '' ?>"
-                                    placeholder="Sobrenome"
-                                    required="required"
-                            />
-                        </div>
-                        <div class="col">
-
-                            <div class="form-group">
-                            <input
-                                    type="email"
-                                    class="form-control"
-                                    value="<?php echo $email ?>"
-                                    placeholder="Sobrenome"
-                                    disabled
-                            />
-
-                            <input
-                                    type="hidden"
-                                    id="pdi_paywall_register_nonce"
-                                    value="<?php echo wp_create_nonce('pdi-paywall-register-nonce').'_'.$userID; ?>"
-                            />
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col-md-6">
@@ -80,6 +37,9 @@
         const amount = plan['auto_recurring']['transaction_amount'];
 
         const userEmail = "<?php echo $email?>";
+        const first_name = "<?php echo $first?>";
+        const last_name = "<?php echo $last?>";
+        const external_reference = "<?php echo wp_create_nonce('pdi-paywall-register-nonce') . '_' . $userID; ?>";
 
         mp.bricks('dark').create('cardPayment', 'cardPaymentBrick_container', {
             initialization: {
@@ -116,9 +76,9 @@
                 onSubmit: (cardData) => {
                     cardData.preapproval_plan_id = plan['extern_plan_id'];
                     cardData.plan_id = plan['id'];
-                    cardData.first_name = document.getElementById('first_name').value;
-                    cardData.last_name = document.getElementById('last_name').value;
-                    cardData.external_reference = document.getElementById('pdi_paywall_register_nonce').value;
+                    cardData.first_name = first_name;
+                    cardData.last_name = last_name;
+                    cardData.external_reference = external_reference;
                     return new Promise((resolve, reject) => {
                         fetch("<?php echo PDI_PAYWALL_API_URI?>subscribers", {
                             method: "POST",
@@ -145,6 +105,9 @@
                                 reject();
 
                                 console.log(error)
+                            })
+                            .finally((resolve)=>{
+                                console.log(resolve)
                             })
                     });
                 },

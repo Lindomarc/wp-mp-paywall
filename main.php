@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       PDI Paywall (MP)
+ * Plugin Name:       PDI Paywall (MP+login-ajax)
  * Plugin URI:        https://publicadordigital.com.br/
  * Description:       PDI Paywall
  * Version:           0.2.4
@@ -51,6 +51,7 @@ define('PDI_PAYWALL_PLAN_LIMIT', 1);
 function pdi_paywall_activate()
 {
     require_once(PDI_PAYWALL_PATH . 'functions.php');
+    require_once(PDI_PAYWALL_PATH . 'login-registration-modal-pro.php');
 }
 
 add_action('plugins_loaded', 'pdi_paywall_activate');
