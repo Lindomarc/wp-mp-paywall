@@ -97,12 +97,14 @@
                                     if (!!data.card_token_id){
                                         swal({
                                             title:"Bem Vindo!",
-                                            text: "Agora você é nosso assinante e terá acesso a conteúdo exclusivo"
+                                            text: "Agora você é nosso assinante e terá acesso a conteúdo exclusivo",
                                             icon: "success"
                                         })
                                             .then((response)=>{
+                                                console.log(response)
                                                 if(response){
-                                                    Response.redirect(plan['back_url']);
+                                                    //todo melhorar essa url
+                                                    window.location.replace(plan.back_url);
                                                 }
                                             })
                                     }
