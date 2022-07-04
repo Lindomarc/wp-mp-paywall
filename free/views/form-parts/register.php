@@ -17,7 +17,7 @@
             </div>
 		<?php else: ?>
 
-			<form class="lrm-form js-lrm-form" action="#0" data-action="registration" data-lpignore="true">
+			<form class="lrm-form js-lrm-form" action="#0" data-action="registration" data-lpignore="true" autocomplete="off">
 
                 <div class="lrm-fieldset-wrap lrm-form-message-wrap">
                     <p class="lrm-form-message lrm-form-message--init"></p>

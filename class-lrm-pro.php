@@ -15,10 +15,10 @@ class LRM_Pro {
 
     public function init() {
 
-        if ( !defined("LRM_VERSION") ) {
-            add_action( 'admin_notices', array( $this, '_admin_warning__install_free' ) );
-            return;
-        }
+//        if ( !defined("LRM_VERSION") ) {
+//            add_action( 'admin_notices', array( $this, '_admin_warning__install_free' ) );
+//            return;
+//        }
 
         if ( class_exists('LRM_Updater_Abstract') ){
             add_action( 'init', array( 'LRM_Pro_Updater', 'init' ) );
@@ -50,7 +50,7 @@ class LRM_Pro {
 
         add_filter('plugin_action_links_' . LRM_PRO_BASENAME, array($this, 'add_settings_link'));
     }
-    
+
     public function __construct()
     {
         $this->init();
@@ -99,7 +99,7 @@ class LRM_Pro {
     }
 
 
-    
+
     public function show_ReallySimpleCaptcha() {
         $captcha_instance = new ReallySimpleCaptcha();
         $word = $captcha_instance->generate_random_word();

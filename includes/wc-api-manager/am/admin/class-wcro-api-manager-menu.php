@@ -187,7 +187,7 @@ class LRM_API_Manager_MENU {
 		$current_api_key = LRM_API_Manager()->ame_options[LRM_API_Manager()->ame_api_key];
 
 		// Should match the settings_fields() value
-		if ( $_REQUEST['option_page'] != LRM_API_Manager()->ame_deactivate_checkbox ) {
+		if ( isset($_REQUEST['option_page']) && $_REQUEST['option_page'] != LRM_API_Manager()->ame_deactivate_checkbox ) {
 
 			if ( $activation_status == 'Deactivated' || $activation_status == '' || $api_key == '' || $api_email == '' || $checkbox_status == 'on' || $current_api_key != $api_key  ) {
 
@@ -224,7 +224,7 @@ class LRM_API_Manager_MENU {
                     }
                 }
 
-				if ( $activate_results['activated'] === true ) {
+				if ( isset($activate_results['activated']) && $activate_results['activated'] === true ) {
 				    lrm_log( 'Plugin license activated. ' );
 					add_settings_error( 'activate_text', 'activate_msg', __( 'Plugin license activated. ', LRM_API_Manager()->text_domain ) . "{$activate_results['message']}.", 'updated' );
 					update_option( LRM_API_Manager()->ame_activated_key, 'Activated' );
@@ -234,7 +234,7 @@ class LRM_API_Manager_MENU {
                     set_site_transient( 'update_plugins', null );
 				}
 
-				if ( $activate_results['activated'] === false || !$activate_results ) {
+				if ( isset($activate_results['activated']) && $activate_results['activated'] === false || !$activate_results ) {
 					lrm_log( 'Connection failed to the License Key API server. Try again later.', $activate_results );
 
 					$debug_info[] = '<br><strong>Debug info:</strong>';
@@ -262,8 +262,8 @@ class LRM_API_Manager_MENU {
 					switch ( $activate_results['code'] ) {
 						case '100':
 						    $regenerate_instance_link = esc_attr( add_query_arg( 'wc_am_action', 'lrm_api_manager_regenerate_instance_id', $this->admin_page_url() ) );
-
-							add_settings_error( 'api_email_text', 'api_email_error', "{$activate_results['error']}. {$activate_results['additional info']}. If you have copied the website - you could <a href='{$regenerate_instance_link}'>regenerate instance ID</a>.", 'error' );
+                            $additionalInfo =  $activate_results['additional info']??'';
+							add_settings_error( 'api_email_text', 'api_email_error', "{$activate_results['error']}. {$additionalInfo}. If you have copied the website - you could <a href='{$regenerate_instance_link}'>regenerate instance ID</a>.", 'error' );
 							//$options[LRM_API_Manager()->ame_activation_email] = '';
 							$options[LRM_API_Manager()->ame_api_key] = '';
 							update_option( LRM_API_Manager()->ame_options[LRM_API_Manager()->ame_activated_key], 'Deactivated' );

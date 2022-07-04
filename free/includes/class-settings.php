@@ -83,10 +83,6 @@ class LRM_Settings {
 
         add_action( 'underdev/settings/enqueue_scripts', array( $this, 'settings_enqueue_scripts' ) );
 
-        if ( isset($_GET['action']) && $_GET['action'] === 'dismiss_rem_beg_message' ) {
-            $this->dismiss_beg_message();
-        }
-
         if ( isset($_GET['action']) && $_GET['action'] === 'lrm_reset_translations' && current_user_can('manage_options') ) {
             $this->_reset_translations();
         }
@@ -151,33 +147,6 @@ class LRM_Settings {
         if ( $screen->id != 'settings_page_' . $this->page_id ) {
             return;
         }
-
-        // Update notice for 1.18 > 1.20
-
-        if ( ! get_option( 'lrm_beg_message' ) ) {
-            echo '<div class="notice notice-info notification-notice"><p>';
-
-            printf( __( 'Do you like "Login and Register Modal" plugin? Please consider giving it a %1$sreview%2$s', 'ajax-login-and-registration-modal-popup' ), '<a href="https://wordpress.org/support/plugin/ajax-login-and-registration-modal-popup/reviews/#new-post" class="button button-secondary" target="_blank">⭐⭐⭐⭐⭐ ', '</a>' );
-
-            echo '<a href="' . add_query_arg( array('action'=>'dismiss_rem_beg_message', '_wpnonce' => wp_create_nonce('lrm-beg-dismiss')) ) . '" class="dismiss-beg-message button" type="submit" style="float: right;">';
-            _e( 'I already reviewed it', 'ajax-login-and-registration-modal-popup' );
-            echo '</a>';
-
-            echo '</p></div>';
-
-        }
-    }
-
-    /**
-     * Dismiss beg message
-     * @return object       json encoded response
-     */
-    public function dismiss_beg_message() {
-
-        check_admin_referer( 'lrm-beg-dismiss' );
-
-        update_option( 'lrm_beg_message', 'dismissed' );
-
     }
 
 

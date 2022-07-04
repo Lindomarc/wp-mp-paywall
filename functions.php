@@ -19,7 +19,7 @@ if (!function_exists('pdi_paywall_settings_link')) {
     function pdi_paywall_settings_link($links, $file)
     {
         if ($file == 'pdi-paywall/main.php') {
-            $links['settings'] = sprintf('<a href="%s">%s</a>', admin_url('options-general.php?page=pdi-paywall'), __('Settings'));
+            $links['settings'] = sprintf('<a href="3%s">%s</a>', admin_url('options-general.php?page=pdi-paywall'), __('Settings'));
         }
 
         return $links;
@@ -98,7 +98,6 @@ function pdi_paywall_array_plan($i, $reason)
         'plan_id' => get_option('_pdi_paywall_plan_id_' . $i),
         'extern_plan_id' => get_option('_pdi_paywall_plan_extern_plan_id_' . $i),
     ];
-
 }
 
 if (!function_exists('pdi_paywall_get_plans_by_id')) {
@@ -246,65 +245,52 @@ function pdi_post_curl_new_subscriber($data)
     return $response;
 }
 
-function pdi_fetch_curl_new_wp_user()
+function pdiStatusSubscription()
 {
-    var_dump($_POST);exit;
-    $userdata = [];
-     if ($_POST) {
-        $data = $_POST;
-         $plan_data =  str_replace('\"','"',$data['planData']);
-         $plan_data =  json_decode(str_replace('\\"','\\\"',$plan_data),true);
+    $userID = $_REQUEST['user_id'];
+    $subscriberId = $_REQUEST['subscriber_id'];
+    $planId = $_REQUEST['plan_id'];
+    $document = $_REQUEST['document'];
+    $payerEmail = $_REQUEST['payer_email'];
+    $status = $_REQUEST['status'];
 
-        $userdata = [
-            'user_pass' => trim($data['password']),
-            'user_login' => trim($data['username']),
-            'user_email' => trim($data['user_email']),
-            'display_name' => trim($data['first_name']) . ' ' . trim($data['last_name']),
-            'nickname' => trim($data['username']),
-            'first_name' => trim($data['first_name']),
-            'last_name' => trim($data['last_name']),
-            'user_registered' => date('Y-m-d H:i:s'),
-            'show_admin_bar_front' => 'false',
-            'role' => $data['amount'] > 0 ? 'subscriber' : 'reader',
-            'plan_data' => $plan_data
-        ];
+    $response = [];
+    switch ($status){
+        case 'authorized':
+            add_user_meta($userID, '_pdi_paywall_subscriber_id', $subscriberId);
+            add_user_meta($userID, '_pdi_paywall_plan_id', $planId);
+            add_user_meta($userID, '_pdi_paywall_document', $document);
+            $response = pdi_paywall_subscription_success($payerEmail);
+            break;
+//        case 'paused':
+//            update_user_meta($userID, '_pdi_paywall_subscriber_id', $subscriberId);
+//            update_user_meta($userID, '_pdi_paywall_plan_id', $planId);
+//            update_user_meta($userID, '_pdi_paywall_document', $document);
+//            //$response = pdi_paywall_subscription_success($payerEmail);
+//            break;
+        case 'cancelled':
+            delete_user_meta($userID,'_pdi_paywall_subscriber_id');
+            delete_user_meta($userID,'_pdi_paywall_plan_id');
+            delete_user_meta($userID,'_pdi_paywall_document');
+            $response = pdi_paywall_subscription_cancel($payerEmail);
+            break;
     }
-    $result = wp_insert_user($userdata);
-
-     if (is_numeric($result)) {
-        add_user_meta($result, '_pdi_paywall_plan_id', $plan_data['plan_id']);
-        add_user_meta($result, '_pdi_paywall_document', trim($data['document']));
-        $_REQUEST['redirec_to']=$plan_data['back_url'];
-        $data['user_id'] = $result;
-        return pdi_post_curl_new_subscriber($data);
-    } else {
-        $return = [
-            'status' => 400,
-            'data' => $result
-        ];
-    }
-    return $return;
-
+    header('Content-Type: application/json');
+    return json_encode($response,true);
 }
 
-function pdi_fetch_curl_callback_null()
+function pdi_callback_null()
 {
+
     return [];
 }
 
 add_action('rest_api_init', function () {
-    register_rest_route('pdi-paywall/v1', '/curl', array(
-        'headers' => ['Content-Type' => 'application/json'],
-        'methods' => 'post,get',
-        'callback' => 'pdi_fetch_curl_post',
-        'permission_callback' => 'pdi_fetch_curl_callback_null'
-    ));
-    register_rest_route('pdi-paywall/v1', '/new_wp_user', array(
-        'headers' => ['Content-Type' => 'application/json'],
+    register_rest_route('pdi-paywall/v1', '/subscription/status', array(
+        'methods' => 'post,get,put',
+        'callback' => 'pdiStatusSubscription',
         'body' => $_POST,
-        'methods' => 'post,get',
-        'callback' => 'pdi_fetch_curl_new_wp_user',
-        'permission_callback' => 'pdi_fetch_curl_callback_null'
+        'permission_callback' => 'pdi_callback_null'
     ));
 });
 

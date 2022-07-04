@@ -14,16 +14,21 @@ function send_smtp_email($phpmailer)
     $phpmailer->FromName   = get_option('_pdi_paywall_smtp_fromname');
 }
 
+function wpdocs_set_html_mail_content_type() {
+    return 'text/html';
+}
+add_filter( 'wp_mail_content_type', 'wpdocs_set_html_mail_content_type' );
+
 if (!function_exists('pdi_paywall_subscription_success')) {
     function pdi_paywall_subscription_success($user_email)    {
-        wp_mail($user_email, "Assinatura confirmada", get_option('_pdi_paywall_smtp_message_success'));
+        return wp_mail($user_email, "Assinatura Confirmada", get_option('_pdi_paywall_smtp_message_success'));
     }
 }
 
 
 if (!function_exists('pdi_paywall_subscription_cancel')) {
-    function pdi_paywall_subscription_cancel($user)
+    function pdi_paywall_subscription_cancel($user_email)
     {
-        wp_mail($user->user_email, "Assinatura cancelada", get_option('_pdi_paywall_smtp_message_cancel'));
+        return wp_mail($user_email, "Assinatura Cancelada", get_option('_pdi_paywall_smtp_message_cancel'));
     }
 }

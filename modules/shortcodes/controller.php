@@ -166,9 +166,9 @@ function pdi_paywall_profile_shortcode($atts, $content = null)
     }
 
     $user = wp_get_current_user();
-
     $subscriber_id = get_user_meta($user->ID, '_pdi_paywall_subscriber_id', true);
     $document = get_user_meta($user->ID, '_pdi_paywall_document', true);
+
 
     if (!empty($subscriber_id)) {
         $response = pdi_paywall_api_get('subscribers/' . $subscriber_id);

@@ -72,7 +72,6 @@ if (!empty($_POST['pdi-paywall-profile-nonce'])) {
             } else {
                 $user = get_userdata($user_id); //Refresh the user object
                 echo '<div class="pdi_paywall_message success"><p>' . __('Profile Changes Saved.', 'pdi-paywall') . '</p></div>';
-
                 do_action('pdi_paywall_after_profile_changes_saved', $user_id, $args, $userdata);
             }
         } catch (Exception $e) {
@@ -82,10 +81,10 @@ if (!empty($_POST['pdi-paywall-profile-nonce'])) {
 } else if (!empty($_POST['pdi-paywall-delete-account-nonce'])) {
     if (wp_verify_nonce($_POST['pdi-paywall-delete-account-nonce'], 'pdi-paywall-delete-account')) {
         if (!empty($subscriber_id)) {
-            $response = pdi_paywall_api_delete('subscribers/' . $subscriber_id);
+            $response = pdi_paywall_api_put('subscribers/cancel', ['subscriber_id' => $subscriber_id]);
         }
 
-        pdi_paywall_subscription_cancel($user);
+        pdi_paywall_subscription_cancel($user->user_email);
 
         pdi_paywall_delete_user($user->ID);
 
@@ -96,6 +95,7 @@ if (!empty($_POST['pdi-paywall-profile-nonce'])) {
         </script>
 <?php
     }
+
 }
 ?>
 

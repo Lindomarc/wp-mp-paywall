@@ -119,6 +119,17 @@ if (!function_exists('pdi_paywall_api_post')) {
         ]);
     }
 }
+if (!function_exists('pdi_paywall_api_put')) {
+    function pdi_paywall_api_put($path, $data)
+    {
+
+        return pdi_curl([
+            'path' => $path,
+            'method' => 'put',
+            'data' => $data
+        ]);
+    }
+}
 
 //if (!function_exists('pdi_paywall_api_post')) {
 //    function pdi_paywall_api_post($path, $data)
