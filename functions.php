@@ -365,18 +365,15 @@ add_filter( 'rest_authentication_errors', 'json_basic_auth_error' );
  */
 function _pdi_paywall_hide_toolbar() {
     global $current_user;
-    $hide_toolbar = get_option( '_pdi_paywall_hide_toolbar' );
 
-    $hide = false;
-    if ( ! empty( $hide_toolbar ) && is_user_logged_in()
-        && (in_array( 'reader', (array) $current_user->roles )
+    $hide = !is_user_logged_in();
+    if ( (in_array( 'reader', (array) $current_user->roles )
             || in_array( 'subscriber', (array) $current_user->roles )
         )
     ) {
-        $hide = true;
+        $hide = get_option( '_pdi_paywall_hide_toolbar' );
     }
     show_admin_bar(!$hide);
-
 }
 add_action( 'init', '_pdi_paywall_hide_toolbar', 9 );
 
