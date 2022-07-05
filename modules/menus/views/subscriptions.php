@@ -58,9 +58,10 @@
                         <?php echo $price > 0 ? 'Cartão de crédito' : 'Registro gratuito' ?>
                     </td>
                     <td class="column-next_retry_date">
-                        <?php echo $subscriber->next_payment_date
-                            ? date('d/m/Y', strtotime($subscriber->next_payment_date))
-                            : '--';
+                        <?php
+                            echo isset($subscriber->next_payment_date)?
+                                substr($subscriber->next_payment_date,0,10)
+                            :'--';
                         ?>
                     </td>
                     <td class="column-status">
