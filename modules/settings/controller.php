@@ -1,9 +1,37 @@
 <?php
+//			<input id="hide_toolbar" name="hide_toolbar" type="checkbox" value="yes" <?php checked( $hide_toolbar, 'yes' );  /> <label for="hide_toolbar"> esc_html_e('Hide the Toolbar from all users with the Subscriber role.', 'paid-memberships-pro' );
 
 function pdi_paywall_settings_init()
 {
-    add_settings_section('_pdi_paywall_read_section', 'Configurações de leitura', 'pdi_paywall_section_callback', '_pdi_paywall_general');
+    add_settings_section(
+        '_pdi_paywall_read_section',
+        'Configurações de leitura',
+        'pdi_paywall_section_callback',
+        '_pdi_paywall_general'
+    );
     $fields = array(
+        array(
+            'uid' => '_pdi_paywall_block_dashboard',
+            'label' => 'Painel do WordPress',
+            'section' => '_pdi_paywall_read_section',
+            'type' => 'checkbox',
+            'options' => false,
+            'placeholder' => null,
+            'helper' => null,
+            'supplemental' => 'Bloquear painel de controle',
+            'default' => null
+        ),
+        array(
+            'uid' => '_pdi_paywall_hide_toolbar',
+            'label' => 'Barra de ferramentas do WordPress',
+            'section' => '_pdi_paywall_read_section',
+            'type' => 'checkbox',
+            'options' => false,
+            'placeholder' => null,
+            'helper' => null,
+            'supplemental' => 'Ocultar a barra de ferramentas',
+            'default' => null
+        ),
         array(
             'uid' => '_pdi_paywall_page_limit_content',
             'label' => 'Limite de caracaters antes do "ler mais"',

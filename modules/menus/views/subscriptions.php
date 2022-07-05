@@ -33,9 +33,7 @@
         <?php if (isset($subscribers->results)) { ?>
             <?php foreach ($subscribers->results as $key => $subscriber) {?>
                 <tr class="alternate">
-                    <td class="column-name">
-                        <?php echo $subscriber->id ?>
-                    </td>
+
                     <td class="column-name">
                         <?php echo $subscriber->payer_first_name ?>
                     </td>

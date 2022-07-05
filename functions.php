@@ -355,3 +355,79 @@ function json_basic_auth_error( $error ) {
     return $wp_json_basic_auth_error;
 }
 add_filter( 'rest_authentication_errors', 'json_basic_auth_error' );
+
+
+
+/**
+ * Hide the WordPress Toolbar from Subscribers.
+ *
+ * @since 2.3
+ */
+function _pdi_paywall_hide_toolbar() {
+    global $current_user;
+    $hide_toolbar = get_option( '_pdi_paywall_hide_toolbar' );
+
+    $hide = false;
+    if ( ! empty( $hide_toolbar ) && is_user_logged_in()
+        && (in_array( 'reader', (array) $current_user->roles )
+            || in_array( 'subscriber', (array) $current_user->roles )
+        )
+    ) {
+        $hide = true;
+    }
+    show_admin_bar(!$hide);
+
+}
+add_action( 'init', '_pdi_paywall_hide_toolbar', 9 );
+
+/**
+ * Block Subscibers from accessing the WordPress Dashboard.
+ *
+ * @since 2.3.4
+ */
+function _pdi_paywall_block_dashboard_redirect() {
+    if ( _pdi_paywall_block_dashboard() ) {
+        $redirect_to = get_page_link(get_option('_pdi_paywall_page_profile'));
+        wp_redirect( $redirect_to );
+        exit;
+    }
+}
+add_action( 'admin_init', '_pdi_paywall_block_dashboard_redirect', 9 );
+
+
+/**
+ * Is the current user blocked from the dashboard
+ * per the advanced setting.
+ *
+ * @since 2.3
+ */
+function _pdi_paywall_block_dashboard() {
+    global $current_user, $pagenow;
+
+    $block_dashboard = get_option( '_pdi_paywall_block_dashboard' );
+
+    if (
+        ! wp_doing_ajax()
+        && 'admin-post.php' !== $pagenow
+        && ! empty( $block_dashboard )
+        && ! current_user_can( 'manage_options' )
+        && ! current_user_can( 'edit_users' )
+        && ! current_user_can( 'edit_posts' )
+        && (
+            in_array( 'subscriber', (array) $current_user->roles )
+            || in_array( 'reader', (array) $current_user->roles )
+        )
+    ) {
+        $block = true;
+    } else {
+        $block = false;
+    }
+    $block = apply_filters( '_pdi_paywall_block_dashboard', $block );
+
+    /**
+     * Allow filtering whether to block Dashboard access.
+     *
+     * @param bool $block Whether to block Dashboard access.
+     */
+    return apply_filters( '_pdi_paywall_block_dashboard', $block );
+}
