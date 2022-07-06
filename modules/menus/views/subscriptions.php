@@ -1,73 +1,98 @@
-<div class="wrap">
-    <h2>PDI Paywall - Assinantes</h2>
-
-    <p></p>
-
-
-    <table class="widefat fixed">
-        <thead>
-        <tr>
-            <!-- <th id="cb" class="manage-column column-cb check-column" scope="col"></th> this column contains checkboxes -->
-            <th id="number" class="manage-column column-number num" scope="col">#</th>
-            <th id="name" class="manage-column column-name" scope="col">Nome</th>
-            <th id="email" class="manage-column column-email" scope="col">E-mail</th>
-            <th id="plan" class="manage-column column-plan" scope="col">Plano</th>
-            <th id="plan" class="manage-column column-plan" scope="col">Tipo</th>
-            <th id="payment" class="manage-column column-payment" scope="col">Método de pagamento</th>
-            <th id="next_retry_date" class="manage-column column-next_retry_date" scope="col">Próximo pagamento</th>
-            <th id="status" class="manage-column column-status" scope="col">Situação</th>
-        </tr>
-        </thead>
-        <!-- <tfoot>
-            <tr>
-                <th class="manage-column column-number num" scope="col">#</th>
-                <th class="manage-column column-name" scope="col">Nome</th>
-                <th class="manage-column column-email" scope="col">E-mail</th>
-                <th class="manage-column column-plan" scope="col">Plano</th>
-                <th class="manage-column column-payment" scope="col">Método de pagamento</th>
-                <th class="manage-column column-next_retry_date" scope="col">Próximo pagamento</th>
-                <th class="manage-column column-status" scope="col">Situação</th>
-            </tr>
-        </tfoot> -->
-        <tbody>
-        <?php if (isset($subscribers->results)) { ?>
-            <?php foreach ($subscribers->results as $key => $subscriber) {?>
-                <tr class="alternate">
-
-                    <td class="column-name">
-                        <?php echo $subscriber->payer_first_name ?>
-                    </td>
-                    <td class="column-email">
-                        <?php echo $subscriber->payer_last_name ?>
-                    </td>
-                    <td class="column-plan">
-                        <?php echo $subscriber->reason ?>
-                    </td>
-                    <td class="column-frequency_type">
-                        <?php echo $subscriber->auto_recurring->frequency_type ?>
-                    </td>
-                    <?php
-                        $price = 0;
-                        if (isset($subscriber->auto_recurring->transaction_amount)){
-                            $price = $subscriber->auto_recurring->transaction_amount;
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+<script>
+    // jQuery(document).ready( function () {
+    //     jQuery('#table_subscribers').DataTable();
+    // } );
+    jQuery(document).ready(function () {
+        jQuery('#table_subscribers').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json'
+            },
+            ajax: {
+                "url": '<?php echo PDI_PAYWALL_API_URI . 'subscribers/datatable'; ?>',
+                "type": 'get',
+                "beforeSend": function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer <?php echo get_option('_pdi_paywall_payment_pdi_token'); ?>');
+                    xhr.setRequestHeader('x-customer-key', '<?php echo get_option('_pdi_paywall_payment_pdi_key'); ?>');
+                },
+            },
+            'processing': true,
+            'serverSide': true,
+            'serverMethod': 'post',
+            'pageLength': 25,
+            columns: [
+                {data: 'first_name'},
+                {data: 'payer_email'},
+                {data: 'reason'},
+                {
+                    data: 'transaction_amount',
+                    render: function(data, type, row){
+                        if(type === "sort" || type === "type"){
+                            return data;
                         }
-                    ?>
-                    <td class="column-payment">
-                        <?php echo $price > 0 ? 'Cartão de crédito' : 'Registro gratuito' ?>
-                    </td>
-                    <td class="column-next_retry_date">
-                        <?php
-                            echo isset($subscriber->next_payment_date)?
-                                substr($subscriber->next_payment_date,0,10)
-                            :'--';
-                        ?>
-                    </td>
-                    <td class="column-status">
-                        <?php echo $subscriber->status ?>
-                    </td>
+                        let value = parseFloat(data);
+                        return value.toLocaleString('pt-BR',{style: 'currency', currency: 'BRL'})
+                    }
+                },
+                {
+                    data: 'status',
+                    render: function(data, type, row){
+                        if(type === "sort" || type === "type"){
+                            return data;
+                        }
+                        let status;
+                        switch (data) {
+                            case 'cancelled':
+                                status =  'Cancelado'
+                                break;
+                            case 'authorized':
+                                status = 'Autorizado'
+                                break;
+                            default:
+                                status =  data;
+                        }
+                        return status
+                    }
+                },
+                {
+                    data: 'next_retry_date',
+                    render: function(data, type, row){
+                            if(type === "sort" || type === "type"){
+                                return data;
+                            }
+                        let date = new Date(data)
+                        return   date.toLocaleString('pt-BR',{timeZone:'UTC'})
+                    }
+                },
+            ],
+        });
+    });
+</script>
+<div class="wrap">
+    <div class="container">
+        <h2>PDI Paywall - Assinantes</h2>
+        <table id="table_subscribers" class="table table-bordered data-table wp-list-table widefat fixed striped table-view-list posts">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Plano</th>
+                    <th>Valor</th>
+                    <th>Situação</th>
+                    <th>Próximo pagamento</th>
                 </tr>
-            <?php } ?>
-        <?php } ?>
-        </tbody>
-    </table>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Plano</th>
+                    <th>Valor</th>
+                    <th>Situação</th>
+                    <th>Próximo pagamento</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
