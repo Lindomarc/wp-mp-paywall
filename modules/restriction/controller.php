@@ -47,6 +47,28 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
             }
         }
 
+        $visibility = get_post_meta($post_id, PDI_PAYWALL_META_KEY_VISIBILITY, true);
+        if (!empty($visibility)) {
+            $is_restriction = true;
+
+            if (is_user_logged_in()) {
+                $user = wp_get_current_user();
+
+                if (array_intersect(['reader'], $user->roles) && $visibility === PDI_PAYWALL_VISIBILITY_REGISTERED) {
+                    $is_restriction = false;
+                }
+
+                if (array_intersect(['subscriber'], $user->roles) && $visibility !== PDI_PAYWALL_VISIBILITY_EXCLUSIVE) {
+                    $is_restriction = false;
+                }
+            }
+
+            if ($visibility === PDI_PAYWALL_VISIBILITY_PUBLIC) {
+                $is_restriction = false;
+            }
+            return $is_restriction;
+        }
+
         $restriction_content = pdi_paywall_get_restrictions();
         if (!empty($restriction_content)) {
             if (is_user_logged_in()) {
@@ -73,24 +95,6 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
 
         pdi_paywall_cookie_restriction();
 
-        $visibility = get_post_meta($post_id, PDI_PAYWALL_META_KEY_VISIBILITY, true);
-        if (!empty($visibility)) {
-            $is_restriction = true;
-
-            if (is_user_logged_in()) {
-                $user = wp_get_current_user();
-
-                if (array_intersect(['reader'], $user->roles) && $visibility === PDI_PAYWALL_VISIBILITY_REGISTERED) {
-                    $is_restriction = false;
-                }
-
-                if (array_intersect(['subscriber'], $user->roles) && $visibility !== PDI_PAYWALL_VISIBILITY_EXCLUSIVE) {
-                    $is_restriction = false;
-                }
-            }
-
-            return $is_restriction;
-        }
 
         if (is_user_logged_in()) {
             $config_registered = get_option('_pdi_paywall_read_limit_registered');

@@ -40,7 +40,7 @@ define('PDI_PAYWALL_META_KEY_VISIBILITY', '_pdi_paywall_visibility');
 define('PDI_PAYWALL_VISIBILITY_REGISTERED', 'registered');
 define('PDI_PAYWALL_VISIBILITY_SUBSCRIBER', 'subscriber');
 define('PDI_PAYWALL_VISIBILITY_EXCLUSIVE', 'exclusive');
-define('PDI_PAYWALL_VISIBILITY_OPEN', 'open');
+define('PDI_PAYWALL_VISIBILITY_PUBLIC', 'Publico');
 
 define('PDI_PAYWALL_COOKIE', '_ppcrl');
 
