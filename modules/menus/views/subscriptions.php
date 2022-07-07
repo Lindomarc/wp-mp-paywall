@@ -22,7 +22,7 @@
             'serverMethod': 'post',
             'pageLength': 10,
             columns: [
-                {data: 'first_name', name: 'first_name'},
+                {data: 'first_name'},
                 {data: 'payer_email'},
                 {data: 'reason'},
                 {
@@ -72,7 +72,7 @@
 
 <div class="container">
     <h1 class="mb-5 mt-5">PDI Paywall - Assinantes</h1>
-    <table id="table_subscribers" class="table table-bordered data-table responsive nowrap">
+    <table id="table_subscribers" class="table table-bordered display data-table responsive nowrap">
         <thead>
         <tr>
             <th>Nome</th>

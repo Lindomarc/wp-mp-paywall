@@ -217,7 +217,7 @@ function pdi_post_curl_new_subscriber($data)
         'document' => trim($data['document']),
         'payer_email' => trim($data['user_email']),
         'pdi_paywall_register_nonce' => trim($data['pdi_paywall_register_nonce']),
-        'identification' => json_decode(str_replace('\"','"',$data['identification'])),
+        'identification' => json_decode(str_replace('\"', '"', $data['identification'])),
 
 //            'address_city' => trim($data['city']),
 //            'address_number' => trim($data['number']),
@@ -255,7 +255,7 @@ function pdiStatusSubscription()
     $status = $_REQUEST['status'];
 
     $response = [];
-    switch ($status){
+    switch ($status) {
         case 'authorized':
             add_user_meta($userID, '_pdi_paywall_subscriber_id', $subscriberId);
             add_user_meta($userID, '_pdi_paywall_plan_id', $planId);
@@ -269,14 +269,14 @@ function pdiStatusSubscription()
 //            //$response = pdi_paywall_subscription_success($payerEmail);
 //            break;
         case 'cancelled':
-            delete_user_meta($userID,'_pdi_paywall_subscriber_id');
-            delete_user_meta($userID,'_pdi_paywall_plan_id');
-            delete_user_meta($userID,'_pdi_paywall_document');
+            delete_user_meta($userID, '_pdi_paywall_subscriber_id');
+            delete_user_meta($userID, '_pdi_paywall_plan_id');
+            delete_user_meta($userID, '_pdi_paywall_document');
             $response = pdi_paywall_subscription_cancel($payerEmail);
             break;
     }
     header('Content-Type: application/json');
-    return json_encode($response,true);
+    return json_encode($response, true);
 }
 
 function pdi_callback_null()
@@ -295,26 +295,28 @@ add_action('rest_api_init', function () {
 });
 
 
-
-function get_before_login_url(){
-    if( !is_user_logged_in() && $_SERVER['REQUEST_URI'] !='/login/' ):
+function get_before_login_url()
+{
+    if (!is_user_logged_in() && $_SERVER['REQUEST_URI'] != '/login/'):
         $_REQUEST['referer_url'] = get_the_permalink();
     endif;
- }
-add_action( 'wp', 'get_before_login_url' );
+}
 
-function json_basic_auth_handler( $user ) {
+add_action('wp', 'get_before_login_url');
+
+function json_basic_auth_handler($user)
+{
     global $wp_json_basic_auth_error;
 
     $wp_json_basic_auth_error = null;
 
     // Don't authenticate twice
-    if ( ! empty( $user ) ) {
+    if (!empty($user)) {
         return $user;
     }
 
     // Check that we're trying to authenticate
-    if ( !isset( $_SERVER['PHP_AUTH_USER'] ) ) {
+    if (!isset($_SERVER['PHP_AUTH_USER'])) {
         return $user;
     }
 
@@ -327,13 +329,13 @@ function json_basic_auth_handler( $user ) {
      * recursion and a stack overflow unless the current function is removed from the determine_current_user
      * filter during authentication.
      */
-    remove_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
+    remove_filter('determine_current_user', 'json_basic_auth_handler', 20);
 
-    $user = wp_authenticate( $username, $password );
+    $user = wp_authenticate($username, $password);
 
-    add_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
+    add_filter('determine_current_user', 'json_basic_auth_handler', 20);
 
-    if ( is_wp_error( $user ) ) {
+    if (is_wp_error($user)) {
         $wp_json_basic_auth_error = $user;
         return null;
     }
@@ -342,11 +344,13 @@ function json_basic_auth_handler( $user ) {
 
     return $user->ID;
 }
-add_filter( 'determine_current_user', 'json_basic_auth_handler', 20 );
 
-function json_basic_auth_error( $error ) {
+add_filter('determine_current_user', 'json_basic_auth_handler', 20);
+
+function json_basic_auth_error($error)
+{
     // Passthrough other errors
-    if ( ! empty( $error ) ) {
+    if (!empty($error)) {
         return $error;
     }
 
@@ -354,8 +358,8 @@ function json_basic_auth_error( $error ) {
 
     return $wp_json_basic_auth_error;
 }
-add_filter( 'rest_authentication_errors', 'json_basic_auth_error' );
 
+add_filter('rest_authentication_errors', 'json_basic_auth_error');
 
 
 /**
@@ -363,33 +367,37 @@ add_filter( 'rest_authentication_errors', 'json_basic_auth_error' );
  *
  * @since 2.3
  */
-function _pdi_paywall_hide_toolbar() {
+function _pdi_paywall_hide_toolbar()
+{
     global $current_user;
 
     $hide = !is_user_logged_in();
-    if ( (in_array( 'reader', (array) $current_user->roles )
-            || in_array( 'subscriber', (array) $current_user->roles )
-        )
+    if ((in_array('reader', (array)$current_user->roles)
+        || in_array('subscriber', (array)$current_user->roles)
+    )
     ) {
-        $hide = get_option( '_pdi_paywall_hide_toolbar' );
+        $hide = get_option('_pdi_paywall_hide_toolbar');
     }
     show_admin_bar(!$hide);
 }
-add_action( 'init', '_pdi_paywall_hide_toolbar', 9 );
+
+add_action('init', '_pdi_paywall_hide_toolbar', 9);
 
 /**
  * Block Subscibers from accessing the WordPress Dashboard.
  *
  * @since 2.3.4
  */
-function _pdi_paywall_block_dashboard_redirect() {
-    if ( _pdi_paywall_block_dashboard() ) {
+function _pdi_paywall_block_dashboard_redirect()
+{
+    if (_pdi_paywall_block_dashboard()) {
         $redirect_to = get_page_link(get_option('_pdi_paywall_page_profile'));
-        wp_redirect( $redirect_to );
+        wp_redirect($redirect_to);
         exit;
     }
 }
-add_action( 'admin_init', '_pdi_paywall_block_dashboard_redirect', 9 );
+
+add_action('admin_init', '_pdi_paywall_block_dashboard_redirect', 9);
 
 
 /**
@@ -398,33 +406,42 @@ add_action( 'admin_init', '_pdi_paywall_block_dashboard_redirect', 9 );
  *
  * @since 2.3
  */
-function _pdi_paywall_block_dashboard() {
+function _pdi_paywall_block_dashboard()
+{
     global $current_user, $pagenow;
 
-    $block_dashboard = get_option( '_pdi_paywall_block_dashboard' );
+    $block_dashboard = get_option('_pdi_paywall_block_dashboard');
 
     if (
-        ! wp_doing_ajax()
+        !wp_doing_ajax()
         && 'admin-post.php' !== $pagenow
-        && ! empty( $block_dashboard )
-        && ! current_user_can( 'manage_options' )
-        && ! current_user_can( 'edit_users' )
-        && ! current_user_can( 'edit_posts' )
+        && !empty($block_dashboard)
+        && !current_user_can('manage_options')
+        && !current_user_can('edit_users')
+        && !current_user_can('edit_posts')
         && (
-            in_array( 'subscriber', (array) $current_user->roles )
-            || in_array( 'reader', (array) $current_user->roles )
+            in_array('subscriber', (array)$current_user->roles)
+            || in_array('reader', (array)$current_user->roles)
         )
     ) {
         $block = true;
     } else {
         $block = false;
     }
-    $block = apply_filters( '_pdi_paywall_block_dashboard', $block );
+    $block = apply_filters('_pdi_paywall_block_dashboard', $block);
 
     /**
      * Allow filtering whether to block Dashboard access.
      *
      * @param bool $block Whether to block Dashboard access.
      */
-    return apply_filters( '_pdi_paywall_block_dashboard', $block );
+    return apply_filters('_pdi_paywall_block_dashboard', $block);
+
+
+    function prefix_pdi_paywall_visibility($bool)
+    {
+        return current_user_can('manage_options'); // Only for Admins
+    }
+
+    add_filter('pdi_paywall_current_user_can', 'prefix_pdi_paywall_visibility');
 }

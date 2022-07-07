@@ -168,8 +168,7 @@ class LRM_AJAX
 
             do_action('lrm/login_successful', $user_signon);
 
-            // WP Last Login plugin compatibility
-            if ( class_exists('Obenland_Wp_Last_Login') ) {
+            if ( class_exists('_pdi_paywall_Wp_Last_Login') ) {
 	            update_user_meta( $user_signon->ID, 'wp-last-login', time() );
             }
 
