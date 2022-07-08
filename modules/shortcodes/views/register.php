@@ -30,10 +30,19 @@
             <?php if ($is_subscriber): ?>
                 <?php
                 $subscriber_id = get_user_meta($userID, '_pdi_paywall_subscriber_id',true);
-                ?>
+                $subscriber_txt='';
+                if (!$subscriber_id){
+                    $subscriber_txt = 'Que bom! Você é assinante por cortesia';
+                } elseif ($subscriber_id == $plan['extern_plan_id']){
+                    $subscriber_txt = 'Que bom! Você é assinante deste plano';
+                } elseif (!!$plan['extern_plan_id']){
+                    $subscriber_txt = 'Que bom! Você já é assinante de outro plano';
+                }
+
+                 ?>
                 <div id="is_subscriber">
-                    <p><b>Que bom! Já é assinante deste plano!</b></p>
-                    <button class="btn btn-lg btn-danger" onclick="unsubscriber('<?php echo $subscriber_id ?>')">
+                    <p><b><?php echo $subscriber_txt ?> </b></p>
+                    <button class="btn btn-md btn-danger" onclick="unsubscriber('<?php echo $subscriber_id ?>')">
                         Cancelar Assinatura
                     </button>
                 </div>
