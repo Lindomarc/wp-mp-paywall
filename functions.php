@@ -444,11 +444,16 @@ function _pdi_paywall_block_dashboard()
     }
 
     add_filter('pdi_paywall_current_user_can', 'prefix_pdi_paywall_visibility');
+    return true;
 }
 
 function admin_bar_remove_logo() {
     global $wp_admin_bar;
-    $wp_admin_bar->remove_menu( 'wp-logo' );
-    $wp_admin_bar->remove_menu( 'site-name' );
+    global $current_user;
+    if (in_array('reader', (array)$current_user->roles) || in_array('subscriber', (array)$current_user->roles)) {
+        $wp_admin_bar->remove_menu( 'wp-logo' );
+        $wp_admin_bar->remove_menu( 'site-name' );
+        $wp_admin_bar->remove_menu( 'search' );
+    }
 }
 add_action( 'wp_before_admin_bar_render', 'admin_bar_remove_logo', 0 );
