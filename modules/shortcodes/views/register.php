@@ -1,5 +1,4 @@
 <?php if (!is_user_logged_in()): ?>
-
 <?php else: ?>
 
     <?php $user = wp_get_current_user(); ?>
@@ -27,21 +26,22 @@
         </div>
         <div class="col-md-6">
 
-            <?php if ($is_subscriber): ?>
-                <?php
-                $subscriber_id = get_user_meta($userID, '_pdi_paywall_subscriber_id',true);
-                $subscriber_txt='';
+            <?php $subscriber_id = get_user_meta($userID, '_pdi_paywall_subscriber_id',true);
+
+            if ($is_subscriber){
                 if (!$subscriber_id){
-                    $subscriber_txt = 'Que bom! Você é assinante por cortesia';
-                } elseif ($subscriber_id == $plan['extern_plan_id']){
+                    $subscriber_txt = 'Você já é assinante por cortesia';
+                }elseif ($subscriber_id == $plan['extern_plan_id']){
                     $subscriber_txt = 'Que bom! Você é assinante deste plano';
-                } elseif (!!$plan['extern_plan_id']){
+                }elseif ($subscriber_id !== $plan['extern_plan_id']){
                     $subscriber_txt = 'Que bom! Você já é assinante de outro plano';
                 }
+            }
+            ?>
+            <p class="subscriber_txt"><b><?php echo $subscriber_txt ?> </b></p>
 
-                 ?>
+            <?php if ($is_subscriber && !!$subscriber_id): ?>
                 <div id="is_subscriber">
-                    <p><b><?php echo $subscriber_txt ?> </b></p>
                     <button class="btn btn-md btn-danger" onclick="unsubscriber('<?php echo $subscriber_id ?>')">
                         Cancelar Assinatura
                     </button>
@@ -75,10 +75,10 @@
                                                     text: "Volte quando desejar.",
                                                     icon: "success",
                                                 })
-                                                .then(() => {
-                                                    window.location.replace('/planos');
-                                                });
-                                        })
+                                                    .then(() => {
+                                                        window.location.replace('/planos');
+                                                    });
+                                            })
                                     })
                                 }
                             });
@@ -208,4 +208,5 @@
             font-size: 5rem;
         }
     </style>
+
 <?php endif; ?>
