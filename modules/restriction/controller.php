@@ -58,7 +58,7 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
                     $is_restriction = false;
                 }
 
-                if (array_intersect(['subscriber'], $user->roles) && $visibility !== PDI_PAYWALL_VISIBILITY_EXCLUSIVE) {
+                if (array_intersect(['subscriber'], $user->roles) && $visibility === PDI_PAYWALL_VISIBILITY_SUBSCRIBER) {
                     $is_restriction = false;
                 }
             }

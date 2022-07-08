@@ -4,5 +4,4 @@
     <option value="<?php echo PDI_PAYWALL_VISIBILITY_REGISTERED ?>" <?php selected($value, PDI_PAYWALL_VISIBILITY_REGISTERED); ?>>Registrado</option>
     <option value="<?php echo PDI_PAYWALL_VISIBILITY_SUBSCRIBER ?>" <?php selected($value, PDI_PAYWALL_VISIBILITY_SUBSCRIBER); ?>>Assinante</option>
     <option value="<?php echo PDI_PAYWALL_VISIBILITY_PUBLIC ?>" <?php selected($value, PDI_PAYWALL_VISIBILITY_PUBLIC); ?>>Público</option>
-    <option value="<?php echo PDI_PAYWALL_VISIBILITY_EXCLUSIVE ?>" <?php selected($value, PDI_PAYWALL_VISIBILITY_EXCLUSIVE); ?>>Exclusivo</option>
 </select>
