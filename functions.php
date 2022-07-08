@@ -449,6 +449,6 @@ function _pdi_paywall_block_dashboard()
 function admin_bar_remove_logo() {
     global $wp_admin_bar;
     $wp_admin_bar->remove_menu( 'wp-logo' );
-    $wp_admin_bar->remove_menu( 'customize' );
+    $wp_admin_bar->remove_menu( 'site-name' );
 }
 add_action( 'wp_before_admin_bar_render', 'admin_bar_remove_logo', 0 );
