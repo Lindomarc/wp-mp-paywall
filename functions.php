@@ -445,3 +445,10 @@ function _pdi_paywall_block_dashboard()
 
     add_filter('pdi_paywall_current_user_can', 'prefix_pdi_paywall_visibility');
 }
+
+function admin_bar_remove_logo() {
+    global $wp_admin_bar;
+    $wp_admin_bar->remove_menu( 'wp-logo' );
+    $wp_admin_bar->remove_menu( 'customize' );
+}
+add_action( 'wp_before_admin_bar_render', 'admin_bar_remove_logo', 0 );

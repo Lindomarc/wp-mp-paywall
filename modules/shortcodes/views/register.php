@@ -26,8 +26,8 @@
         </div>
         <div class="col-md-6">
 
-            <?php $subscriber_id = get_user_meta($userID, '_pdi_paywall_subscriber_id',true);
-
+            <?php
+            $subscriber_id = get_user_meta($userID, '_pdi_paywall_subscriber_id',true);
             if ($is_subscriber){
                 if (!$subscriber_id){
                     $subscriber_txt = 'Você já é assinante por cortesia';
