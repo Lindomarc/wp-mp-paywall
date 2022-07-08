@@ -33,12 +33,13 @@
                     $subscriber_txt = 'Você já é assinante por cortesia';
                 }elseif ($subscriber_id == $plan['extern_plan_id']){
                     $subscriber_txt = 'Que bom! Você é assinante deste plano';
-                }elseif ($subscriber_id !== $plan['extern_plan_id']){
+                }else{
                     $subscriber_txt = 'Que bom! Você já é assinante de outro plano';
                 }
+                echo '<p class="subscriber_txt"><b>'.$subscriber_txt.'</b></p>';
             }
             ?>
-            <p class="subscriber_txt"><b><?php echo $subscriber_txt ?> </b></p>
+
 
             <?php if ($is_subscriber && !!$subscriber_id): ?>
                 <div id="is_subscriber">
