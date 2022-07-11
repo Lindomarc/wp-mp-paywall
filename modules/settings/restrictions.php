@@ -3,15 +3,12 @@
  * Restrições
  */
 add_settings_section('_pdi_paywall_restrictions_section', 'Configurações de restrições', 'pdi_paywall_section_callback', '_pdi_paywall_restrictions');
-
-$restrictions_content = get_categories();
-$restrictions_content_count = count($restrictions_content);
-
-foreach ($restrictions_content as $i => $value){
-    $default = get_option('_pdi_paywall_restrictions_content_'.$value->term_id);
-    $name =  $value->name;
+$list_categories = get_categories();
+foreach ($list_categories as $value) {
+    $default = get_option('_pdi_paywall_restrictions_content_' . $value->term_id);
+    $name = $value->name;
     $field = [
-        'uid' => '_pdi_paywall_restrictions_content_'.$value->term_id,
+        'uid' => '_pdi_paywall_restrictions_content_' . $value->term_id,
         'label' => $name,
         'section' => '_pdi_paywall_restrictions_section',
         'type' => 'checkbox',
