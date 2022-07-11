@@ -47,6 +47,20 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
             }
         }
 
+        $no_restriction_content = pdi_paywall_get_free_restrictions();
+        if (!empty($no_restriction_content)) {
+            $post_categories = get_the_category($post_id);
+            if (!empty($post_categories)) {
+                foreach ($post_categories as $post_category) {
+                    if (in_array($post_category->term_id, $no_restriction_content)) {
+                        $is_restriction = false;
+
+                        return $is_restriction;
+                    }
+                }
+            }
+        }
+
         $visibility = get_post_meta($post_id, PDI_PAYWALL_META_KEY_VISIBILITY, true);
         if (!empty($visibility)) {
             $is_restriction = true;
@@ -112,19 +126,7 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
             }
         }
 
-        $no_restriction_content = pdi_paywall_get_free_restrictions();
-        if (!empty($no_restriction_content)) {
-            $post_categories = get_the_category($post_id);
-            if (!empty($post_categories)) {
-                foreach ($post_categories as $post_category) {
-                    if (in_array($post_category->term_id, $no_restriction_content)) {
-                        $is_restriction = false;
 
-                        return $is_restriction;
-                    }
-                }
-            }
-        }
 
         return $is_restriction;
     }

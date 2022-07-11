@@ -153,149 +153,22 @@ function pdi_paywall_settings_init()
         add_settings_field($field['uid'], $field['label'], 'pdi_paywall_field_callback', '_pdi_paywall_general', $field['section'], $field);
     }
 
-    /**
-     * Restrições
-     */
-    add_settings_section('_pdi_paywall_restrictions_section', 'Configurações de restrições', 'pdi_paywall_section_callback', '_pdi_paywall_restrictions');
-    $fields = array(
-        array(
-            'uid' => '_pdi_paywall_restrictions_content',
-            'label' => 'Restrição de conteúdo',
-            'section' => '_pdi_paywall_restrictions_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo restrito para assinantes',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_restrictions_content_2',
-            'label' => 'Restrição de conteúdo (2)',
-            'section' => '_pdi_paywall_restrictions_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo restrito para assinantes',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_restrictions_content_3',
-            'label' => 'Restrição de conteúdo (3)',
-            'section' => '_pdi_paywall_restrictions_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo restrito para assinantes',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_restrictions_content_4',
-            'label' => 'Restrição de conteúdo (4)',
-            'section' => '_pdi_paywall_restrictions_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo restrito para assinantes',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_restrictions_content_5',
-            'label' => 'Restrição de conteúdo (5)',
-            'section' => '_pdi_paywall_restrictions_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo restrito para assinantes',
-            'default' => null
-        ),
-    );
-    foreach ($fields as $field) {
-        pdi_paywall_register_setting('_pdi_paywall_restrictions', $field['uid']);
-        add_settings_field($field['uid'], $field['label'], 'pdi_paywall_field_callback', '_pdi_paywall_restrictions', $field['section'], $field);
-    }
+    require_once('restrictions.php');
 
-    /**
-     * Liberação de conteúdo
-     */
-    add_settings_section('_pdi_paywall_restrictions_free_section', 'Configurações de liberação', 'pdi_paywall_section_callback', '_pdi_paywall_restrictions');
-    $fields = array(
-        array(
-            'uid' => '_pdi_paywall_restrictions_free_content',
-            'label' => 'Liberação de conteúdo',
-            'section' => '_pdi_paywall_restrictions_free_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo sempre livre',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_restrictions_free_content_2',
-            'label' => 'Liberação de conteúdo (2)',
-            'section' => '_pdi_paywall_restrictions_free_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo sempre livre',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_restrictions_free_content_3',
-            'label' => 'Liberação de conteúdo (3)',
-            'section' => '_pdi_paywall_restrictions_free_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo sempre livre',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_restrictions_free_content_4',
-            'label' => 'Liberação de conteúdo (4)',
-            'section' => '_pdi_paywall_restrictions_free_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo sempre livre',
-            'default' => null
-        ),
-        array(
-            'uid' => '_pdi_paywall_restrictions_free_content_5',
-            'label' => 'Liberação de conteúdo (5)',
-            'section' => '_pdi_paywall_restrictions_free_section',
-            'type' => 'categories',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => 'Conteúdo sempre livre',
-            'default' => null
-        ),
-    );
-    foreach ($fields as $field) {
-        pdi_paywall_register_setting('_pdi_paywall_restrictions', $field['uid']);
-        add_settings_field($field['uid'], $field['label'], 'pdi_paywall_field_callback', '_pdi_paywall_restrictions', $field['section'], $field);
-    }
+    require_once('restrictions_free.php');
+
 
     /**
      * Plans
      */
-    for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++){
-        add_settings_section('_pdi_paywall_plans_'.$i.'_section', 'Plano '.$i, 'pdi_paywall_section_callback', '_pdi_paywall_plans');
+    for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
+        add_settings_section('_pdi_paywall_plans_' . $i . '_section', 'Plano ' . $i, 'pdi_paywall_section_callback', '_pdi_paywall_plans');
         $fields = array(
 
             array(
-                'uid' => '_pdi_paywall_plan_name_'.$i,
+                'uid' => '_pdi_paywall_plan_name_' . $i,
                 'label' => 'Nome',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'text',
                 'options' => false,
                 'placeholder' => null,
@@ -304,9 +177,9 @@ function pdi_paywall_settings_init()
                 'default' => null
             ),
             array(
-                'uid' => '_pdi_paywall_plan_description_'.$i,
+                'uid' => '_pdi_paywall_plan_description_' . $i,
                 'label' => 'Descrição',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'textarea',
                 'options' => false,
                 'placeholder' => null,
@@ -327,9 +200,9 @@ function pdi_paywall_settings_init()
 //                'default' => 0
 //            ),
             array(
-                'uid' => '_pdi_paywall_plan_repetitions_'.$i,
+                'uid' => '_pdi_paywall_plan_repetitions_' . $i,
                 'label' => 'Repetir',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'number',
                 'options' => false,
                 'placeholder' => null,
@@ -339,9 +212,9 @@ function pdi_paywall_settings_init()
             ),
 
             array(
-                'uid' => '_pdi_paywall_plan_frequency_type_'.$i,
+                'uid' => '_pdi_paywall_plan_frequency_type_' . $i,
                 'label' => 'Tipo de Frequência',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'number',
                 'options' => false,
                 'placeholder' => null,
@@ -350,9 +223,9 @@ function pdi_paywall_settings_init()
                 'default' => 10
             ),
             array(
-                'uid' => '_pdi_paywall_plan_price_'.$i,
+                'uid' => '_pdi_paywall_plan_price_' . $i,
                 'label' => 'Valor da transação',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'price',
                 'options' => false,
                 'placeholder' => null,
@@ -361,9 +234,9 @@ function pdi_paywall_settings_init()
                 'default' => null
             ),
             array(
-                'uid' => '_pdi_paywall_plan_frequency_type_'.$i,
+                'uid' => '_pdi_paywall_plan_frequency_type_' . $i,
                 'label' => 'Tipo de frequência',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'select',
                 'options' => pdi_paywall_get_plans_period(),
                 'placeholder' => null,
@@ -373,9 +246,9 @@ function pdi_paywall_settings_init()
             ),
 
             array(
-                'uid' => '_pdi_paywall_plan_free_trial_'.$i,
+                'uid' => '_pdi_paywall_plan_free_trial_' . $i,
                 'label' => 'Amostra Grátis',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'checkbox',
                 'options' => false,
                 'placeholder' => null,
@@ -384,9 +257,9 @@ function pdi_paywall_settings_init()
                 'default' => 0
             ),
             array(
-                'uid' => '_pdi_paywall_plan_free_trial_frequency_'.$i,
+                'uid' => '_pdi_paywall_plan_free_trial_frequency_' . $i,
                 'label' => 'Frequência (Amostra Grátis)',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'number',
                 'options' => false,
                 'placeholder' => null,
@@ -395,9 +268,9 @@ function pdi_paywall_settings_init()
                 'default' => 1
             ),
             array(
-                'uid' => '_pdi_paywall_plan_free_trial_frequency_type'.$i,
+                'uid' => '_pdi_paywall_plan_free_trial_frequency_type' . $i,
                 'label' => 'Tipo de frequência (Amostra Grátis)',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'select',
                 'options' => pdi_paywall_get_plans_period(),
                 'placeholder' => null,
@@ -406,9 +279,9 @@ function pdi_paywall_settings_init()
                 'default' => 'mounts'
             ),
             array(
-                'uid' => '_pdi_paywall_plan_back_url_'.$i,
+                'uid' => '_pdi_paywall_plan_back_url_' . $i,
                 'label' => 'URL de retorno',
-                'section' => '_pdi_paywall_plans_'.$i.'_section',
+                'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'text',
                 'options' => false,
                 'placeholder' => null,
@@ -631,6 +504,7 @@ function pdi_paywall_settings_init()
         add_settings_field($field['uid'], $field['label'], 'pdi_paywall_field_callback', '_pdi_paywall_email', $field['section'], $field);
     }
 }
+
 add_action('admin_init', 'pdi_paywall_settings_init');
 
 function pdi_paywall_section_callback()
@@ -696,6 +570,22 @@ function pdi_paywall_field_callback($arguments)
                 printf('<select name="%1$s" id="%1$s">%2$s</select>', $arguments['uid'], $options_markup);
             }
             break;
+        case 'select2':
+            $options = get_categories();
+            if (!empty($options) && is_array($options)) {
+                $options_markup = '';
+                foreach ($options as $option) {
+                    if (is_array($value)) {
+                        $selected = in_array($option->term_id, $value) ? 'selected' : '';
+                    } else {
+                        $selected = selected($value, $option->term_id, false);
+                    }
+                    $options_markup .= sprintf('<option value="%s" %s>%s</option>', $option->term_id, $selected, $option->name);
+                }
+                printf('<select name="%1$s" id="%1$s" class="form-control %1$s"   multiple="multiple" >%2$s</select>', $arguments['uid'], $options_markup);
+
+            }
+            break;
     }
 
     if ($helper = $arguments['helper']) {
@@ -754,6 +644,7 @@ function pdi_paywall_update_options($option_name)
         }
     }
 }
+
 add_action('update_option__pdi_paywall_payment_sandbox', 'pdi_paywall_update_options');
 add_action('update_option__pdi_paywall_payment_pdi_key', 'pdi_paywall_update_options');
 add_action('update_option__pdi_paywall_payment_client_secret', 'pdi_paywall_update_options');
@@ -772,17 +663,17 @@ function pdi_paywall_update_plans()
         if (!empty($plans)) {
 //            for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
             $i = 0;
-            foreach ($plans as $key  => $plan){
+            foreach ($plans as $key => $plan) {
                 $i++;
 
-                if (isset($plan['extern_plan_id']) && $plan['extern_plan_id']){
+                if (isset($plan['extern_plan_id']) && $plan['extern_plan_id']) {
                     $response = pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
                 } else {
                     if (isset($plan['reason']) && !!$plan['reason']) {
                         $response = pdi_paywall_api_post('plans', $plan);
                         if (!empty($response)) {
-                            $plan_res = json_decode($response,true);
-                            if (isset($plan_res['data']['id'])){
+                            $plan_res = json_decode($response, true);
+                            if (isset($plan_res['data']['id'])) {
                                 $id_save = '_pdi_paywall_plan_id_' . $i;
                                 add_option($id_save, $plan_res['data']['id']);
                                 $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . $i;
@@ -796,20 +687,47 @@ function pdi_paywall_update_plans()
         return $response;
     }
 }
-for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++){
-    add_action('update_option__pdi_paywall_plan_name_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_price_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_description_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_repetitions_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_frequency_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_frequency_type_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_billing_day_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_free_trial_frequency_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_free_trial_frequency_type_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_free_trial_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_active_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_back_url_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_extern_plan_id_'.$i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_id_'.$i, 'pdi_paywall_update_plans');
+
+for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
+    add_action('update_option__pdi_paywall_plan_name_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_price_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_description_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_repetitions_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_frequency_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_frequency_type_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_billing_day_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_free_trial_frequency_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_free_trial_frequency_type_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_free_trial_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_active_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_back_url_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_extern_plan_id_' . $i, 'pdi_paywall_update_plans');
+    add_action('update_option__pdi_paywall_plan_id_' . $i, 'pdi_paywall_update_plans');
+}
+
+//add_action('update_option__pdi_paywall_restrictions_content', 'pdi_paywall_set_list_restrition');
+//add_action('get_option__pdi_paywall_restrictions_content', 'pdi_paywall_get_list_restrition');
+
+function pdi_paywall_set_list_restrition($value)
+{
+    update_option('_pdi_paywall_restrictions_content', []);
+    $restrictions = get_option('_pdi_paywall_restrictions_content');
+    if (isset($_POST['_pdi_paywall_restrictions_content'])) {
+        $i = array_push($restrictions,$value);
+        update_option('_pdi_paywall_restrictions_content', $restrictions);
+    }
+}
+
+
+add_action('admin_enqueue_scripts', 'rudr_select2_enqueue');
+function rudr_select2_enqueue()
+{
+
+    wp_enqueue_style('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css');
+    wp_enqueue_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js', array('jquery'));
+
+
+    // please create also an empty JS file in your theme directory and include it too
+    wp_enqueue_script('custom', PDI_PAYWALL_URL . '/js/custom.js', array('jquery', 'select2'));
 
 }

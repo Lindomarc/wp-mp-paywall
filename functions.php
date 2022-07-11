@@ -147,30 +147,32 @@ if (!function_exists('pdi_paywall_get_restrictions')) {
     {
         $restrictions = [];
 
-        $restrictions[0] = get_option('_pdi_paywall_restrictions_content');
-        $restrictions[1] = get_option('_pdi_paywall_restrictions_content_2');
-        $restrictions[2] = get_option('_pdi_paywall_restrictions_content_3');
-        $restrictions[3] = get_option('_pdi_paywall_restrictions_content_4');
-        $restrictions[4] = get_option('_pdi_paywall_restrictions_content_5');
+        $restrictions_content = get_categories();
+        foreach ($restrictions_content as $value){
+            if (get_option('_pdi_paywall_restrictions_content_'.$value->term_id)){
+                $restrictions[] = $value->term_id;
+            }
+        }
 
         return $restrictions;
     }
 }
-
 if (!function_exists('pdi_paywall_get_free_restrictions')) {
     function pdi_paywall_get_free_restrictions()
     {
         $restrictions = [];
 
-        $restrictions[0] = get_option('_pdi_paywall_restrictions_free_content');
-        $restrictions[1] = get_option('_pdi_paywall_restrictions_free_content_2');
-        $restrictions[2] = get_option('_pdi_paywall_restrictions_free_content_3');
-        $restrictions[3] = get_option('_pdi_paywall_restrictions_free_content_4');
-        $restrictions[4] = get_option('_pdi_paywall_restrictions_free_content_5');
+        $restrictions_content = get_categories();
+        foreach ($restrictions_content as $value){
+            if (get_option('pdi_paywall_get_free_restrictions_'.$value->term_id)){
+                $restrictions[] = $value->term_id;
+            }
+        }
 
         return $restrictions;
     }
 }
+
 
 if (!function_exists('pdi_paywall_admin_notice')) {
     function pdi_paywall_admin_notice($message, $status = 'success')
