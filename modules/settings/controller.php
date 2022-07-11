@@ -270,7 +270,7 @@ function pdi_paywall_settings_init()
                 'default' => 1
             ),
             array(
-                'uid' => '_pdi_paywall_plan_free_trial_frequency_type' . $i,
+                'uid' => '_pdi_paywall_plan_free_trial_frequency_type_' . $i,
                 'label' => 'Tipo de frequência (Amostra Grátis)',
                 'section' => '_pdi_paywall_plans_' . $i . '_section',
                 'type' => 'select',
@@ -668,18 +668,21 @@ function pdi_paywall_update_plans()
             foreach ($plans as $key => $plan) {
                 $i++;
 
-                if (isset($plan['extern_plan_id']) && $plan['extern_plan_id']) {
-                    $response = pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
-                } else {
-                    if (isset($plan['reason']) && !!$plan['reason']) {
-                        $response = pdi_paywall_api_post('plans', $plan);
-                        if (!empty($response)) {
-                            $plan_res = json_decode($response, true);
-                            if (isset($plan_res['data']['id'])) {
-                                $id_save = '_pdi_paywall_plan_id_' . $i;
-                                add_option($id_save, $plan_res['data']['id']);
-                                $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . $i;
-                                add_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
+                // enviar somente se valor positivo
+                if ($plan['auto_recurring']['transaction_amount']) {
+                    if (isset($plan['extern_plan_id']) && $plan['extern_plan_id']) {
+                        $response = pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
+                    } else {
+                        if (isset($plan['reason']) && !!$plan['reason']) {
+                            $response = pdi_paywall_api_post('plans', $plan);
+                            if (!empty($response)) {
+                                $plan_res = json_decode($response, true);
+                                if (isset($plan_res['data']['id'])) {
+                                    $id_save = '_pdi_paywall_plan_id_' . $i;
+                                    add_option($id_save, $plan_res['data']['id']);
+                                    $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . $i;
+                                    add_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
+                                }
                             }
                         }
                     }
@@ -715,7 +718,7 @@ function pdi_paywall_set_list_restrition($value)
     update_option('_pdi_paywall_restrictions_content', []);
     $restrictions = get_option('_pdi_paywall_restrictions_content');
     if (isset($_POST['_pdi_paywall_restrictions_content'])) {
-        $i = array_push($restrictions,$value);
+        $i = array_push($restrictions, $value);
         update_option('_pdi_paywall_restrictions_content', $restrictions);
     }
 }

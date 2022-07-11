@@ -1,7 +1,6 @@
 <div class="pdi-paywall-plans-container panel">
     <?php foreach ($plans as $key => $plan) {
-
-        ?>
+        var_dump($plan);?>
         <?php if (isset($plan['extern_plan_id']) && !!$plan['extern_plan_id']) { ?>
             <div id="option-<?php print $key; ?>" class="pdi-paywall-plan ">
                 <div class="pdi-paywall-header  panel panel-header panel-info ">

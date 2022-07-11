@@ -60,6 +60,7 @@ if (!function_exists('pdi_paywall_get_plans')) {
                 $plans[$i] = $item;
             }
         }
+        var_dump($plans);exit();
         return $plans;
     }
 }
@@ -79,6 +80,7 @@ function pdi_paywall_number_format_us($value, $tipo = 'us')
 function pdi_paywall_array_plan($i, $reason)
 {
     $price = get_option('_pdi_paywall_plan_price_' . $i);
+
     return [
         'customer_key' => get_option('_pdi_paywall_payment_pdi_key'),
         'reason' => $reason,
