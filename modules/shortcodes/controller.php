@@ -169,7 +169,6 @@ function pdi_paywall_profile_shortcode($atts, $content = null)
     $subscriber_id = get_user_meta($user->ID, '_pdi_paywall_subscriber_id', true);
     $document = get_user_meta($user->ID, '_pdi_paywall_document', true);
 
-
     if (!empty($subscriber_id)) {
         $response = pdi_paywall_api_get('subscribers/' . $subscriber_id);
         if (!empty($response)) {
@@ -183,6 +182,34 @@ function pdi_paywall_profile_shortcode($atts, $content = null)
 
     return $content;
 }
+
+function pdi_paywall_is_subscriber()
+{
+    global $current_user;
+    return in_array('subscriber',$current_user->roles);
+}
+
+function pdi_paywall_status_name($value)
+{
+    switch ($value){
+        case 'authorized':
+            $return = 'Autorizado';
+            break;
+        case 'pending':
+            $return = 'Pendente';
+            break;
+        case 'paused':
+            $return = 'Pausado';
+            break;
+        case 'cancelled':
+            $return = 'Cancelado';
+            break;
+        default:
+            $return = $value;
+    }
+    return $return;
+}
+
 
 function pdi_paywall_register_new_user($data)
 {

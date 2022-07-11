@@ -1,31 +1,53 @@
 <p class="pdi-paywall-logout-link"><?php printf('Bem vindo %s, você está logado. <a href="%s">Clique aqui, para sair.</a>', $user->user_login, wp_logout_url(get_page_link(get_option('_pdi_paywall_page_login')))); ?></p>
 
-<?php if (isset($subscriber) && !empty($subscriber)) { ?>
+<?php
+
+//add_user_meta($user->ID, 'subscriber_id','2c93808481b537eb0181b6b948cb00c2');
+
+if (pdi_paywall_is_subscriber()) { ?>
     <h2 class="pdi-paywall-profile-subscription-title">Sua assinatura</h2>
-    <table class="pdi-paywall-profile-subscription-details">
-        <thead>
+    <div class="table-responsive">
+
+        <table class="table pdi-paywall-profile-subscription-details">
+            <thead>
             <tr>
                 <th>Tem acesso</th>
                 <th>Status</th>
                 <th>Plano</th>
-                <th>Método de pagamento</th>
+                <th>Método pag.</th>
                 <th>Valor</th>
-                <th>Próxima cobrança</th>
+                <th>Prox. cobrança</th>
             </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><?php echo ($subscriber->status === 'active' ? 'Sim' : 'Não') ?></td>
-                <td><?php echo ($subscriber->status === 'active' ? 'Ativo' : 'Inativo') ?></td>
-                <td><?php echo $subscriber->plan->name ?></td>
-                <td><?php echo (($subscriber->plan->amount > 0) ? 'Cartão de crédito' : 'Registro gratuito') ?></td>
-                <td><?php echo (($subscriber->plan->amount > 0) ? 'R$ ' . number_format($subscriber->plan->amount, 2, ',', '') : 'Gratuito') ?></td>
-                <td><?php echo (($subscriber->plan->amount > 0 && $subscriber->status === 'active' && !empty($subscriber->next_billing_date)) ? date('d/m/Y', strtotime($subscriber->next_billing_date)) : '--') ?></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <hr />
+            </thead>
+            <tbody>
+            <?php if (isset($subscriber->data->status)): ?>
+                <tr>
+                    <td><?php echo($subscriber->data->status === 'authorized' ? 'Sim' : 'Não') ?></td>
+                    <td><?php echo($subscriber->data->status === 'authorized' ? 'Ativo' : 'Inativo') ?></td>
+                    <td><?php echo $subscriber->data->reason ?></td>
+                    <td><?php echo(($subscriber->data->transaction_amount > 0) ? 'Cartão de crédito' : 'Registro gratuito') ?></td>
+                    <td><?php echo(($subscriber->data->transaction_amount > 0) ? 'R$ ' . number_format($subscriber->data->transaction_amount, 2, ',', '') : 'Gratuito') ?></td>
+                    <td><?php echo(($subscriber->data->transaction_amount > 0 && $subscriber->data->status === 'authorized' && !empty($subscriber->data->next_retry_date)) ? date('d/m/Y', strtotime($subscriber->data->next_retry_date)) : '--') ?></td>
+                    <td>
+                        <button class="btn btn-md btn-danger" onclick="unsubscriber('<?php echo $subscriber_id ?>')">
+                            Cancelar Assinatura
+                        </button>
+                    </td>
+                </tr>
+            <?php else: ?>
+                <tr>
+                    <td>Sim</td>
+                    <td>Ativo</td>
+                    <td>Cortesia</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+    <hr/>
 <?php } ?>
 
 <h2 class="pdi-paywall-your-profile-header">Seu perfil</h2>
@@ -35,10 +57,10 @@ if (!empty($_POST['pdi-paywall-profile-nonce'])) {
         try {
             $userdata = get_userdata($user->ID);
             $args = array(
-                'ID'             => $user->ID,
-                'user_login'     => $userdata->user_login,
-                'display_name'   => $userdata->display_name,
-                'user_email'     => $userdata->user_email,
+                'ID' => $user->ID,
+                'user_login' => $userdata->user_login,
+                'display_name' => $userdata->display_name,
+                'user_email' => $userdata->user_email,
             );
 
             if (!empty($_POST['username'])) {
@@ -89,69 +111,119 @@ if (!empty($_POST['pdi-paywall-profile-nonce'])) {
         pdi_paywall_delete_user($user->ID);
 
         wp_logout();
-?>
+        ?>
         <script>
             window.location.href = '<?php echo site_url(); ?>';
         </script>
-<?php
+        <?php
     }
 
 }
 ?>
 
-<form id="pdi-paywall-profile" action="" method="post"  autocomplete="off">
+<form id="pdi-paywall-profile" action="" method="post" autocomplete="off">
     <p>
         <label class="pdi-paywall-field-label" for="pdi-paywall-username">Nome de usuário</label>
-        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-username" name="username" value="<?php echo $user->user_login; ?>" disabled="disabled" readonly="readonly" />
+        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-username" name="username"
+               value="<?php echo $user->user_login; ?>" disabled="disabled" readonly="readonly"/>
     </p>
 
     <p>
         <label class="pdi-paywall-field-label" for="pdi-paywall-display-name">Nome de exibição</label>
-        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="displayname" value="<?php echo $user->display_name; ?>" />
+        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="displayname"
+               value="<?php echo $user->display_name; ?>"/>
     </p>
 
     <p>
     <p>
         <label class="pdi-paywall-field-label" for="pdi-paywall-display-name">Nome</label>
-        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="firs_name" value="<?php echo $user->firs_name; ?>" />
+        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="firs_name"
+               value="<?php echo $user->firs_name; ?>"/>
     </p>
 
     <p>
     <p>
         <label class="pdi-paywall-field-label" for="pdi-paywall-display-name">Sobrenome</label>
-        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="last_name" value="<?php echo $user->last_name; ?>" />
+        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-display-name" name="last_name"
+               value="<?php echo $user->last_name; ?>"/>
     </p>
 
     <p>
         <label class="pdi-paywall-field-label" for="pdi-paywall-email">E-mail</label>
-        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-email" name="email" value="<?php echo $user->user_email; ?>" />
+        <input type="text" class="pdi-paywall-field-input" id="pdi-paywall-email" name="email"
+               value="<?php echo $user->user_email; ?>"/>
     </p>
 
     <p>
         <label class="pdi-paywall-field-label" for="pdi-paywall-password1">Nova senha</label>
-        <input type="password" class="pdi-paywall-field-input" id="pdi-paywall-password1" name="password1" value="" />
+        <input type="password" class="pdi-paywall-field-input" id="pdi-paywall-password1" name="password1" value=""/>
     </p>
 
     <p>
-        <label class="pdi-paywall-field-label" for="pdi-paywall-gift-subscription-password2">Confirmação de nova senha</label>
-        <input type="password" class="pdi-paywall-field-input" id="pdi-paywall-gift-subscription-password2" name="password2" value="" />
+        <label class="pdi-paywall-field-label" for="pdi-paywall-gift-subscription-password2">Confirmação de nova
+            senha</label>
+        <input type="password" class="pdi-paywall-field-input" id="pdi-paywall-gift-subscription-password2"
+               name="password2" value=""/>
     </p>
 
     <?php echo wp_nonce_field('pdi-paywall-profile', 'pdi-paywall-profile-nonce', true, false); ?>
 
     <p class="submit">
-        <input type="submit" id="submit" class="button button-primary" value="Salvar alterações" />
+        <input type="submit" id="submit" class="button button-primary" value="Salvar alterações"/>
     </p>
 </form>
 
 <?php if (get_option('_pdi_paywall_account_delete') == '1') { ?>
-    <hr />
-    <form id="pdi-paywall-delete-account" action="" method="post"  autocomplete="off">
+    <hr/>
+    <form id="pdi-paywall-delete-account" action="" method="post" autocomplete="off">
         <p>
-            <button type="submit" onclick="return confirm('Deseja cancelar sua conta e inscrição? Esta ação é irreversível!')">
+            <button type="submit"
+                    onclick="return confirm('Deseja cancelar sua conta e inscrição? Esta ação é irreversível!')">
                 Excluir conta
             </button>
         </p>
         <?php echo wp_nonce_field('pdi-paywall-delete-account', 'pdi-paywall-delete-account-nonce', true, false); ?>
     </form>
 <?php }
+
+if (isset($subscriber_id) && !!$subscriber_id):
+?>
+    <script>
+        function unsubscriber(subscriber_id) {
+            swal({
+                title: "Cancelar Assinatura?",
+                text: `Tem certeza que deseja cancelar sua assinaura?`,
+                icon: "warning",
+                buttons: ["Não", "Sim, desejo cancelar!"],
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        return new Promise((resolve, reject) => {
+                            fetch("<?php echo PDI_PAYWALL_API_URI?>subscribers/cancel", {
+                                method: "put",
+                                headers: {
+                                    "Accept": "application/json",
+                                    "Content-Type": "application/json",
+                                    "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
+                                    "x-customer-key": _pdi_paywall_payment_pdi_key,
+                                },
+                                body: JSON.stringify({subscriber_id: subscriber_id})
+                            })
+                                .then(function (response) {
+                                    //console.log(response)
+                                    swal({
+                                        title: "Assinatura cancelada.",
+                                        text: "Volte quando desejar.",
+                                        icon: "success",
+                                    })
+                                        .then(() => {
+                                            window.location.replace('/planos');
+                                        });
+                                })
+                        })
+                    }
+                });
+        }
+    </script>
+<?php endif; ?>
