@@ -43,13 +43,13 @@
                 }
                 echo '<p class="subscriber_txt"><b>' . $subscriber_txt . '</b></p>';
 
-            } else {
+            } elseif (!$plan['extern_plan_id']) {
                 $subscriber_txt = 'Você possui acesso ao conteúdo gratuito.';
 
-            echo '<p class="subscriber_txt"><b>' . $subscriber_txt . '</b></p>';
-            echo '    
+                echo '<p class="subscriber_txt"><b>' . $subscriber_txt . '</b></p>';
+                echo '    
                 <div id="is_subscriber">
-                    <a class="btn btn-md btn-success" href="'.get_page_link(get_option('_pdi_paywall_page_plans')) .'">
+                    <a class="btn btn-md btn-success" href="' . get_page_link(get_option('_pdi_paywall_page_plans')) . '">
                         Quero um upgrade do plano
                     </a>
                 </div>';
