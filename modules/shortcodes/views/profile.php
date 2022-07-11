@@ -11,7 +11,7 @@ if (pdi_paywall_is_subscriber()) { ?>
         <table class="table pdi-paywall-profile-subscription-details">
             <thead>
             <tr>
-                <th>Tem acesso</th>
+                <th>Acesso</th>
                 <th>Status</th>
                 <th>Plano</th>
                 <th>Método pag.</th>
@@ -23,20 +23,22 @@ if (pdi_paywall_is_subscriber()) { ?>
             <?php if (isset($subscriber->data->status)): ?>
                 <tr>
                     <td><?php echo($subscriber->data->status === 'authorized' ? 'Sim' : 'Não') ?></td>
-                    <td><?php echo($subscriber->data->status === 'authorized' ? 'Ativo' : 'Inativo') ?></td>
+                    <td><?php echo pdi_paywall_status_name($subscriber->data->status )?></td>
                     <td><?php echo $subscriber->data->reason ?></td>
                     <td><?php echo(($subscriber->data->transaction_amount > 0) ? 'Cartão de crédito' : 'Registro gratuito') ?></td>
                     <td><?php echo(($subscriber->data->transaction_amount > 0) ? 'R$ ' . number_format($subscriber->data->transaction_amount, 2, ',', '') : 'Gratuito') ?></td>
                     <td><?php echo(($subscriber->data->transaction_amount > 0 && $subscriber->data->status === 'authorized' && !empty($subscriber->data->next_retry_date)) ? date('d/m/Y', strtotime($subscriber->data->next_retry_date)) : '--') ?></td>
-                    <td>
-                        <button class="btn btn-md btn-danger" onclick="unsubscriber('<?php echo $subscriber_id ?>')">
-                            Cancelar Assinatura
-                        </button>
-                    </td>
+                    <?php if ($subscriber->data->status === 'authorized'):?>
+                        <td>
+                            <button class="btn btn-md btn-danger"
+                                    onclick="unsubscriber('<?php echo $subscriber_id ?>')">
+                                Cancelar Assinatura
+                            </button>
+                        </td>
+                    <?php endif; ?>
                 </tr>
             <?php else: ?>
                 <tr>
-                    <td>Sim</td>
                     <td>Ativo</td>
                     <td>Cortesia</td>
                     <td>--</td>
@@ -187,7 +189,7 @@ if (!empty($_POST['pdi-paywall-profile-nonce'])) {
 <?php }
 
 if (isset($subscriber_id) && !!$subscriber_id):
-?>
+    ?>
     <script>
         function unsubscriber(subscriber_id) {
             swal({
