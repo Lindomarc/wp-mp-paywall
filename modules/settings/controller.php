@@ -547,9 +547,9 @@ function pdi_paywall_update_plans()
                                 $plan_res = json_decode($response, true);
                                 if (isset($plan_res['data']['id'])) {
                                     $id_save = '_pdi_paywall_plan_id_' . $i;
-                                    add_option($id_save, $plan_res['data']['id']);
+                                    update_option($id_save, $plan_res['data']['id']);
                                     $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . $i;
-                                    add_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
+                                    update_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
                                 }
                             }
                         }
@@ -574,7 +574,7 @@ for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
     add_action('update_option__pdi_paywall_plan_free_trial_' . $i, 'pdi_paywall_update_plans');
     add_action('update_option__pdi_paywall_plan_active_' . $i, 'pdi_paywall_update_plans');
     add_action('update_option__pdi_paywall_plan_back_url_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_extern_plan_id_' . $i, 'pdi_paywall_update_plans');
+    //add_action('update_option__pdi_paywall_plan_extern_plan_id_' . $i, 'pdi_paywall_update_plans');
     add_action('update_option__pdi_paywall_plan_id_' . $i, 'pdi_paywall_update_plans');
 }
 

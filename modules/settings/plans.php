@@ -129,17 +129,17 @@ for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
             'supplemental' => '',
             'default' => null
         ),
-        array(
-            'uid' => '_pdi_paywall_plan_extern_plan_id_' . $i,
-            'label' => '',
-            'section' => '_pdi_paywall_plans_' . $i . '_section',
-            'type' => 'text',
-            'options' => false,
-            'placeholder' => null,
-            'helper' => null,
-            'supplemental' => '',
-            'default' => null
-        ),
+//        array(
+//            'uid' => '_pdi_paywall_plan_extern_plan_id_' . $i,
+//            'label' => '',
+//            'section' => '_pdi_paywall_plans_' . $i . '_section',
+//            'type' => 'text',
+//            'options' => false,
+//            'placeholder' => null,
+//            'helper' => null,
+//            'supplemental' => '',
+//            'default' => null
+//        ),
     );
     foreach ($fields as $field) {
         pdi_paywall_register_setting('_pdi_paywall_plans', $field['uid']);
