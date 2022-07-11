@@ -60,7 +60,7 @@ if (!function_exists('pdi_paywall_get_plans')) {
                 $plans[$i] = $item;
             }
         }
-        var_dump($plans);exit();
+
         return $plans;
     }
 }

@@ -5,7 +5,12 @@
     <?php $is_subscriber = in_array('subscriber', $user->roles); ?>
     <?php $userID = $user->ID; ?>
 
-    <?php $price = $plan['auto_recurring']['transaction_amount']; ?>
+    <?php
+    $price = '0.00';
+    if (isset($plan['auto_recurring']['transaction_amount']) && !!$plan['auto_recurring']['transaction_amount']) {
+        $price = $plan['auto_recurring']['transaction_amount'];
+    }
+    ?>
     <div class="row pdi-paywall-plan ">
         <div class="pdi-paywall-header  panel panel-header panel-info ">
             <h3 class="panel-title"><?php print $plan['reason']; ?></h3>
@@ -13,7 +18,7 @@
         <div class="col-md-6">
             <div class="panel-body">
                 <div class="pdi-paywall-price">
-                    <?php list($real, $cent) = explode(',', number_format($price, 2, ',', '')); ?>
+                    <?php list($real, $cent) = explode(',', pdi_paywall_number_format_us($price, 'br')); ?>
                     <p>
                         <span class="signal">R$</span><span class="real"> <?php echo $real ?></span>
                         <span class="cent">,<?php echo $cent; ?></span>
@@ -27,19 +32,29 @@
         <div class="col-md-6">
 
             <?php
-            $subscriber_id = get_user_meta($userID, '_pdi_paywall_subscriber_id',true);
-            if ($is_subscriber){
-                if (!$subscriber_id){
+            $subscriber_id = get_user_meta($userID, '_pdi_paywall_subscriber_id', true);
+            if ($is_subscriber) {
+                if (!$subscriber_id) {
                     $subscriber_txt = 'Você já é assinante por cortesia';
-                }elseif ($subscriber_id == $plan['extern_plan_id']){
+                } elseif ($subscriber_id == $plan['extern_plan_id']) {
                     $subscriber_txt = 'Que bom! Você é assinante deste plano';
-                }else{
+                } else {
                     $subscriber_txt = 'Que bom! Você já é assinante de outro plano';
                 }
-                echo '<p class="subscriber_txt"><b>'.$subscriber_txt.'</b></p>';
+                echo '<p class="subscriber_txt"><b>' . $subscriber_txt . '</b></p>';
+
+            } else {
+                $subscriber_txt = 'Você possui acesso ao conteúdo gratuito.';
+
+            echo '<p class="subscriber_txt"><b>' . $subscriber_txt . '</b></p>';
+            echo '    
+                <div id="is_subscriber">
+                    <a class="btn btn-md btn-success" href="'.get_page_link(get_option('_pdi_paywall_page_plans')) .'">
+                        Quero um upgrade do plano
+                    </a>
+                </div>';
             }
             ?>
-
 
             <?php if ($is_subscriber && !!$subscriber_id): ?>
                 <div id="is_subscriber">
