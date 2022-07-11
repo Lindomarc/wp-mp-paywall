@@ -152,9 +152,9 @@ function pdi_paywall_settings_init()
         pdi_paywall_register_setting('_pdi_paywall_general', $field['uid']);
         add_settings_field($field['uid'], $field['label'], 'pdi_paywall_field_callback', '_pdi_paywall_general', $field['section'], $field);
     }
+
+
     $list_categories = get_categories();
-
-
     require_once('restrictions.php');
 
     require_once('restrictions_free.php');

@@ -3,7 +3,7 @@
  * Restrições
  */
 add_settings_section('_pdi_paywall_restrictions_section', 'Configurações de restrições', 'pdi_paywall_section_callback', '_pdi_paywall_restrictions');
-$list_categories = get_categories();
+
 foreach ($list_categories as $value) {
     $default = get_option('_pdi_paywall_restrictions_content_' . $value->term_id);
     $name = $value->name;
@@ -15,7 +15,7 @@ foreach ($list_categories as $value) {
         'options' => true,
         'placeholder' => null,
         'helper' => null,
-        'supplemental' => 'Conteúdo para assinantes',
+        'supplemental' => '',
         'default' => $default
     ];
 
