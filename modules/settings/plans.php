@@ -25,7 +25,25 @@ if (isset($plan_item->pdi->free_time)) {
 $plan_title = $plan_id ?? '';
 //for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
 
+
 add_settings_section('_pdi_paywall_plans_section', 'Plano ' . $plan_title, 'pdi_paywall_section_callback', '_pdi_paywall_plans');
+
+
+add_settings_field('form', 'form', 'pdi_paywall_table_callback', '_pdi_paywall_plans',
+    '_pdi_paywall_plans_section',
+    [
+        'uid' => '_pdi_paywall_plan_name_',
+        'label' => 'Nome',
+        'section' => '_pdi_paywall_plans_section',
+        'type' => 'list_plan',
+        'options' => false,
+        'placeholder' => null,
+        'helper' => null,
+        'supplemental' => '',
+        'default' => $plan_item->mp->reason ?? ''
+    ]
+);
+
 $fields = array(
     array(
         'uid' => '_pdi_paywall_plan_name_',
@@ -198,7 +216,8 @@ add_action('update_option__pdi_paywall_plan_back_url_', 'pdi_paywall_update_plan
 add_action('update_option__pdi_paywall_plan_id_', 'pdi_paywall_update_plans');
 //}
 
-function pdi_paywall_clear_plan(){
+function pdi_paywall_clear_plan()
+{
     delete_option('_pdi_paywall_plan_name_');
     delete_option('_pdi_paywall_plan_description_');
     delete_option('_pdi_paywall_plan_repetitions_');
