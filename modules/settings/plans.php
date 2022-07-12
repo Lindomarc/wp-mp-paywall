@@ -6,12 +6,14 @@
 
 $plan_action = $_GET['plan_action'] ?? '';
 $plan_id = $_GET['plan_id'] ?? '';
+$plan_item = null;
+if (isset($plan_id)) {
 
-
-$plan_item = json_decode(pdi_paywall_api_get('plans/' . $plan_id));
+    $plan_item = json_decode(pdi_paywall_api_get('plans/' . $plan_id));
 //var_dump($plan_id);
 $plan_item = $plan_item->data;
 
+}
 $plan_amount = '0,00';
 if (isset($plan_item->pdi->amount)) {
     $plan_amount = pdi_paywall_number_format_us($plan_item->pdi->amount, 'br');
