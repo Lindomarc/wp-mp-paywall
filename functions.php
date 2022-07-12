@@ -48,22 +48,33 @@ if (!function_exists('pdi_paywall_old_form_value')) {
 if (!function_exists('pdi_paywall_get_plans')) {
     function pdi_paywall_get_plans()
     {
-        $plans = [];
-        for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-            $plan = get_option('_pdi_paywall_plan_name_' . $i);
-            $item = pdi_paywall_array_plan($i, $plan);
-            if (isset($item['extern_plan_id']) && !!$item['extern_plan_id']) {
+        $response = json_decode(pdi_paywall_api_get('plans/datatable'),true);
 
-                $plans[$item['extern_plan_id']] = $item;
+        //for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
+        foreach ($response['data'] as $key => $plan){
+           // $plan = get_option('_pdi_paywall_plan_name_');
+            //$item = pdi_paywall_array_plan($key, $plan);
+            if (isset($plan['extern_plan_id']) && !!$plan['extern_plan_id']) {
+
+                $plans[$plan['extern_plan_id']] = $plan;
             } else {
 
-                $plans[$i] = $item;
+                $plans[$plan['id']] = $plan;
             }
         }
+        //}
 
         return $plans;
     }
 }
+
+if (!function_exists('pdi_paywall_get_plan')) {
+    function pdi_paywall_get_plan($id)
+    {
+        return json_decode(pdi_paywall_api_get('plans/'.$id),true);
+    }
+}
+
 function pdi_paywall_number_format_us($value, $tipo = 'us')
 {
     if ($value) {
@@ -79,26 +90,27 @@ function pdi_paywall_number_format_us($value, $tipo = 'us')
 
 function pdi_paywall_array_plan($i, $reason)
 {
-    $price = get_option('_pdi_paywall_plan_price_' . $i);
+    $plan = $_POST;
+    $price = $plan['_pdi_paywall_plan_price_'];
 
     return [
         'customer_key' => get_option('_pdi_paywall_payment_pdi_key'),
         'reason' => $reason,
-        'description' => get_option('_pdi_paywall_plan_description_' . $i),
+        'description' => $plan['_pdi_paywall_plan_description_'],
         'auto_recurring' => [
-            'repetitions' => (int)get_option('_pdi_paywall_plan_repetitions_' . $i),
-            'frequency_type' => get_option('_pdi_paywall_plan_frequency_type_' . $i),
+            'repetitions' => (int)$plan['_pdi_paywall_plan_repetitions_'],
+            'frequency_type' => $plan['_pdi_paywall_plan_frequency_type_'],
             'transaction_amount' => pdi_paywall_number_format_us($price),
             'free_trial' => [
-                'frequency' => (int)get_option('_pdi_paywall_plan_free_trial_frequency_' . $i),
-                'frequency_type' => get_option('_pdi_paywall_plan_free_trial_frequency_type' . $i)
+                'frequency' => (int)$plan['_pdi_paywall_plan_free_trial_frequency_'],
+                'frequency_type' => $plan['_pdi_paywall_plan_free_trial_frequency_type_']
             ]
         ],
-        'free_trial' => (bool)get_option('_pdi_paywall_plan_free_trial_' . $i),
-        'active' => (bool)get_option('_pdi_paywall_plan_active_' . $i),
-        'back_url' => get_option('_pdi_paywall_plan_back_url_' . $i),
-        'plan_id' => get_option('_pdi_paywall_plan_id_' . $i),
-        'extern_plan_id' => get_option('_pdi_paywall_plan_extern_plan_id_' . $i),
+        'free_trial' => $plan['_pdi_paywall_plan_free_trial_']??0,
+        'active' => true,
+        'back_url' => $plan['_pdi_paywall_plan_back_url_'],
+        'plan_id' => $plan['_pdi_paywall_plan_id_'],
+        'extern_plan_id' => $plan['_pdi_paywall_plan_extern_plan_id_']
     ];
 }
 
@@ -107,15 +119,16 @@ if (!function_exists('pdi_paywall_get_plans_by_id')) {
     {
         $plans = [];
 
-        for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-            $plan = get_option('_pdi_paywall_plan_name_' . $i);
+        //for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
+            $plan = get_option('_pdi_paywall_plan_name_');
+
             if (!empty($plan)) {
-                $extern_plan_id = get_option('_pdi_paywall_plan_extern_plan_id_' . $i);
+                $extern_plan_id = get_option('_pdi_paywall_plan_extern_plan_id_');
                 if ($extern_plan_id) {
                     $plans[$extern_plan_id] = pdi_paywall_array_plan($i, $plan);
                 }
             }
-        }
+//        }
 
         return $plans;
     }

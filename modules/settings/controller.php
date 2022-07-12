@@ -529,15 +529,19 @@ function pdi_paywall_update_plans()
 
     if (!empty($api_key)) {
         $plans = pdi_paywall_get_plans();
-        $response = [];
-        if (!empty($plans)) {
-//            for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-            $i = 0;
-            foreach ($plans as $key => $plan) {
-                $i++;
+        $pdi_paywall_plan_id = $_POST['_pdi_paywall_plan_id_']??'';
+        $pdi_paywall_plan_name = $_POST['_pdi_paywall_plan_name_']??'';
 
+        $plan =  pdi_paywall_array_plan($pdi_paywall_plan_id,$pdi_paywall_plan_name);
+        $response = [];
+        if (!empty($plan)) {
+//            for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
+//            $i = 0;
+//            foreach ($plans as $key => $plan) {
+//                $i++;
                 // enviar somente se valor positivo
-                if ($plan['auto_recurring']['transaction_amount']) {
+//                if ($plan['auto_recurring']['transaction_amount']) {
+
                     if (isset($plan['extern_plan_id']) && $plan['extern_plan_id']) {
                         $response = pdi_paywall_api_put('plans/' . $plan['plan_id'], $plan);
                     } else {
@@ -545,38 +549,27 @@ function pdi_paywall_update_plans()
                             $response = pdi_paywall_api_post('plans', $plan);
                             if (!empty($response)) {
                                 $plan_res = json_decode($response, true);
+
                                 if (isset($plan_res['data']['id'])) {
-                                    $id_save = '_pdi_paywall_plan_id_' . $i;
-                                    update_option($id_save, $plan_res['data']['id']);
-                                    $extern_plan_id_save = '_pdi_paywall_plan_extern_plan_id_' . $i;
-                                    update_option($extern_plan_id_save, $plan_res['data']['extern_plan_id']);
+                                    $url = $_SERVER['QUERY_STRING'];
+                                    $url .= '/wp-admin/options-general.php?page=pdi-paywall&tab=plans_options&plan_action=edit&plan_id='.$plan_res['data']['id'];
+                                    wp_redirect($url);
+                                    exit();
+                                }
+
+                                if (isset($plan_res['message'])){
+                                    add_settings_error('pdi-settings-save-error','pdi-error', 'Erro curl: '.$plan_res['message']);
                                 }
                             }
                         }
                     }
-                }
-            }
+//                }
+//            }
         }
         return $response;
     }
 }
 
-for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-    add_action('update_option__pdi_paywall_plan_name_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_price_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_description_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_repetitions_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_frequency_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_frequency_type_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_billing_day_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_free_trial_frequency_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_free_trial_frequency_type_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_free_trial_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_active_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_back_url_' . $i, 'pdi_paywall_update_plans');
-    //add_action('update_option__pdi_paywall_plan_extern_plan_id_' . $i, 'pdi_paywall_update_plans');
-    add_action('update_option__pdi_paywall_plan_id_' . $i, 'pdi_paywall_update_plans');
-}
 
 //add_action('update_option__pdi_paywall_restrictions_content', 'pdi_paywall_set_list_restrition');
 //add_action('get_option__pdi_paywall_restrictions_content', 'pdi_paywall_get_list_restrition');
@@ -604,3 +597,4 @@ function rudr_select2_enqueue()
     wp_enqueue_script('custom', PDI_PAYWALL_URL . '/js/custom.js', array('jquery', 'select2'));
 
 }
+

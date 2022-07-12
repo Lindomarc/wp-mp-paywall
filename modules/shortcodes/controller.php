@@ -113,13 +113,13 @@ function pdi_paywall_register_shortcode($atts, $content = null)
     ), $atts);
 
     if (!empty($a['plan'])) {
-        $plan = $a['plan'];
+        $plan_id = $a['plan'];
     } else if (isset($_GET['plan'])) {
-        $plan = $_GET['plan'];
+        $plan_id = $_GET['plan'];
     }
 
     $users_can_register = get_option('users_can_register');
-    if (empty($plan) && $users_can_register === '0') {
+    if (empty($plan_id) && $users_can_register === '0') {
         $content .= '<p>Por favor, <a href="' . get_page_link(get_option('_pdi_paywall_page_plans')) . '">vá para a página de Planos</a> para escolher um, e poder se registrar.</p>';
         return $content;
     }
@@ -146,8 +146,8 @@ function pdi_paywall_register_shortcode($atts, $content = null)
         $last = pdi_paywall_old_form_value('last_name', false);
     }
 
-    $plans = pdi_paywall_get_plans();
-    $plan = $plans[base64_decode($plan)];
+    $response = pdi_paywall_get_plan(base64_decode($plan_id));
+    $plan=$response['data']['pdi'];
     $public_token = get_option('_pdi_paywall_payment_public_key');
     $is_sandbox = get_option('_pdi_paywall_payment_sandbox');
 

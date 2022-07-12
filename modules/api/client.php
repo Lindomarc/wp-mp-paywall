@@ -69,7 +69,7 @@ function pdi_curl($options)
     $api_key = get_option('_pdi_paywall_payment_pdi_token');
     if (!empty($api_key)) {
         $data = '';
-        if (isset($options['data'])){
+        if (isset($options['data'])) {
             $data = wp_json_encode($options['data']);
         }
         $args = array(
@@ -78,30 +78,31 @@ function pdi_curl($options)
             'headers' => array(
                 "Accept" => "application/json",
                 "Content-Type" => "application/json",
-                "Authorization"=> "Bearer " . $api_key,
+                "Authorization" => "Bearer " . $api_key,
                 "x-customer-key" => get_option('_pdi_paywall_payment_pdi_key'),
             ),
         );
         $response = wp_remote_request(PDI_PAYWALL_API_URI . $options['path'], $args);
         $http_code = wp_remote_retrieve_response_code($response);
 
-
-        if (isset($response->{'errors'}['http_request_failed'])){
-            foreach ($response->{'errors'}['http_request_failed'] as $key => $message){
-
-                add_settings_error('pdi-settings-save-error','pdi-error', $message. ' #456712840');
+        if (isset($response->{'errors'}['http_request_failed'])) {
+            foreach ($response->{'errors'}['http_request_failed'] as $key => $message) {
+                if (function_exists('add_settings_error'))
+                    add_settings_error('pdi-settings-save-error', 'pdi-error', $message . ' #456712840');
             }
         }
-        if(isset($response->{'body'})){
-            $body = json_decode($response['body'],true);
-            if (isset($body['message'])){
-                add_settings_error('pdi-settings-save-error','pdi-error', $body['message']. ' #456712842');
+        if (isset($response->{'body'})) {
+            $body = json_decode($response['body'], true);
+            if (isset($body['message'])) {
+                if (function_exists('add_settings_error'))
+                    add_settings_error('pdi-settings-save-error', 'pdi-error', $body['message'] . ' #456712842');
             }
         }
         if ($http_code == '200' || $http_code == '201') {
             return wp_remote_retrieve_body($response);
         } else {
-            add_settings_error('pdi-settings-save-error','pdi-error', 'Erro curl: #456712841');
+            if (function_exists('add_settings_error'))
+                add_settings_error('pdi-settings-save-error', 'pdi-error', 'Erro curl: #456712841');
         }
     }
 

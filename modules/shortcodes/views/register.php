@@ -1,19 +1,15 @@
 <?php if (!is_user_logged_in()): ?>
 <?php else: ?>
-
-    <?php $user = wp_get_current_user(); ?>
-    <?php $is_subscriber = in_array('subscriber', $user->roles); ?>
-    <?php $userID = $user->ID; ?>
-
     <?php
-    $price = '0.00';
-    if (isset($plan['auto_recurring']['transaction_amount']) && !!$plan['auto_recurring']['transaction_amount']) {
-        $price = $plan['auto_recurring']['transaction_amount'];
-    }
+    $user = wp_get_current_user();
+    $is_subscriber = in_array('subscriber', $user->roles);
+    $userID = $user->ID;
+    $price = !!$plan['amount']?$plan['amount']:'0.00';
     ?>
+
     <div class="row pdi-paywall-plan ">
         <div class="pdi-paywall-header  panel panel-header panel-info ">
-            <h3 class="panel-title"><?php print $plan['reason']; ?></h3>
+            <h3 class="panel-title"><?php print $plan['name']; ?></h3>
         </div>
         <div class="col-md-6">
             <div class="panel-body">
@@ -112,7 +108,7 @@
 
                     const plan = <?php echo json_encode($plan, true); ?>;
 
-                    const amount = plan['auto_recurring']['transaction_amount'];
+                    const amount = plan['amount'];
 
                     const user_email = "<?php echo $email?>";
                     const first_name = "<?php echo $first?>";

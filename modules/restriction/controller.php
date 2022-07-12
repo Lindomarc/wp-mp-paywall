@@ -37,20 +37,6 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
     {
         $post_id = get_the_ID() ?? $post_id;
 
-        $no_restriction_content = pdi_paywall_get_free_restrictions();
-        if (!empty($no_restriction_content)) {
-            $post_categories = get_the_category($post_id);
-            if (!empty($post_categories)) {
-                foreach ($post_categories as $post_category) {
-                    if (in_array($post_category->term_id, $no_restriction_content)) {
-                        $is_restriction = false;
-
-                        return $is_restriction;
-                    }
-                }
-            }
-        }
-
 
         $is_restriction = false;
         if (is_user_logged_in()) {
@@ -59,6 +45,19 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
 
             if (!array_intersect($not_bypass_roles, $user->roles)) {
                 return $is_restriction;
+            }
+        }
+
+        $no_restriction_content = pdi_paywall_get_free_restrictions();
+        if (!empty($no_restriction_content)) {
+            $post_categories = get_the_category($post_id);
+            if (!empty($post_categories)) {
+                foreach ($post_categories as $post_category) {
+                    if (in_array($post_category->term_id, $no_restriction_content)) {
+                        $is_restriction = false;
+                        return $is_restriction;
+                    }
+                }
             }
         }
 

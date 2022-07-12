@@ -1,17 +1,19 @@
 <div class="pdi-paywall-plans-container panel">
+
     <?php foreach ($plans as $key => $plan) { ?>
 
-        <?php if (isset($plan['reason']) && !!$plan['reason']) { ?>
+
+        <?php if (isset($plan['name']) && !!$plan['name']) { ?>
             <div id="option-<?php print $key; ?>" class="pdi-paywall-plan ">
                 <div class="pdi-paywall-header  panel panel-header panel-info ">
-                    <h3 class="panel-title"><?php print $plan['reason']; ?></h3>
+                    <h3 class="panel-title"><?php print $plan['name']; ?></h3>
                 </div>
                 <div class="panel-body">
                 <div class="pdi-paywall-price">
                     <?php
                     $price = '0.00';
-                    if (isset($plan['auto_recurring']['transaction_amount']) && !!$plan['auto_recurring']['transaction_amount']){
-                        $price  = $plan['auto_recurring']['transaction_amount'];
+                    if (isset($plan['amount']) && !!$plan['amount']){
+                        $price  = $plan['amount'];
                     }
 
                     list($real, $cent) = explode(',', pdi_paywall_number_format_us($price,'br')); ?>

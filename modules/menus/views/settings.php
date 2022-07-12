@@ -59,7 +59,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'general_options';
 
     });
     tinymce.init({
-        selector: 'textarea#_pdi_paywall_plan_description_1,textarea#_pdi_paywall_plan_description_2,textarea#_pdi_paywall_plan_description_3',
+        selector: 'textarea#_pdi_paywall_plan_description_,textarea',
         width:350,
         height: 500,
         menubar: false,
