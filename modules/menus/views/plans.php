@@ -323,7 +323,7 @@
             jQuery(`#${id}`).removeClass('error');
         },
         planAdd: () => {
-            functions.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>/`;
+            functions.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>`;
             functions.form_method = 'post';
         },
         planEdit: (plan_id) => {
