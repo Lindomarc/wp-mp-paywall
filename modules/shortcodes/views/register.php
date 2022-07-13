@@ -4,12 +4,12 @@
     $user = wp_get_current_user();
     $is_subscriber = in_array('subscriber', $user->roles);
     $userID = $user->ID;
-    $price = !!$plan['amount']?$plan['amount']:'0.00';
+    $price = !!$plan['transaction_amount']?$plan['transaction_amount']:'0.00';
     ?>
 
     <div class="row pdi-paywall-plan ">
         <div class="pdi-paywall-header  panel panel-header panel-info ">
-            <h3 class="panel-title"><?php print $plan['name']; ?></h3>
+            <h3 class="panel-title"><?php print $plan['reason']; ?></h3>
         </div>
         <div class="col-md-6">
             <div class="panel-body">
@@ -52,7 +52,7 @@
             }
             ?>
 
-            <?php if ($is_subscriber && !!$subscriber_id): ?>
+            <?php if (!!$is_subscriber && !!$subscriber_id): ?>
                 <div id="is_subscriber">
                     <button class="btn btn-md btn-danger" onclick="unsubscriber('<?php echo $subscriber_id ?>')">
                         Cancelar Assinatura
@@ -108,7 +108,7 @@
 
                     const plan = <?php echo json_encode($plan, true); ?>;
 
-                    const amount = plan['amount'];
+                    const amount = plan['transaction_amount'];
 
                     const user_email = "<?php echo $email?>";
                     const first_name = "<?php echo $first?>";
@@ -149,7 +149,7 @@
                             },
                             onSubmit: (cardData) => {
                                 cardData.preapproval_plan_id = plan['extern_plan_id'];
-                                cardData.plan_id = plan['plan_id'];
+                                cardData.plan_id = plan['id'];
                                 cardData.first_name = first_name;
                                 cardData.last_name = last_name;
                                 cardData.external_reference = external_reference;
@@ -177,7 +177,7 @@
                                                         .then((response) => {
                                                             if (response) {
                                                                 //todo melhorar essa url
-                                                                window.location.replace(plan.back_url);
+                                                                window.location.replace(plan['back_url']);
                                                             }
                                                         })
                                                 }
