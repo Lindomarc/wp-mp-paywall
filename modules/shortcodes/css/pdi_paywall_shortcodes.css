@@ -29,7 +29,8 @@
 }
 
 .pdi-paywall-plans-container .signal {
-    font-size: 1.2rem;
+    font-size: 3.2rem;
+    font-weight: 600;
 }
 .pdi-paywall-plans-container .real {
     font-size: 3.2rem;
@@ -65,10 +66,18 @@
     font-weight: bold;
 }
 
+.pdi-paywall-plan .pdi-paywall-allowed-content ul{
+    font-size: 13px;
+    font-weight: 600;
+    text-align: start;
+}
+.pdi-paywall-plan .pdi-paywall-allowed-content  ul ol{
+    font-size: 16px;
+    padding: 5px 0 7px!important;
+    margin-bottom: 0!important;
+}
 .pdi-paywall-plan .pdi-paywall-allowed-content {
     border-top: 1px solid #cccccc;
-    border-bottom: 1px solid #cccccc;
-    margin: 5rem 0;
     padding: 1em 0;
     min-height: 10rem;
 }
