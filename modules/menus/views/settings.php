@@ -10,7 +10,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'general_options';
     <h2 class="nav-tab-wrapper">
         <a href="?page=pdi-paywall&tab=general_options" class="nav-tab <?php echo $active_tab == 'general_options' ? 'nav-tab-active' : ''; ?>">Geral</a>
         <a href="?page=pdi-paywall&tab=restrictions_options" class="nav-tab <?php echo $active_tab == 'restrictions_options' ? 'nav-tab-active' : ''; ?>">Conteúdo</a>
-        <a href="?page=pdi-paywall&tab=plans_options" class="nav-tab <?php echo $active_tab == 'plans_options' ? 'nav-tab-active' : ''; ?>">Planos</a>
+        <a href="?page=pdi_paywall_plans_view" class="nav-tab <?php echo $active_tab == 'plans_options' ? 'nav-tab-active' : ''; ?>">Planos</a>
         <a href="?page=pdi-paywall&tab=payments_options" class="nav-tab <?php echo $active_tab == 'payments_options' ? 'nav-tab-active' : ''; ?>">Pagamentos</a>
         <a href="?page=pdi-paywall&tab=email_options" class="nav-tab <?php echo $active_tab == 'email_options' ? 'nav-tab-active' : ''; ?>">Email</a>
     </h2>
@@ -19,10 +19,10 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'general_options';
 
             <?php
             switch ($active_tab) {
-                case 'plans_options':
-                    settings_fields('_pdi_paywall_plans');
-                    do_settings_sections('_pdi_paywall_plans');
-                    break;
+//                case 'plans_options':
+//                    settings_fields('_pdi_paywall_plans');
+//                    do_settings_sections('_pdi_paywall_plans');
+//                    break;
 
                 case 'restrictions_options':
                     settings_fields('_pdi_paywall_restrictions');
