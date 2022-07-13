@@ -39,13 +39,12 @@
                     console.log(response)
                     result.then(({data}) => {
                         let reason;
-                        let link_plan;
-                        let template;
+
 
                         Object.entries(data).forEach(([key, value]) => {
                             console.log(key,value)
 
-                            link_plan = btoa(value['extern_plan_id']??value['id'])
+                            let link_plan = btoa(value['extern_plan_id']??value['id'])
                             reason = value['reason']
 
                             let transaction_amount = parseFloat(value['transaction_amount']);
@@ -54,7 +53,7 @@
                             let priceDecimal = amount[1]??'00';
                             let description = value['description']
 
-                            templatePlan= `
+                            let templatePlan= `
                                 <div id="option-${link_plan}" class="pdi-paywall-plan ">
                                     <div class="pdi-paywall-header  panel panel-header panel-info ">
                                         <h3 class="panel-title">${reason}</h3>
@@ -70,7 +69,7 @@
                                     </div>
                                     <div class="pdi-paywall-payment">
                                         <div class="pdi-paywall-payment-button">
-                                            <a href="${PAGE_REGISTER}/?plan=${link_plan}">
+                                            <a href="${PAGE_REGISTER}?plan=${link_plan}">
                                                 Assinar
                                             </a>
                                         </div>

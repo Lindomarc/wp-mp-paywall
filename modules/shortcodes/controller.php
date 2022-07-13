@@ -145,9 +145,7 @@ function pdi_paywall_register_shortcode($atts, $content = null)
         $first = pdi_paywall_old_form_value('first_name', false);
         $last = pdi_paywall_old_form_value('last_name', false);
     }
-
-    $response = pdi_paywall_get_plan(base64_decode($plan_id));
-    $plan=$response['data']['pdi'];
+    $plan= json_decode(pdi_paywall_api_get('plans/show_extern_id/'.base64_decode($plan_id)),true);
     $public_token = get_option('_pdi_paywall_payment_public_key');
     $is_sandbox = get_option('_pdi_paywall_payment_sandbox');
 

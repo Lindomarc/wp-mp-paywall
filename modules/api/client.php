@@ -3,7 +3,6 @@
 if (!function_exists('pdi_paywall_api_get')) {
     function pdi_paywall_api_get($path)
     {
-        sleep(1);
         return pdi_curl([
             'path' => $path,
             'method' => 'GET'
