@@ -86,7 +86,7 @@ function pdi_paywall_plans_shortcode($atts, $content = null)
 
     $page_register = get_page_link(get_option('_pdi_paywall_page_register'));
 
-    $plans = pdi_paywall_get_plans();
+//    $plans = pdi_paywall_get_plans();
 
     ob_start();
     require_once(PDI_PAYWALL_MODULES_PATH . 'shortcodes/views/plans.php');
