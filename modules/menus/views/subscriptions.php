@@ -61,8 +61,11 @@
                         if (type === "sort" || type === "type") {
                             return data;
                         }
-                        let date = new Date(data)
-                        return date.toLocaleString('pt-BR', {timeZone: 'UTC'})
+                        if (!!data){
+                            let date = new Date(data)
+                            return date.toLocaleString('pt-BR', {timeZone: 'UTC'})
+                        }
+                        return '';
                     }
                 },
             ],
