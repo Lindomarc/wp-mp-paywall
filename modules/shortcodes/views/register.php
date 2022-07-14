@@ -7,27 +7,27 @@
     $price = !!$plan['transaction_amount']?$plan['transaction_amount']:'0.00';
     ?>
 
-    <div class="row pdi-paywall-plan ">
+    <div class=" pdi-paywall-plan ">
         <div class="pdi-paywall-header  panel panel-header panel-info ">
             <h3 class="panel-title"><?php print $plan['reason']; ?></h3>
         </div>
-        <div class="col-md-6">
-            <div class="panel-body">
-                <div class="pdi-paywall-price">
-                    <?php list($real, $cent) = explode(',', pdi_paywall_number_format_us($price, 'br')); ?>
-                    <p>
-                        <span class="signal">R$</span><span class="real"> <?php echo $real ?></span>
-                        <span class="cent">,<?php echo $cent; ?></span>
-                    </p>
-                    <div class="pdi-paywall-allowed-content">
-                        <p><?php print nl2br($plan['description']); ?></p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel-body">
+                    <div class="pdi-paywall-price">
+                        <?php list($real, $cent) = explode(',', pdi_paywall_number_format_us($price, 'br')); ?>
+                        <p>
+                            <span class="signal">R$</span><span class="real"> <?php echo $real ?></span>
+                            <span class="cent">,<?php echo $cent; ?></span>
+                        </p>
+                        <div class="pdi-paywall-allowed-content">
+                            <p><?php print nl2br($plan['description']); ?></p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-
-            <?php
+            <div class="col-md-6">
+             <?php
             $subscriber_id = get_user_meta($userID, '_pdi_paywall_subscriber_id', true);
             if ($is_subscriber) {
                 if (!$subscriber_id) {
