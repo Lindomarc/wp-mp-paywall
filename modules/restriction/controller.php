@@ -141,16 +141,21 @@ if (!function_exists('pdi_paywall_content_restriction')) {
                 if (!$limit_content){
                     $limit_content = 200;
                 }
+
                 $content = substr(strip_tags($content), 0, $limit_content); // verificar para colocar um valor custom ao invés de somente 100
+
 
                 $login = get_page_link(get_option('_pdi_paywall_page_login'));
                 $register = get_page_link(get_option('_pdi_paywall_page_register'));
                 $plans = get_page_link(get_option('_pdi_paywall_page_plans'));
-                if (is_user_logged_in()) {
-                    require_once(PDI_PAYWALL_MODULES_PATH . 'restriction/views/registered.php');
-                } else {
-                    require_once(PDI_PAYWALL_MODULES_PATH . 'restriction/views/guest.php');
-                }
+
+                ob_start();
+                    if (is_user_logged_in()) {
+                        require_once(PDI_PAYWALL_MODULES_PATH . 'restriction/views/registered.php');
+                    } else {
+                        require_once(PDI_PAYWALL_MODULES_PATH . 'restriction/views/guest.php');
+                    }
+                $content .= ob_get_clean();
 
             }
         }
