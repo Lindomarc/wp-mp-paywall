@@ -45,14 +45,14 @@ class Mailtpl_Admin {
 	}
 
 
-//	/**
-//	 * Create the wp-admin menu link
-//	 */
-//	public function add_menu_link() {
+	/**
+	 * Create the wp-admin menu link
+	 */
+	public function add_menu_link() {
 //		$link = $this->get_customizer_link();
 //		add_submenu_page( 'themes.php', 'Email Templates', 'Email Templates', apply_filters( 'mailtpl/roles', 'edit_theme_options'), $link , null );
-//
-//	}
+
+	}
 	/**
 	 * If we are in our template strip everything out and leave it clean
 	 * @since 1.0.0
