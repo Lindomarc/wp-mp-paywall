@@ -53,6 +53,7 @@ function pdi_paywall_activate()
     require_once(PDI_PAYWALL_PATH . 'functions.php');
     require_once(PDI_PAYWALL_PATH . 'login-registration-modal-pro.php');
     require_once(PDI_PAYWALL_PATH . 'wp-last-login.php');
+    require_once(PDI_PAYWALL_PATH . 'email-templates/email-templates.php');
 
     /**
      * Sets a default meta value for all users.

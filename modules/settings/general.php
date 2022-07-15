@@ -96,7 +96,7 @@ $fields = array(
         'options' => false,
         'placeholder' => null,
         'helper' => null,
-        'supplemental' => 'Adicione este shortcode na sua página de Login: [pdi_paywall_login]. Está página não pode ser restrita.',
+        'supplemental' => 'Adicione este shortcode na sua página de Login: [pdi_paywall_login]',
         'default' => null
     ),
     array(
@@ -107,7 +107,7 @@ $fields = array(
         'options' => false,
         'placeholder' => null,
         'helper' => null,
-        'supplemental' => 'Adicione este shortcode na sua página de Registro: [pdi_paywall_register]. Está página não pode ser restrita.',
+        'supplemental' => 'Adicione este shortcode na sua página de Registro: [pdi_paywall_register]',
         'default' => null
     ),
     array(
@@ -118,7 +118,7 @@ $fields = array(
         'options' => false,
         'placeholder' => null,
         'helper' => null,
-        'supplemental' => 'Página de confirmação conta. Está página não pode ser restrita.',
+        'supplemental' => 'Página de confirmação conta',
         'default' => null
     ),
     array(
@@ -129,7 +129,7 @@ $fields = array(
         'options' => false,
         'placeholder' => null,
         'helper' => null,
-        'supplemental' => 'Adicione este shortcode na sua página de Perfil: [pdi_paywall_profile]. Está página não pode ser restrita.',
+        'supplemental' => 'Adicione este shortcode na sua página de Perfil: [pdi_paywall_profile]',
         'default' => null
     ),
     array(
@@ -140,7 +140,18 @@ $fields = array(
         'options' => false,
         'placeholder' => null,
         'helper' => null,
-        'supplemental' => 'Adicione este shortcode na sua página de Planos: [pdi_paywall_plans]. Está página não pode ser restrita.',
+        'supplemental' => 'Adicione este shortcode na sua página de Planos: [pdi_paywall_plans]',
+        'default' => null
+    ),
+    array(
+        'uid' => '_pdi_paywall_page_recover_password',
+        'label' => 'Página para recuperar senha',
+        'section' => '_pdi_paywall_pages_section',
+        'type' => 'pages',
+        'options' => false,
+        'placeholder' => null,
+        'helper' => null,
+        'supplemental' => 'Adicione este shortcode na sua página de Recuperar Senha: [pdi_paywall_recover_password]',
         'default' => null
     ),
 );
@@ -158,7 +169,7 @@ $field = [
     'options' => false,
     'placeholder' => null,
     'helper' => null,
-    'supplemental' => 'Customizar html do bloco de restrição',
+    'supplemental' => 'Customizar html do bloco de restrição (vázio para exibir o padrão)',
     'default' => null
 ];
 pdi_paywall_register_setting('_pdi_paywall_general', $field['uid']);

@@ -76,6 +76,10 @@ function pdi_paywall_login_shortcode($atts, $content = null)
 //
 //    return $content;
 }
+add_shortcode('pdi_paywall_recover_password', 'pdi_paywall_recover_password_shortcode');
+function pdi_paywall_recover_password_shortcode(){
+   return do_shortcode("[lrm_lostpassword_form logged_in_message=\"Você está logado!\"]");
+}
 
 add_shortcode('pdi_paywall_plans', 'pdi_paywall_plans_shortcode');
 function pdi_paywall_plans_shortcode($atts, $content = null)

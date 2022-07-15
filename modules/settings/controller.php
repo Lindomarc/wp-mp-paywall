@@ -12,7 +12,7 @@ function pdi_paywall_settings_init()
     require_once('restrictions_free.php');
 
 
-    require_once('plans.php');
+//    require_once('plans.php');
 
     /**
      * Payment settings
