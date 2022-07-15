@@ -1,3 +1,13 @@
+<?php
+$layout_restriction = get_option('_pdi_paywall_html_restriction');
+
+if ($layout_restriction):
+
+print $layout_restriction;
+?>
+
+<?php else:?>
+
 <style>
     .pdi_paywall_restriction_wrap {
         position: relative;
@@ -38,4 +48,4 @@
     </div>
 </div>
 
-
+<?php endif;

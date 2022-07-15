@@ -1,8 +1,8 @@
 <?php
 $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'general_options';
 ?>
-<link href="<?php echo plugins_url('/css/pdi_paywall_custom.css', __FILE__) ?>" rel="stylesheet" />
-<script src="<?php echo plugins_url('/js/pdi_paywall_custom.js', __FILE__) ?>"></script>
+<link href="<?php echo PDI_PAYWALL_URL.'css/custom.css' ?>" rel="stylesheet" />
+<script src="<?php echo PDI_PAYWALL_URL.'js/custom.js' ?>"></script>
 <script src="<?php echo plugins_url('../../../vendor/js/tinymce/tinymce.min.js', __FILE__)?>"></script>
 <div class="wrap">
     <h2>PDI Paywall</h2>
@@ -58,11 +58,16 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'general_options';
         menubar: false,
 
     });
-    tinymce.init({
-        selector: 'textarea#_pdi_paywall_plan_description_,textarea',
-        width:350,
-        height: 500,
-        menubar: false,
-
-    });
+    //     tinymce.init({
+    //     selector: 'textarea#_pdi_paywall_html_restriction',
+    //     plugins: [
+    //     'a11ychecker','advlist','advcode','advtable','autolink','checklist','export',
+    //     'lists','link','image','charmap','preview','anchor','searchreplace','visualblocks',
+    //     'powerpaste','fullscreen','formatpainter','insertdatetime','media','table','help','wordcount'
+    //     ],
+    //         menubar: false,
+    //     toolbar: 'undo redo | formatpainter casechange blocks | bold italic backcolor | ' +
+    //     'alignleft aligncenter alignright alignjustify | ' +
+    //     'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
+    // });
 </script>
