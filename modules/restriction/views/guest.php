@@ -34,7 +34,7 @@
 <div class="pdi_paywall_restriction_wrap">
     <div class="pdi_paywall_restriction_message">
 		<a href="<?php echo get_page_link(get_option('_pdi_paywall_page_plans'))?>"  class="btn btn-info btn-lg">Assinatura para acesso completo.</a>
-		<a href="<?php echo get_page_link(get_option('_pdi_paywall_page_login'))?>" class="btn btn-info btn-lg">Login para ler o conteúdo.</a>
+		<a href="<?php echo get_page_link(get_option('_pdi_paywall_page_login'))?>" class="btn btn-info btn-lg ">Login para ler o conteúdo.</a>
     </div>
 </div>
 

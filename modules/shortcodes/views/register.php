@@ -171,7 +171,9 @@
                                                 if (!!data.card_token_id) {
                                                     swal({
                                                         title: "Bem Vindo!",
-                                                        text: "Agora você é nosso assinante e terá acesso a conteúdo exclusivo",
+                                                        text: `Obrigado por cadastrar-se,
+                                                        seu pagamento está sendo processado,
+                                                        esteja atendo ao seu e-mail`,
                                                         icon: "success"
                                                     })
                                                         .then((response) => {
