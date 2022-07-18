@@ -1,15 +1,19 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"/>
+
+
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css" rel="stylesheet">
+
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<?php echo '<script src="' . PDI_PAYWALL_URL . 'js/pdi_paywall_custom.js?v=' . PDI_PAIWALL_VERSION . '"></script>'; ?>
+
 <div class="container">
-
-
     <h1 class="mb-5 mt-5">PDI Paywall - Planos</h1>
     <table id="table_plans" class="table table-bordered display data-table responsive nowrap">
         <thead>
@@ -173,200 +177,57 @@
 </style>
 
 <script>
-    const beforeSend = function (xhr) {
-        xhr.setRequestHeader('Authorization', 'Bearer <?php echo get_option('_pdi_paywall_payment_pdi_token'); ?>');
-        xhr.setRequestHeader('x-customer-key', '<?php echo get_option('_pdi_paywall_payment_pdi_key'); ?>');
-    }
+
+
 
     const formPlan = document.getElementById("form-plan");
-
-    /**
-     * We'll define the `handleFormSubmit()` event handler function in the next step.
-     */
     formPlan.addEventListener("submit", handleFormSubmit);
 
-    /**
-     * Event handler for a form submit event.
-     *
-     * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event
-     *
-     * @param {SubmitEvent} event
-     */
-    async function handleFormSubmit(event) {
-        /**
-         * This prevents the default behaviour of the browser submitting
-         * the form so that we can handle things instead.
-         */
-        event.preventDefault();
+    jQuery(document).ready(function ($) {
 
-        /**
-         * This gets the element which the event handler was attached to.
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/API/Event/currentTarget
-         */
-        const form = event.currentTarget;
-
-        /**
-         * This takes the API URL from the form's `action` attribute.
-         */
-        const url = functions.form_action;
-
-        try {
-            /**
-             * This takes all the fields in the form and makes their values
-             * available through a `FormData` instance.
-             *
-             * @see https://developer.mozilla.org/en-US/docs/Web/API/FormData
-             */
-            const formData = new FormData(form);
-
-            /**
-             * We'll define the `postFormDataAsJson()` function in the next step.
-             */
-            const responseData = await postFormDataAsJson({url, formData});
-
-            /**
-             * Normally you'd want to do something with the response data,
-             * but for this example we'll just log it to the console.
-             */
-            console.log({responseData});
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-
-    async function postFormDataAsJson({url, formData}) {
-        /**
-         * We can't pass the `FormData` instance directly to `fetch`
-         * as that will cause it to automatically format the request
-         * body as "multipart" and set the `Content-Type` request header
-         * to `multipart/form-data`. We want to send the request body
-         * as JSON, so we're converting it to a plain object and then
-         * into a JSON string.
-         *
-         * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
-         * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries
-         * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
-         */
-        const plainFormData = Object.fromEntries(formData.entries());
-        const formDataJsonString = JSON.stringify(plainFormData);
-
-        const fetchOptions = {
-            /**
-             * The default method for a request with fetch is GET,
-             * so we must tell it to use the POST HTTP method.
-             */
-            method: functions.form_method,
-            /**
-             * These headers will be added to the request and tell
-             * the API that the request body is JSON and that we can
-             * accept JSON responses.
-             */
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-                "Authorization": "Bearer <?php echo get_option('_pdi_paywall_payment_pdi_token'); ?>",
-                "x-customer-key": "<?php echo get_option('_pdi_paywall_payment_pdi_key'); ?>",
-            },
-            /**
-             * The body of our POST request is the JSON string that
-             * we created above.
-             */
-            body: formDataJsonString,
-        };
-
-        const response = await fetch(url, fetchOptions);
-
-        if (!response.ok) {
-            const errorMessage = await response.text();
-            const errorJson = JSON.parse(errorMessage);
-            if (!!errorJson.errors) {
-                functions.checkErrors(errorJson);
-                pdiTools._pdi_alert_error({status: "Erros", message: errorJson['message']})
-            }
-            throw new Error(errorMessage);
-        }
-        functions.reloadTable();
-        return response.json();
-    }
-
-    const functions = {
-        form_action: '',
-        form_method: '',
-        form: {},
-        tablePlans: null,
-        reloadTable: () => {
-            jQuery('#planForm').modal('toggle');
-            functions.tablePlans.ajax.reload()
-        },
-        fill: (id, value) => {
-            jQuery(`#${id}`).val(value).trigger('change');
-            functions.form[id] = value
-        },
-        formClear: () => {
-            jQuery('form input,form textarea,form select').val('').removeClass('error').trigger('change')
-        },
-        checkErrors: (errorJson) => {
-            if (!!errorJson.errors) {
-                Object.entries(errorJson.errors).forEach(([key, value]) => {
-                    jQuery(`#${key}`).addClass('error');
-                })
-            }
-        },
-        clearError: (id) => {
+        functionsForm.clearError = (id) => {
             jQuery(`#${id}`).removeClass('error');
-        },
-        planAdd: () => {
-            functions.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>`;
-            functions.form_method = 'post';
-        },
-        planEdit: (plan_id) => {
-            functions.formClear();
-            functions.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>/${plan_id}`;
-            functions.form_method = 'put';
+        }
+        functionsForm.planAdd = () => {
+            functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>`;
+            functionsForm.form_method = 'post';
+        }
+
+        functionsForm.planEdit = (plan_id) => {
+            functionsForm.formClear();
+            functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>/${plan_id}`;
+            functionsForm.form_method = 'put';
             return new Promise((resolve, reject) => {
-                fetch('<?php echo PDI_PAYWALL_API_URI . 'plans/'; ?>' + plan_id, {
+                fetch(functionsForm.form_action, {
                     method: "get",
                     headers: {
                         "Accept": "application/json",
                         "Content-Type": "application/json",
-                        "Authorization": "Bearer <?php echo get_option('_pdi_paywall_payment_pdi_token'); ?>",
-                        "x-customer-key": "<?php echo get_option('_pdi_paywall_payment_pdi_key'); ?>",
+                        "Authorization": `Bearer ${PDI_PAYWALL_PAYMENT_PDI_TOKEN}`,
+                        "x-customer-key": `${PDI_PAYWALL_PAYMENT_PDI_KEY}`,
                     }
                 })
                     .then((response) => {
                         resolve()
                         const result = response.json()
+
                         result.then(({data}) => {
-
-                            if ((!!data.status && data.status !== 200) && !!data.message) {
-                                pdiTools._pdi_alert_error(data)
-                            } else {
-
-                                // "reason",
-                                //     "description",
-                                //     "repetitions",
-                                //     "frequency_type",
-                                //     "free_trial",
-                                //     "free_trial_frequency",
-                                //     "free_trial_frequency_type",
-                                //     "back_url",
-                                //     "transaction_amount",
-                                //     "id",
-                                //     "extern_plan_id"
-
-                                functions.fill('reason', data['pdi'].reason)
-                                functions.fill('description', data['pdi'].description)
-                                functions.fill('repetitions', data['pdi'].repetitions)
-                                functions.fill('transaction_amount', data['pdi'].transaction_amount)
-                                functions.fill('back_url', data['pdi'].back_url)
-                                functions.fill('period', data['pdi'].period)
-                                functions.fill('plan_id', data['pdi'].id)
-                                functions.fill('extern_plan_id', data['pdi'].extern_plan_id)
-                                functions.fill('free_trial', data['pdi'].free_trial)
-                                jQuery('#planForm').modal('toggle');
+                            console.log(data)
+                            if (data) {
+                                if ((!!data.status && data.status !== 200) && !!data.message) {
+                                    pdiTools._pdi_alert_error(data)
+                                } else {
+                                    functionsForm.fill('reason', data['pdi'].reason)
+                                    functionsForm.fill('description', data['pdi'].description)
+                                    functionsForm.fill('repetitions', data['pdi'].repetitions)
+                                    functionsForm.fill('transaction_amount', data['pdi'].transaction_amount)
+                                    functionsForm.fill('back_url', data['pdi'].back_url)
+                                    functionsForm.fill('period', data['pdi'].period)
+                                    functionsForm.fill('plan_id', data['pdi'].id)
+                                    functionsForm.fill('extern_plan_id', data['pdi'].extern_plan_id)
+                                    functionsForm.fill('free_trial', data['pdi'].free_trial)
+                                    jQuery('#planForm').modal('toggle');
+                                }
                             }
                         })
                     })
@@ -380,13 +241,13 @@
                         })
                     })
             });
-        },
-        planSave: (event) => {
+        }
+
+        functionsForm.planSave = (event) => {
             event.preventDefault();
             const form = event.currentTarget;
             const formData = new FormData(form);
 
-            console.log(form)
             let method = 'post'
             let plan_id = jQuery('#plan_id').val();
             let id = ''
@@ -433,18 +294,16 @@
                     })
             });
         }
-    }
 
-    jQuery(document).ready(function ($) {
-        let counter = 1;
-        functions.tablePlans = $('#table_plans').DataTable({
+
+        functionsForm.tablePlans = $('#table_plans').DataTable({
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json'
             },
             ajax: {
                 "url": '<?php echo PDI_PAYWALL_API_URI . 'plans/datatable'; ?>',
                 "type": 'get',
-                "beforeSend": beforeSend,
+                "beforeSend": functionsForm.beforeSend,
             },
             'responsive': true,
             'processing': true,
@@ -528,7 +387,7 @@
                         }
                         return `
                         <div class="button-group">
-                            <button class="btn btn-xs" onclick="functions.planEdit(${data})">Editar</button>
+                            <button class="btn btn-xs" onclick="functionsForm.planEdit(${data})">Editar</button>
                         </div>`
                     }
                 },
@@ -538,14 +397,16 @@
                 {
                     text: 'Adicionar',
                     action: function (e, dt, node, config) {
-                        functions.formClear();
-                        functions.planAdd();
-                        $('#planForm').modal('toggle');
+                        functionsForm.formClear();
+                        functionsForm.planAdd();
+                        jQuery('#planForm').modal('toggle');
                     }
                 }
             ]
         });
 
 
-    });
+    })
+
+
 </script>

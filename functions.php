@@ -48,11 +48,11 @@ if (!function_exists('pdi_paywall_old_form_value')) {
 if (!function_exists('pdi_paywall_get_plans')) {
     function pdi_paywall_get_plans()
     {
-        $response = json_decode(pdi_paywall_api_get('plans/datatable'),true);
+        $response = json_decode(pdi_paywall_api_get('plans/datatable'), true);
 
         //for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-        foreach ($response['data'] as $key => $plan){
-           // $plan = get_option('_pdi_paywall_plan_name_');
+        foreach ($response['data'] as $key => $plan) {
+            // $plan = get_option('_pdi_paywall_plan_name_');
             //$item = pdi_paywall_array_plan($key, $plan);
             if (isset($plan['extern_plan_id']) && !!$plan['extern_plan_id']) {
 
@@ -71,7 +71,7 @@ if (!function_exists('pdi_paywall_get_plans')) {
 if (!function_exists('pdi_paywall_get_plan')) {
     function pdi_paywall_get_plan($id)
     {
-        return json_decode(pdi_paywall_api_get('plans/'.$id),true);
+        return json_decode(pdi_paywall_api_get('plans/' . $id), true);
     }
 }
 
@@ -106,7 +106,7 @@ function pdi_paywall_array_plan($i, $reason)
                 'frequency_type' => $plan['_pdi_paywall_plan_free_trial_frequency_type_']
             ]
         ],
-        'free_trial' => $plan['_pdi_paywall_plan_free_trial_']??0,
+        'free_trial' => $plan['_pdi_paywall_plan_free_trial_'] ?? 0,
         'active' => true,
         'back_url' => $plan['_pdi_paywall_plan_back_url_'],
         'plan_id' => $plan['_pdi_paywall_plan_id_'],
@@ -120,14 +120,14 @@ if (!function_exists('pdi_paywall_get_plans_by_id')) {
         $plans = [];
 
         //for ($i = 1; $i <= PDI_PAYWALL_PLAN_LIMIT; $i++) {
-            $plan = get_option('_pdi_paywall_plan_name_');
+        $plan = get_option('_pdi_paywall_plan_name_');
 
-            if (!empty($plan)) {
-                $extern_plan_id = get_option('_pdi_paywall_plan_extern_plan_id_');
-                if ($extern_plan_id) {
-                    $plans[$extern_plan_id] = pdi_paywall_array_plan($i, $plan);
-                }
+        if (!empty($plan)) {
+            $extern_plan_id = get_option('_pdi_paywall_plan_extern_plan_id_');
+            if ($extern_plan_id) {
+                $plans[$extern_plan_id] = pdi_paywall_array_plan($i, $plan);
             }
+        }
 //        }
 
         return $plans;
@@ -163,8 +163,8 @@ if (!function_exists('pdi_paywall_get_restrictions')) {
         $restrictions = [];
 
         $restrictions_content = get_categories();
-        foreach ($restrictions_content as $value){
-            if (get_option('_pdi_paywall_restrictions_content_'.$value->term_id)){
+        foreach ($restrictions_content as $value) {
+            if (get_option('_pdi_paywall_restrictions_content_' . $value->term_id)) {
                 $restrictions[] = $value->term_id;
             }
         }
@@ -178,8 +178,8 @@ if (!function_exists('pdi_paywall_get_free_restrictions')) {
         $restrictions = [];
 
         $restrictions_content = get_categories();
-        foreach ($restrictions_content as $value){
-            if (get_option('pdi_paywall_get_free_restrictions_'.$value->term_id)){
+        foreach ($restrictions_content as $value) {
+            if (get_option('pdi_paywall_get_free_restrictions_' . $value->term_id)) {
                 $restrictions[] = $value->term_id;
             }
         }
@@ -464,13 +464,44 @@ function _pdi_paywall_block_dashboard()
     return true;
 }
 
-function admin_bar_remove_logo() {
+function admin_bar_remove_logo()
+{
     global $wp_admin_bar;
     global $current_user;
     if (in_array('reader', (array)$current_user->roles) || in_array('subscriber', (array)$current_user->roles)) {
-        $wp_admin_bar->remove_menu( 'wp-logo' );
-        $wp_admin_bar->remove_menu( 'site-name' );
-        $wp_admin_bar->remove_menu( 'search' );
+        $wp_admin_bar->remove_menu('wp-logo');
+        $wp_admin_bar->remove_menu('site-name');
+        $wp_admin_bar->remove_menu('search');
     }
 }
-add_action( 'wp_before_admin_bar_render', 'admin_bar_remove_logo', 0 );
+
+add_action('wp_before_admin_bar_render', 'admin_bar_remove_logo', 0);
+
+
+function pdi_paywall_const_keys()
+{
+
+    echo '
+        <script>
+            const PDI_PAYWALL_PAYMENT_PDI_TOKEN = "' . get_option('_pdi_paywall_payment_pdi_token') . '"; 
+            const PDI_PAYWALL_PAYMENT_PDI_KEY = "' . get_option('_pdi_paywall_payment_pdi_key') . '"; 
+        </script>
+    ';
+    if (get_option('_pdi_paywall_payment_sandbox')) :
+        echo '
+        <script>
+                const PDI_PAYWALL_PAYMENT_ACCESS_TOKEN = "' . get_option('_pdi_paywall_payment_access_token') . '";
+                const PDI_PAYWALL_PAYMENT_PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key_test') . '";
+        </script>';
+    else:
+        echo '
+        <script>
+            const PDI_PAYWALL_PAYMENT_ACCESS_TOKEN = "' . get_option('_pdi_paywall_payment_access_token_test') . '";
+            const PDI_PAYWALL_PAYMENT_PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key') . '";
+        </script>';
+    endif;
+
+    echo '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>';
+    echo '<script src="' . PDI_PAYWALL_URL . 'js/pdi_paywall_custom.js?v=' . PDI_PAIWALL_VERSION . '"></script>';
+
+}

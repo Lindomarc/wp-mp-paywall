@@ -16,29 +16,9 @@ if (!function_exists('pdi_paywall_shortcodes_scripts')) {
         echo '<script src="' . plugins_url('/js/pdi.jquery.mask.min.js', __FILE__) . '"></script>';
         echo '<script src="' . PDI_PAYWALL_URL.'js/pdi_paywall_custom.js?v=' . PDI_PAIWALL_VERSION . '"></script>';
         echo '<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>';
-        echo '            
-                <script>
-                    const _pdi_paywall_payment_pdi_token = "' . get_option('_pdi_paywall_payment_pdi_token') . '"; 
-                    const _pdi_paywall_payment_pdi_key = "' . get_option('_pdi_paywall_payment_pdi_key') . '"; 
-                </script>
-            ';
-        if (get_option('_pdi_paywall_payment_sandbox')) {
-            echo '
-                <script>
-                    const PDI_PAYWALL_PAYMENT_PUBLIC_TOKEN = "' . get_option('_pdi_paywall_payment_public_key_test') . '";
-                    const PDI_PAYWALL_PAYMENT_PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key_test') . '";
-                </script>
-            ';
-        } else {
-            echo '
-                <script>
-                    const PDI_PAYWALL_PAYMENT_PUBLIC_TOKEN = "' . get_option('_pdi_paywall_payment_public_key') . '";
-                    const PDI_PAYWALL_PAYMENT_PUBLIC_KEY = "' . get_option('_pdi_paywall_payment_public_key') . '";
-                </script>
-            ';
-        }
-
     }
+    add_action('admin_head', 'pdi_paywall_const_keys', PHP_INT_MAX);
+
 
     add_action('wp_head', 'pdi_paywall_shortcodes_scripts');
 }

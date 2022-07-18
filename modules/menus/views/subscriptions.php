@@ -3,7 +3,15 @@
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 <link href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css" rel="stylesheet">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+
+<script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 <div class="container">
     <h1 class="mb-5 mt-5">PDI Paywall - Assinantes</h1>
     <table id="table_subscribers" class="table table-bordered display data-table responsive nowrap">
@@ -31,9 +39,10 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="planForm" tabindex="-1" role="dialog" aria-labelledby="planForm" aria-hidden="true">
+<div class="modal fade" id="subscriberForm" tabindex="-1" role="dialog" aria-labelledby="subscriberForm"
+     aria-hidden="true">
 
-    <form class="inline row" id="form-plan" action="<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>">
+    <form class="inline row" id="form-subscriber">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -42,25 +51,59 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div class="col">
+                <div class="modal-body row">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label for="reason" class="col-form-label">Nome:</label>
-                            <input type="text" class="form-control" id="reason" name="reason" required>
+                            <label for="first_name" class="col-form-label">* Primeiro Nome:</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" required>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label for="description" class="col-form-label">Descrição:</label>
-                            <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+                            <label for="last_name" class="col-form-label">* Sobre Nome:</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" required>
                         </div>
                     </div>
-                    <div class="row col-12">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="email" class="col-form-label">* Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="identification_number" class="col-form-label">* Documento (cpf/cnpj):</label>
+                            <input type="text" class="form-control" id="identification_number"
+                                   name="identification_number" required>
+                            <input type="hidden" id="identification_type" name="identification_type" value="CPF" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="plan_id" class="col-form-label">* Plano</label>
+                            <select id="plan_id" name="plan_id" class="js-plan-data-ajax form-control"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="roles" class="col-form-label">* Grupo:</label>
+                            <select name="roles" id="roles" class="form-control select2" required>
+                                <option value="reader" >Leitor</option>
+                                <option value="subscriver" >Assinante</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="next_billing_date" class="col-form-label">Próximo pagamento:</label>
+                            <input type="date" class="form-control" id="next_billing_date" name="next_billing_date">
+                        </div>
+                    </div>
+
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="repetitions" class="col-form-label">Repetiçao:</label>
-                                <input type="number" class="form-control" id="repetitions"
-                                       name="repetitions">
+                                <input type="number" class="form-control" id="repetitions" name="repetitions">
                                 <span class="info small text-blue">Vázio irá repetir infinitamente.</span>
                             </div>
                         </div>
@@ -74,47 +117,10 @@
                                     $options_markup .= sprintf('<option value="%s" >%s</option>', $key, $label);
                                 }
                                 echo '<select name="period" id="period" class="form-control select2">' . $options_markup . '</select>';
-
                                 ?>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 hide">
-                        <div class="form-group">
-                            <label for="frequency" class="col-form-label">Amostra Grátis</label>
-                            <input type="checkbox" class="form-control" id="free_trial" name="free_trial" value="0">
-                        </div>
-                        <div class="row" style="background-color: #e4e4e4">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label for="frequency" class="col-form-label">Repetir:</label>
-                                    <input type="number" class="form-control" id="free_trial_frequency"
-                                           name="free_trial_frequency" value="1">
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label for="free_trial_frequency_type" class="col-form-label">Tipo de
-                                        frequência:</label>
-                                    <?php
-                                    $options_markup = '';
-                                    $options = pdi_paywall_get_plans_period();
-                                    foreach ($options as $key => $label) {
-                                        $options_markup .= sprintf('<option value="%s" >%s</option>', $key, $label);
-                                    }
-                                    echo '<select name="free_trial_frequency_type" id="free_trial_frequency_type" class="form-control select2" style="min-width: 200px">' . $options_markup . '</select>';
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="back_url" class="col-form-label">URL de retorno:</label>
-                            <input type="text" class="form-control" id="back_url" name="back_url" required>
-                        </div>
-                    </div>
                     <div class="col-6">
                         <div class="form-group">
                             <label for="transaction_amount" class="col-form-label">Valor da transação:</label>
@@ -122,8 +128,8 @@
                                    name="transaction_amount">
                         </div>
                     </div>
-                    <input type="hidden" id="plan_id" name="id">
-                    <input type="hidden" id="extern_plan_id" name="extern_plan_id">
+                    <input type="hidden" id="id" name="id">
+                    <input type="hidden" name="is-handler" value="1">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -139,14 +145,43 @@
     #table_subscribers {
         width: 100% !important;
     }
+
     .container {
         max-width: 100%;
     }
-</style>
 
+    .select2, .select2-container--default .select2-selection--single {
+        width: 100% !important;
+        height: 37px !important;
+    }
+
+    .select2-selection__rendered {
+        text-align: center !important;
+        padding: 2px !important;
+    }
+
+    .hide {
+        display: none;
+    }
+</style>
 <script>
-    jQuery(document).ready(function () {
-        jQuery('#table_subscribers').DataTable({
+
+    const formSubscriber = document.getElementById("form-subscriber");
+    formSubscriber.addEventListener("submit", handleFormSubmit);
+    jQuery(document).ready(function ($) {
+        functionsForm.planAdd = () => {
+            functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>`;
+            functionsForm.form_method = 'post';
+        };
+
+        $('.js-data-list-plans-ajax').select2({
+            ajax: {
+                url: '<?php echo PDI_PAYWALL_API_URI . 'plans/select2-list'; ?>',
+                dataType: 'json'
+            }
+        });
+
+        functionsForm.tablePlans = jQuery('#table_subscribers').DataTable({
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json'
             },
@@ -154,8 +189,8 @@
                 "url": '<?php echo PDI_PAYWALL_API_URI . 'subscribers/datatable'; ?>',
                 "type": 'get',
                 "beforeSend": function (xhr) {
-                    xhr.setRequestHeader('Authorization', 'Bearer <?php echo get_option('_pdi_paywall_payment_pdi_token'); ?>');
-                    xhr.setRequestHeader('x-customer-key', '<?php echo get_option('_pdi_paywall_payment_pdi_key'); ?>');
+                    xhr.setRequestHeader('Authorization', `Bearer ${PDI_PAYWALL_PAYMENT_PDI_TOKEN}`);
+                    xhr.setRequestHeader('x-customer-key', `${PDI_PAYWALL_PAYMENT_PDI_KEY}`);
                 },
             },
             'responsive': true,
@@ -203,7 +238,7 @@
                         if (type === "sort" || type === "type") {
                             return data;
                         }
-                        if (!!data){
+                        if (!!data) {
                             let date = new Date(data)
                             return date.toLocaleString('pt-BR', {timeZone: 'UTC'})
                         }
@@ -216,12 +251,23 @@
                 {
                     text: 'Adicionar',
                     action: function (e, dt, node, config) {
-                        functions.formClear();
-                        functions.planAdd();
-                        $('#planForm').modal('toggle');
+                        functionsForm.formClear();
+                        functionsForm.planAdd();
+                        $('#subscriberForm').modal('toggle');
                     }
                 }
             ]
+        });
+
+        $('#plan_id').select2({
+            ajax: {
+                url: '<?php echo PDI_PAYWALL_API_URI . 'plans/select2-list'; ?>',
+                processResults: function (data) {
+
+                    return data
+                },
+                "beforeSend": functionsForm.beforeSend,
+            }
         });
     });
 </script>

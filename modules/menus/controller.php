@@ -69,3 +69,5 @@ function pdi_paywall_plans_view()
     }
     require_once(PDI_PAYWALL_MODULES_PATH . 'menus/views/plans.php');
 }
+
+add_action('admin_head', 'pdi_paywall_const_keys', PHP_INT_MAX);
