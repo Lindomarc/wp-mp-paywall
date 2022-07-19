@@ -503,5 +503,6 @@ function pdi_paywall_const_keys()
 
     echo '<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>';
     echo '<script src="' . PDI_PAYWALL_URL . 'js/pdi_paywall_custom.js?v=' . PDI_PAIWALL_VERSION . '"></script>';
+    echo '<link href="' . PDI_PAYWALL_URL . 'css/custom.css?v=' . PDI_PAIWALL_VERSION . '"></script>';
 
 }

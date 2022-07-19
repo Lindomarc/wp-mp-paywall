@@ -48,11 +48,6 @@
     .container {
         max-width: 100%;
     }
-
-    input.error {
-        border-width: 2px;
-        border-color: red;
-    }
 </style>
 
 <!-- Modal -->
@@ -212,7 +207,6 @@
                         const result = response.json()
 
                         result.then(({data}) => {
-                            console.log(data)
                             if (data) {
                                 if ((!!data.status && data.status !== 200) && !!data.message) {
                                     pdiTools._pdi_alert_error(data)
@@ -276,7 +270,6 @@
                     .then((response) => {
                         const result = response.json()
                         result.then((data) => {
-                            console.log(data)
                             if ((!!data.status && data.status !== 200) && !!data.message) {
                                 pdiTools._pdi_alert_error(data)
                             }
@@ -284,7 +277,6 @@
                     })
                     .catch((error) => {
                         // get payment result error
-                        console.log(error)
                         reject();
                         error.then((data) => {
                             if ((!!data.status && data.status !== 200) && !!data.message) {

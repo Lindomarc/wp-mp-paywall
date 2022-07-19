@@ -44,9 +44,10 @@ const functionsForm = {
         jQuery('form input,form textarea,form select').val('').removeClass('error').trigger('change')
     },
     checkErrors: (errorJson) => {
+        console.log(errorJson)
         if (!!errorJson.errors) {
             Object.entries(errorJson.errors).forEach(([key, value]) => {
-                jQuery(`#${key}`).addClass('error');
+                jQuery(`#${key}`).addClass('error').focus();
             })
         }
     },
@@ -55,7 +56,6 @@ const functionsForm = {
     },
     beforeSend: (xhr) => {
         xhr.setRequestHeader('Authorization', `Bearer ${PDI_PAYWALL_PAYMENT_PDI_TOKEN}` )
-
         xhr.setRequestHeader('x-customer-key', `${PDI_PAYWALL_PAYMENT_PDI_KEY}`)
     }
 };
@@ -109,7 +109,6 @@ async function handleFormSubmit(event) {
     } catch (error) {
         const errorJson = JSON.parse(error.message);
         errorJson.status = 'Error';
-        //console.error(errorJson);
         pdiTools._pdi_alert_error(errorJson)
 
     }

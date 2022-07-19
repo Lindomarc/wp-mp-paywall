@@ -23,6 +23,7 @@
             <th>Plano</th>
             <th>Valor</th>
             <th>Situação</th>
+            <th>status</th>
             <th>Próximo pagamento</th>
             <th></th>
         </tr>
@@ -35,6 +36,7 @@
             <th>Plano</th>
             <th>Valor</th>
             <th>Situação</th>
+            <th>status</th>
             <th>Próximo pagamento</th>
             <th></th>
         </tr>
@@ -50,7 +52,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Plano <span class="plan-name"></span></h5>
+                    <h5 class="modal-title">Assinantes <span class="plan-name"></span></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -134,14 +136,18 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="transaction_amount" class="col-form-label">Valor da transação:</label>
-                                <input type="text" class="form-control money" id="transaction_amount"
-                                       name="transaction_amount">
+                                <label
+                                    for="transaction_amount"
+                                    class="col-form-label">Valor da transação:
+                                </label>
+                                <input
+                                    type="text"
+                                    class="form-control money"
+                                    id="transaction_amount"
+                                    name="transaction_amount">
                             </div>
                         </div>
-
                     </div>
-                    <input type="hidden" id="id" name="id">
                     <input type="hidden" name="is-handler" value="1">
                 </div>
                 <div class="modal-footer">
@@ -176,15 +182,22 @@
     .hide {
         display: none;
     }
+    input.error {
+         border-width: 2px !important;
+         border-color: red !important;
+     }
+
 </style>
 <script>
     const formSubscriber = document.getElementById("form-subscriber");
     formSubscriber.addEventListener("submit", handleFormSubmit);
     jQuery(document).ready(function ($) {
+
         functionsForm.subscriberAdd = () => {
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>`;
             functionsForm.form_method = 'post';
         };
+
         functionsForm.subscriberEdit = (subscriber_id) => {
             functionsForm.formClear();
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>/${subscriber_id}`;
@@ -216,11 +229,10 @@
                                     functionsForm.fill('plan_id', data.plan_id)
                                     functionsForm.fill('due_day', data.due_day)
                                     functionsForm.fill('repetitions', data.repetitions)
-                                    jQuery(`#plan_id`).html('')
-                                    jQuery(`#plan_id`).append(`<option value="${data.plan_id}" selected>${data.reason}</option>`);
-                                    console.log(data)
-                                    functionsForm.fill('period', data.period)
-                                    functionsForm.fill('transaction_amount', data.transaction_amount)
+                                    jQuery(`#plan_id`).html('').append(`<option value="${data.plan_id}" selected>${data.reason}</option>`);
+                                    functionsForm.fill('period', data['plan']['period']);
+                                    functionsForm.fill('transaction_amount', data.transaction_amount);
+                                    functionsForm.fill('payment_status', data.payment_status);
                                     functionsForm.fill('id', data.id)
                                     jQuery('#subscriberFormModal').modal('toggle');
                                 }
@@ -312,6 +324,32 @@
                                 break;
                             case 'charged_back':
                                 status = 'Estornado'
+                                break;
+                            default:
+                                status = data;
+                        }
+                        return status
+                    }
+                },
+                {
+                    data: 'status',
+                    render: function (data, type, row) {
+                        if (type === "sort" || type === "type") {
+                            return data;
+                        }
+                        let status;
+                        switch (data) {
+                            case 'cancelled':
+                                status = 'Cancelado'
+                                break;
+                            case 'authorized':
+                                status = 'Autorizado'
+                                break;
+                            case 'pending':
+                                status = 'Pendente'
+                                break;
+                            case 'paused':
+                                status = 'Pausado'
                                 break;
                             default:
                                 status = data;
