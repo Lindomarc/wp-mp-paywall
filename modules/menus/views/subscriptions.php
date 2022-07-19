@@ -17,29 +17,33 @@
     <table id="table_subscribers" class="table table-bordered display data-table responsive nowrap">
         <thead>
         <tr>
+            <th>ID</th>
             <th>Nome</th>
             <th>Email</th>
             <th>Plano</th>
             <th>Valor</th>
             <th>Situação</th>
             <th>Próximo pagamento</th>
+            <th></th>
         </tr>
         </thead>
         <tfoot>
         <tr>
+            <th>ID</th>
             <th>Nome</th>
             <th>Email</th>
             <th>Plano</th>
             <th>Valor</th>
             <th>Situação</th>
             <th>Próximo pagamento</th>
+            <th></th>
         </tr>
         </tfoot>
     </table>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="subscriberForm" tabindex="-1" role="dialog" aria-labelledby="subscriberForm"
+<div class="modal fade" id="subscriberFormModal" tabindex="-1" role="dialog" aria-labelledby="subscriberFormModal"
      aria-hidden="true">
 
     <form class="inline row" id="form-subscriber">
@@ -51,55 +55,53 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="first_name" class="col-form-label">* Primeiro Nome:</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="last_name" class="col-form-label">* Sobre Nome:</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" required>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="email" class="col-form-label">* Email:</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="identification_number" class="col-form-label">* Documento (cpf/cnpj):</label>
-                            <input type="text" class="form-control" id="identification_number"
-                                   name="identification_number" required>
-                            <input type="hidden" id="identification_type" name="identification_type" value="CPF" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="plan_id" class="col-form-label">* Plano</label>
-                            <select id="plan_id" name="plan_id" class="js-plan-data-ajax form-control"></select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="roles" class="col-form-label">* Grupo:</label>
-                            <select name="roles" id="roles" class="form-control select2" required>
-                                <option value="reader" >Leitor</option>
-                                <option value="subscriver" >Assinante</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="next_billing_date" class="col-form-label">Próximo pagamento:</label>
-                            <input type="date" class="form-control" id="next_billing_date" name="next_billing_date">
-                        </div>
-                    </div>
 
+                <div class="modal-body ">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="first_name" class="col-form-label">* Primeiro Nome:</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="last_name" class="col-form-label">* Sobre Nome:</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="email" class="col-form-label">* Email:</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="identification_number" class="col-form-label">* Documento
+                                    (cpf/cnpj):</label>
+                                <input type="text" class="form-control" id="identification_number"
+                                       name="identification_number" required>
+                                <input type="hidden" id="identification_type" name="identification_type" value="CPF"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="plan_id" class="col-form-label">* Plano</label>
+                                <select id="plan_id" name="plan_id" class="js-plan-data-ajax form-control"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="due_day" class="col-form-label">Dia do pagamento:</label>
+                                <input type="number" min="1" max="28" class="form-control" id="due_day"
+                                       name="due_day">
+                            </div>
+                        </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="repetitions" class="col-form-label">Repetiçao:</label>
@@ -120,13 +122,24 @@
                                 ?>
                             </div>
                         </div>
-
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label for="transaction_amount" class="col-form-label">Valor da transação:</label>
-                            <input type="text" class="form-control money" id="transaction_amount"
-                                   name="transaction_amount">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="payment_status" class="col-form-label">* Situação:</label>
+                                <select name="payment_status" id="payment_status" class="form-control select2" required>
+                                    <option value="pending">Pendente</option>
+                                    <option value="cancelled">Cancelado</option>
+                                    <option value="authorized">Autorizado</option>
+                                </select>
+                            </div>
                         </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="transaction_amount" class="col-form-label">Valor da transação:</label>
+                                <input type="text" class="form-control money" id="transaction_amount"
+                                       name="transaction_amount">
+                            </div>
+                        </div>
+
                     </div>
                     <input type="hidden" id="id" name="id">
                     <input type="hidden" name="is-handler" value="1">
@@ -165,14 +178,66 @@
     }
 </style>
 <script>
-
     const formSubscriber = document.getElementById("form-subscriber");
     formSubscriber.addEventListener("submit", handleFormSubmit);
     jQuery(document).ready(function ($) {
-        functionsForm.planAdd = () => {
+        functionsForm.subscriberAdd = () => {
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>`;
             functionsForm.form_method = 'post';
         };
+        functionsForm.subscriberEdit = (subscriber_id) => {
+            functionsForm.formClear();
+            functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>/${subscriber_id}`;
+            functionsForm.form_method = 'put';
+            return new Promise((resolve, reject) => {
+                fetch(functionsForm.form_action, {
+                    method: "get",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${PDI_PAYWALL_PAYMENT_PDI_TOKEN}`,
+                        "x-customer-key": `${PDI_PAYWALL_PAYMENT_PDI_KEY}`,
+                    }
+                })
+                    .then((response) => {
+                        resolve()
+                        const result = response.json()
+                        result.then(({data}) => {
+
+                            if (data) {
+                                if ((!!data.status && data.status !== 200) && !!data.message) {
+                                    pdiTools._pdi_alert_error(data)
+                                } else {
+                                    functionsForm.fill('last_name', data.last_name)
+                                    functionsForm.fill('first_name', data.first_name)
+                                    functionsForm.fill('email', data.payer_email)
+                                    functionsForm.fill('identification_number', data.identification_number)
+                                    functionsForm.fill('identification_type', data.identification_type)
+                                    functionsForm.fill('plan_id', data.plan_id)
+                                    functionsForm.fill('due_day', data.due_day)
+                                    functionsForm.fill('repetitions', data.repetitions)
+                                    jQuery(`#plan_id`).html('')
+                                    jQuery(`#plan_id`).append(`<option value="${data.plan_id}" selected>${data.reason}</option>`);
+                                    console.log(data)
+                                    functionsForm.fill('period', data.period)
+                                    functionsForm.fill('transaction_amount', data.transaction_amount)
+                                    functionsForm.fill('id', data.id)
+                                    jQuery('#subscriberFormModal').modal('toggle');
+                                }
+                            }
+                        })
+                    })
+                    .catch((error) => {
+                        // get payment result error
+                        reject();
+                        error.then((data) => {
+                            if ((!!data.status && data.status !== 200) && !!data.message) {
+                                pdiTools._pdi_alert_error(data)
+                            }
+                        })
+                    })
+            });
+        }
 
         $('.js-data-list-plans-ajax').select2({
             ajax: {
@@ -199,6 +264,7 @@
             'serverMethod': 'post',
             'pageLength': 10,
             columns: [
+                {data: 'id'},
                 {data: 'first_name'},
                 {data: 'payer_email'},
                 {data: 'reason'},
@@ -213,7 +279,7 @@
                     }
                 },
                 {
-                    data: 'status',
+                    data: 'payment_status',
                     render: function (data, type, row) {
                         if (type === "sort" || type === "type") {
                             return data;
@@ -223,8 +289,29 @@
                             case 'cancelled':
                                 status = 'Cancelado'
                                 break;
+                            case 'rejected':
+                                status = 'Rejeitado'
+                                break;
                             case 'authorized':
                                 status = 'Autorizado'
+                                break;
+                            case 'pending':
+                                status = 'Pendente'
+                                break;
+                            case 'approved':
+                                status = 'Aprovado'
+                                break;
+                            case 'in_process':
+                                status = 'O pagamento está sendo revisado'
+                                break;
+                            case 'in_mediation':
+                                status = 'Rejeitado'
+                                break;
+                            case 'refunded':
+                                status = 'Reembolsado'
+                                break;
+                            case 'charged_back':
+                                status = 'Estornado'
                                 break;
                             default:
                                 status = data;
@@ -245,6 +332,18 @@
                         return '';
                     }
                 },
+                {
+                    data: 'id',
+                    render: function (data, type, row) {
+                        if (type === "sort" || type === "type") {
+                            return data;
+                        }
+                        return `
+                        <div class="button-group">
+                            <button class="btn btn-xs" onclick="functionsForm.subscriberEdit(${data})">Editar</button>
+                        </div>`
+                    }
+                },
             ],
             dom: 'Bfrtip',
             buttons: [
@@ -252,8 +351,8 @@
                     text: 'Adicionar',
                     action: function (e, dt, node, config) {
                         functionsForm.formClear();
-                        functionsForm.planAdd();
-                        $('#subscriberForm').modal('toggle');
+                        functionsForm.subscriberAdd();
+                        $('#subscriberFormModal').modal('toggle');
                     }
                 }
             ]
