@@ -24,6 +24,7 @@
             <th>Valor</th>
             <th>Situação</th>
             <th>status</th>
+            <th>Criado em</th>
             <th>Próximo pagamento</th>
             <th></th>
         </tr>
@@ -37,6 +38,7 @@
             <th>Valor</th>
             <th>Situação</th>
             <th>status</th>
+            <th>Criado em</th>
             <th>Próximo pagamento</th>
             <th></th>
         </tr>
@@ -367,12 +369,25 @@
                     }
                 },
                 {
-                    data: 'next_retry_date',
+                    data: 'created_at',
                     render: function (data, type, row) {
                         if (type === "sort" || type === "type") {
                             return data;
                         }
                         if (!!data) {
+                            let date = new Date(data)
+                            return date.toLocaleString('pt-BR', {timeZone: 'UTC'})
+                        }
+                        return '';
+                    }
+                },
+                {
+                    data: 'next_retry_date',
+                    render: function (data, type, row) {
+                        if (type === "sort" || type === "type") {
+                            return data;
+                        }
+                        if (!!data && !subscribersStatus.cancelled) {
                             let date = new Date(data)
                             return date.toLocaleString('pt-BR', {timeZone: 'UTC'})
                         }
@@ -386,7 +401,6 @@
                             return data;
                         }
                         let disabled = subscribersStatus.cancelled?'disabled':''
-                        // console.log(disabled)
                         return `
                         <div class="button-group">
                             <button class="btn btn-xs ${disabled}" onclick="functionsForm.subscriberEdit(${data})" ${disabled}>Editar</button>
