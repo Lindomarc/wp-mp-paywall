@@ -377,7 +377,6 @@
                         if (type === "sort" || type === "type") {
                             return data;
                         }
-                        cancelled = data.status ? 'disabled'
                         return `
                         <div class="button-group">
                             <button class="btn btn-xs" onclick="functionsForm.planEdit(${data})">Editar</button>
