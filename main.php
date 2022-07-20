@@ -3,7 +3,7 @@
  * Plugin Name:       PDI Paywall (MP+login-ajax)
  * Plugin URI:        https://publicadordigital.com.br/
  * Description:       PDI Paywall
- * Version:           0.2.9
+ * Version:           0.2.10
  * Requires PHP:      7.4
  * Author:            MSWi Soluções Web Inteligentes
  * Author URI:        https://mswi.com.br/

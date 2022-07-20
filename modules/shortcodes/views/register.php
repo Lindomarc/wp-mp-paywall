@@ -1,6 +1,9 @@
 <?php if (!is_user_logged_in()): ?>
 <?php else: ?>
     <?php
+    $public_token = get_option('_pdi_paywall_payment_public_key');
+    $is_sandbox = get_option('_pdi_paywall_payment_sandbox');
+
     $user = wp_get_current_user();
     $is_subscriber = in_array('subscriber', $user->roles);
     $userID = $user->ID;
@@ -75,8 +78,8 @@
                                             headers: {
                                                 "Accept": "application/json",
                                                 "Content-Type": "application/json",
-                                                "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
-                                                "x-customer-key": _pdi_paywall_payment_pdi_key,
+                                                "Authorization": "Bearer " + PDI_PAYWALL_PAYMENT_PDI_TOKEN,
+                                                "x-customer-key": PDI_PAYWALL_PAYMENT_PDI_KEY,
                                             },
                                             body: JSON.stringify({subscriber_id: subscriber_id})
                                         })
@@ -159,8 +162,8 @@
                                         headers: {
                                             "Accept": "application/json",
                                             "Content-Type": "application/json",
-                                            "Authorization": "Bearer " + _pdi_paywall_payment_pdi_token,
-                                            "x-customer-key": _pdi_paywall_payment_pdi_key,
+                                            "Authorization": "Bearer " + PDI_PAYWALL_PAYMENT_PDI_TOKEN,
+                                            "x-customer-key": PDI_PAYWALL_PAYMENT_PDI_KEY,
                                         },
                                         body: JSON.stringify(cardData)
                                     })

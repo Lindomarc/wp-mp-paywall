@@ -51,7 +51,7 @@
 </style>
 
 <!-- Modal -->
-<div class="modal fade" id="planForm" tabindex="-1" role="dialog" aria-labelledby="planForm" aria-hidden="true">
+<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalForm" aria-hidden="true">
 
     <form class="inline row" id="form-plan" action="<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>">
         <div class="modal-dialog" role="document">
@@ -220,7 +220,7 @@
                                     functionsForm.fill('plan_id', data['pdi'].id)
                                     functionsForm.fill('extern_plan_id', data['pdi'].extern_plan_id)
                                     functionsForm.fill('free_trial', data['pdi'].free_trial)
-                                    jQuery('#planForm').modal('toggle');
+                                    jQuery('#modalForm').modal('toggle');
                                 }
                             }
                         })
@@ -377,6 +377,7 @@
                         if (type === "sort" || type === "type") {
                             return data;
                         }
+                        cancelled = data.status ? 'disabled'
                         return `
                         <div class="button-group">
                             <button class="btn btn-xs" onclick="functionsForm.planEdit(${data})">Editar</button>

@@ -45,7 +45,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="subscriberFormModal" tabindex="-1" role="dialog" aria-labelledby="subscriberFormModal"
+<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="modalForm"
      aria-hidden="true">
 
     <form class="inline row" id="form-subscriber">
@@ -224,9 +224,8 @@
                                     pdiTools._pdi_alert_error(data);
                                 } else {
                                     // se for do mercado pago
-                                        jQuery('#email').prop('disabled',!!data.mp_subscriber_id);
-                                        jQuery('#email').prop('identification_number',!!data.mp_subscriber_id);
-                                        jQuery('#email').prop('identification_type',!!data.mp_subscriber_id);
+                                        jQuery('input#email').prop('disabled',!!data.mp_subscriber_id);
+                                        jQuery('input#due_day').prop('due_day',!!data.mp_subscriber_id);
 
                                     functionsForm.fill('last_name', data.last_name);
                                     functionsForm.fill('first_name', data.first_name);
@@ -236,12 +235,13 @@
                                     functionsForm.fill('plan_id', data.plan_id);
                                     functionsForm.fill('due_day', data.due_day);
                                     functionsForm.fill('repetitions', data.repetitions);
-                                    jQuery(`#plan_id`).html('').append(`<option value="${data.plan_id}" selected>${data.reason}</option>`);
+                                    jQuery(`#plan_id`).html('').append(`<option value="${data.plan_id}">${data.reason}</option>`);
                                     functionsForm.fill('period', data['plan']['period']);
                                     functionsForm.fill('transaction_amount', data.transaction_amount);
                                     functionsForm.fill('payment_status', data.payment_status);
                                     functionsForm.fill('id', data.id);
-                                    jQuery('#subscriberFormModal').modal('toggle');
+                                    console.log(functionsForm.form)
+                                    jQuery('#modalForm').modal('toggle');
                                 }
                             }
                         })
@@ -265,6 +265,10 @@
             }
         });
 
+
+        const subscribersStatus = {
+            cancelled: false
+        }
         functionsForm.tablePlans = jQuery('#table_subscribers').DataTable({
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json'
@@ -314,9 +318,6 @@
                             case 'authorized':
                                 status = 'Autorizado'
                                 break;
-                            case 'pending':
-                                status = 'Pendente'
-                                break;
                             case 'approved':
                                 status = 'Aprovado'
                                 break;
@@ -332,8 +333,9 @@
                             case 'charged_back':
                                 status = 'Estornado'
                                 break;
+                            case 'pending':
                             default:
-                                status = data;
+                                status = !!data?data:'Pendente'
                         }
                         return status
                     }
@@ -345,21 +347,21 @@
                             return data;
                         }
                         let status;
+                        subscribersStatus.cancelled = false;
                         switch (data) {
                             case 'cancelled':
+                                subscribersStatus.cancelled = true;
                                 status = 'Cancelado'
                                 break;
                             case 'authorized':
                                 status = 'Autorizado'
                                 break;
-                            case 'pending':
-                                status = 'Pendente'
-                                break;
                             case 'paused':
                                 status = 'Pausado'
                                 break;
+                            case 'pending':
                             default:
-                                status = data;
+                                status = 'Pendente'
                         }
                         return status
                     }
@@ -383,9 +385,11 @@
                         if (type === "sort" || type === "type") {
                             return data;
                         }
+                        let disabled = subscribersStatus.cancelled?'disabled':''
+                        // console.log(disabled)
                         return `
                         <div class="button-group">
-                            <button class="btn btn-xs" onclick="functionsForm.subscriberEdit(${data})">Editar</button>
+                            <button class="btn btn-xs ${disabled}" onclick="functionsForm.subscriberEdit(${data})" ${disabled}>Editar</button>
                         </div>`
                     }
                 },
@@ -397,7 +401,7 @@
                     action: function (e, dt, node, config) {
                         functionsForm.formClear();
                         functionsForm.subscriberAdd();
-                        $('#subscriberFormModal').modal('toggle');
+                        $('#modalForm').modal('toggle');
                     }
                 }
             ]

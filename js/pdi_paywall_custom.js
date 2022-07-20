@@ -39,6 +39,9 @@ const functionsForm = {
     fill: (id, value) => {
         jQuery(`#${id}`).val(value).trigger('change');
         functionsForm.form[id] = value
+        jQuery(`select${id}`).change('change',function(){
+            functionsForm.form[id] = jQuery(this).val();
+        })
     },
     formClear: () => {
         jQuery('form input,form textarea,form select').val('').removeClass('error').trigger('change')
@@ -104,7 +107,7 @@ async function handleFormSubmit(event) {
          * Normally you'd want to do something with the response data,
          * but for this example we'll just log it to the console.
          */
-        console.log({responseData});
+        jQuery('#modalForm').modal('toggle');
 
     } catch (error) {
         const errorJson = JSON.parse(error.message);
