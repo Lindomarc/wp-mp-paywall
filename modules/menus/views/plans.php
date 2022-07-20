@@ -30,6 +30,7 @@
         <tfoot>
         <tr>
             <th>#</th>
+            <th>Nome</th>
             <th>Periodicidade</th>
             <th>Valor</th>
             <th>Situação</th>
@@ -184,6 +185,7 @@
             jQuery(`#${id}`).removeClass('error');
         }
         functionsForm.planAdd = () => {
+            jQuery(`input,select,textarea`).prop('disabled',false);
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>`;
             functionsForm.form_method = 'post';
         }
@@ -297,12 +299,11 @@
                 "type": 'get',
                 "beforeSend": functionsForm.beforeSend,
             },
-            'responsive': true,
-            'processing': true,
-            'serverSide': true,
-            'serverMethod': 'post',
-            'pageLength': 10,
-
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            serverMethod: 'post',
+            pageLength: 10,
             columns: [
                 {data: 'id'},
                 {data: 'reason'},
@@ -333,6 +334,16 @@
                     }
                 },
                 {
+                    data: 'transaction_amount',
+                    render: function (data, type, row) {
+                        if (type === "sort" || type === "type") {
+                            return data;
+                        }
+                        let value = parseFloat(data);
+                        return value.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})
+                    }
+                },
+                {
                     data: 'status',
                     render: function (data, type, row) {
                         if (type === "sort" || type === "type") {
@@ -350,16 +361,6 @@
                                 status = data;
                         }
                         return status
-                    }
-                },
-                {
-                    data: 'transaction_amount',
-                    render: function (data, type, row) {
-                        if (type === "sort" || type === "type") {
-                            return data;
-                        }
-                        let value = parseFloat(data);
-                        return value.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})
                     }
                 },
                 {
@@ -391,12 +392,12 @@
                     action: function (e, dt, node, config) {
                         functionsForm.formClear();
                         functionsForm.planAdd();
-                        jQuery('#planForm').modal('toggle');
+                        jQuery('#modalForm').modal('toggle');
                     }
                 }
             ]
         });
-
+        functionsForm.tablePlans.order([0,'desc'])
 
     })
 

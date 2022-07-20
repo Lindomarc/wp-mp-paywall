@@ -57,6 +57,10 @@ const functionsForm = {
     clearError: (id) => {
         jQuery(`#${id}`).removeClass('error');
     },
+    clearErrors: () => {
+        jQuery('form input,form textarea,form select').removeClass('error').trigger('change')
+    },
+
     beforeSend: (xhr) => {
         xhr.setRequestHeader('Authorization', `Bearer ${PDI_PAYWALL_PAYMENT_PDI_TOKEN}` )
         xhr.setRequestHeader('x-customer-key', `${PDI_PAYWALL_PAYMENT_PDI_KEY}`)
@@ -108,6 +112,8 @@ async function handleFormSubmit(event) {
          * but for this example we'll just log it to the console.
          */
         jQuery('#modalForm').modal('toggle');
+
+        return responseData;
 
     } catch (error) {
         const errorJson = JSON.parse(error.message);
@@ -164,6 +170,7 @@ async function postFormDataAsJson({url, formData}) {
         const errorMessage = await response.text();
         const errorJson = JSON.parse(errorMessage);
         if (!!errorJson.errors) {
+            functionsForm.clearErrors();
             functionsForm.checkErrors(errorJson);
             pdiTools._pdi_alert_error({status: "Erros", message: errorJson['message']})
         }
