@@ -148,7 +148,7 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" name="id" value="">
+                    <input type="hidden" name="id" id="id" value="">
                     <input type="hidden" name="is-handler" value="1">
                 </div>
                 <div class="modal-footer">
