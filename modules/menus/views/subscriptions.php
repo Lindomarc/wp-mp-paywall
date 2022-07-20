@@ -148,6 +148,7 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" name="id" value="">
                     <input type="hidden" name="is-handler" value="1">
                 </div>
                 <div class="modal-footer">
@@ -194,6 +195,7 @@
     jQuery(document).ready(function ($) {
 
         functionsForm.subscriberAdd = () => {
+            jQuery(`input`).prop('disabled',false);
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>`;
             functionsForm.form_method = 'post';
         };
@@ -219,21 +221,26 @@
 
                             if (data) {
                                 if ((!!data.status && data.status !== 200) && !!data.message) {
-                                    pdiTools._pdi_alert_error(data)
+                                    pdiTools._pdi_alert_error(data);
                                 } else {
-                                    functionsForm.fill('last_name', data.last_name)
-                                    functionsForm.fill('first_name', data.first_name)
-                                    functionsForm.fill('email', data.payer_email)
-                                    functionsForm.fill('identification_number', data.identification_number)
-                                    functionsForm.fill('identification_type', data.identification_type)
-                                    functionsForm.fill('plan_id', data.plan_id)
-                                    functionsForm.fill('due_day', data.due_day)
-                                    functionsForm.fill('repetitions', data.repetitions)
+                                    // se for do mercado pago
+                                        jQuery('#email').prop('disabled',!!data.mp_subscriber_id);
+                                        jQuery('#email').prop('identification_number',!!data.mp_subscriber_id);
+                                        jQuery('#email').prop('identification_type',!!data.mp_subscriber_id);
+
+                                    functionsForm.fill('last_name', data.last_name);
+                                    functionsForm.fill('first_name', data.first_name);
+                                    functionsForm.fill('email', data.payer_email);
+                                    functionsForm.fill('identification_number', data.identification_number);
+                                    functionsForm.fill('identification_type', data.identification_type);
+                                    functionsForm.fill('plan_id', data.plan_id);
+                                    functionsForm.fill('due_day', data.due_day);
+                                    functionsForm.fill('repetitions', data.repetitions);
                                     jQuery(`#plan_id`).html('').append(`<option value="${data.plan_id}" selected>${data.reason}</option>`);
                                     functionsForm.fill('period', data['plan']['period']);
                                     functionsForm.fill('transaction_amount', data.transaction_amount);
                                     functionsForm.fill('payment_status', data.payment_status);
-                                    functionsForm.fill('id', data.id)
+                                    functionsForm.fill('id', data.id);
                                     jQuery('#subscriberFormModal').modal('toggle');
                                 }
                             }
