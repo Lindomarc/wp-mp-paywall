@@ -21,6 +21,7 @@
             <th>Nome</th>
             <th>Email</th>
             <th>Plano</th>
+            <th>Método Pag.</th>
             <th>Valor</th>
             <th>Situação</th>
             <th>status</th>
@@ -35,6 +36,7 @@
             <th>Nome</th>
             <th>Email</th>
             <th>Plano</th>
+            <th>Método Pag.</th>
             <th>Valor</th>
             <th>Situação</th>
             <th>status</th>
@@ -141,6 +143,19 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label
+                                        for="payment_method"
+                                        class="col-form-label">Método de Pag.:
+                                </label>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        id="payment_method"
+                                        name="payment_method">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label
                                         for="transaction_amount"
                                         class="col-form-label">Valor da transação:
                                 </label>
@@ -205,6 +220,11 @@
             functionsForm.form['reason'] = reason
         })
 
+        jQuery(`input#transaction_amount`).change(function () {
+            let transaction_amount = jQuery(this).val();
+            functionsForm.form['transaction_amount'] = transaction_amount
+        })
+
         functionsForm.subscriberAdd = () => {
             jQuery(`input`).prop('disabled', false);
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>`;
@@ -237,21 +257,29 @@
                                 } else {
                                     // se for do mercado pago
                                     jQuery('input#email').prop('disabled', !!data.mp_subscriber_id);
-                                    jQuery('input#due_day').prop('due_day', !!data.mp_subscriber_id);
+                                    jQuery('input#due_day').prop('disabled', !!data.mp_subscriber_id);
+
+                                    jQuery('input#transaction_amount').prop('disabled', !!data.mp_subscriber_id);
+
+                                    functionsForm.fill('transaction_amount', data.transaction_amount);
+
+                                    jQuery(`#plan_id`).html('').append(`<option value="${data.plan_id}">${data.reason}</option>`);
+                                    functionsForm.fill('plan_id', data.plan_id);
+
                                     functionsForm.fill('last_name', data.last_name);
                                     functionsForm.fill('first_name', data.first_name);
                                     functionsForm.fill('email', data.payer_email);
                                     functionsForm.fill('identification_number', data.identification_number);
                                     functionsForm.fill('identification_type', data.identification_type);
-                                    functionsForm.fill('plan_id', data.plan_id);
                                     functionsForm.fill('due_day', data.due_day);
+                                    functionsForm.fill('payment_status', data.due_day);
                                     functionsForm.fill('repetitions', data.repetitions);
-                                    jQuery(`#plan_id`).html('').append(`<option value="${data.plan_id}">${data.reason}</option>`);
                                     functionsForm.fill('period', data['plan']['period']);
-                                    functionsForm.fill('transaction_amount', data.transaction_amount);
                                     functionsForm.fill('payment_status', data.payment_status);
+                                    functionsForm.fill('payment_method', data.payment_method);
+
                                     functionsForm.fill('id', data.id);
-                                    console.log(functionsForm.form)
+
                                     jQuery(button).prop('disabled', false)
                                     jQuery('#modalForm').modal('toggle');
                                 }
@@ -305,6 +333,7 @@
                 {data: 'first_name'},
                 {data: 'payer_email'},
                 {data: 'reason'},
+                {data: 'payment_method'},
                 {
                     data: 'transaction_amount',
                     render: function (data, type, row) {
@@ -437,6 +466,7 @@
                 }
             ]
         });
+        functionsForm.tablePlans.order([8,'desc'])
 
         $('#plan_id').select2({
             ajax: {
