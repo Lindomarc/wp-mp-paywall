@@ -96,8 +96,6 @@
                             <div class="form-group">
                                 <label for="plan_id" class="col-form-label">* Plano</label>
                                 <select id="plan_id" name="plan_id" class="js-plan-data-ajax form-control"></select>
-                                <input type="hidden" id="reason" name="reason"/>
-
                             </div>
                         </div>
                     </div>
@@ -150,7 +148,7 @@
                                         type="text"
                                         class="form-control"
                                         id="payment_method"
-                                        name="payment_method">
+                                        name="payment_method" required>
                             </div>
                         </div>
                         <div class="col-6">
@@ -220,13 +218,9 @@
             functionsForm.form['reason'] = reason
         })
 
-        jQuery(`input#transaction_amount`).change(function () {
-            let transaction_amount = jQuery(this).val();
-            functionsForm.form['transaction_amount'] = transaction_amount
-        })
-
         functionsForm.subscriberAdd = () => {
             jQuery(`input`).prop('disabled', false);
+            jQuery(`select`).prop('disabled', false);
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>`;
             functionsForm.form_method = 'post';
         };
@@ -260,6 +254,13 @@
                                     jQuery('input#due_day').prop('disabled', !!data.mp_subscriber_id);
 
                                     jQuery('input#transaction_amount').prop('disabled', !!data.mp_subscriber_id);
+                                    jQuery('input#payment_method').prop('disabled', !!data.mp_subscriber_id);
+
+                                    jQuery('input#identification_number').prop('disabled', !!data.mp_subscriber_id);
+                                    jQuery('input#identification_type').prop('disabled', !!data.mp_subscriber_id);
+                                    jQuery('input#repetitions').prop('disabled', !!data.mp_subscriber_id);
+                                    jQuery('select#period').prop('disabled', !!data.mp_subscriber_id);
+                                    jQuery('select#plan_id').prop('disabled', !!data.mp_subscriber_id);
 
                                     functionsForm.fill('transaction_amount', data.transaction_amount);
 

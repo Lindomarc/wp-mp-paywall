@@ -1,9 +1,12 @@
 const pdiTools = {
-
+    formatNumberDecimal : (num ,locale='en',decimal=2) => {
+        num = parseFloat(num.toString().replace(',','.'))
+        if (!isNaN(num))
+        return num.toLocaleString(locale, {minimumFractionDigits: decimal,maximumFractionDigits:decimal})
+    },
     onlyNumber: (value) => {
         return value.replace(/[^\d]/g, "");
     },
-
     typeDocument: (value) => {
         value = pdiTools.onlyNumber(value);
         switch (value.length) {
@@ -141,6 +144,13 @@ async function postFormDataAsJson({url, formData}) {
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
      */
     const plainFormData = Object.fromEntries(formData.entries());
+    console.log(formData.entries())
+    if (plainFormData['transaction_amount']){
+        functionsForm.form[plainFormData['transaction_amount']] = pdiTools.formatNumberDecimal(
+            plainFormData['transaction_amount'],'en-US'
+        )
+    }
+
     const formDataJsonString = JSON.stringify(plainFormData);
 
     const fetchOptions = {
@@ -182,3 +192,16 @@ async function postFormDataAsJson({url, formData}) {
     functionsForm.reloadTable();
     return response.json();
 }
+
+
+jQuery('document').ready(function(){
+    jQuery(`.money`).change(function () {
+        let value = jQuery(this).val()
+        let element = jQuery(this)
+        element.val(pdiTools.formatNumberDecimal(value,'br'))
+        if (!!element.attr('id')){
+            functionsForm.form[element.attr('id')] = pdiTools.formatNumberDecimal(value,'en-US')
+        }
+
+    })
+})
