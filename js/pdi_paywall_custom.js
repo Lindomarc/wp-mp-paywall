@@ -80,6 +80,7 @@ async function handleFormSubmit(event) {
      * the form so that we can handle things instead.
      */
     event.preventDefault();
+    jQuery('#form-save').prop('disabled',true);
 
     /**
      * This gets the element which the event handler was attached to.
@@ -112,14 +113,16 @@ async function handleFormSubmit(event) {
          * but for this example we'll just log it to the console.
          */
         jQuery('#modalForm').modal('toggle');
+        jQuery('#form-save').prop('disabled',false);
 
         return responseData;
 
     } catch (error) {
+        jQuery('#form-save').prop('disabled',false);
+
         const errorJson = JSON.parse(error.message);
         errorJson.status = 'Error';
         pdiTools._pdi_alert_error(errorJson)
-
     }
 }
 

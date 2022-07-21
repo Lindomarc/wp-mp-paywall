@@ -25,7 +25,7 @@
             <th>Situação</th>
             <th>status</th>
             <th>Criado em</th>
-            <th>Próximo pagamento</th>
+            <th>Próximo Pag.</th>
             <th></th>
         </tr>
         </thead>
@@ -39,7 +39,7 @@
             <th>Situação</th>
             <th>status</th>
             <th>Criado em</th>
-            <th>Próximo pagamento</th>
+            <th>Próximo Pag.</th>
             <th></th>
         </tr>
         </tfoot>
@@ -211,7 +211,8 @@
             functionsForm.form_method = 'post';
         };
 
-        functionsForm.subscriberEdit = (subscriber_id) => {
+        functionsForm.subscriberEdit = (button,subscriber_id) => {
+            jQuery(button).prop('disabled', true)
             functionsForm.formClear();
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>/${subscriber_id}`;
             functionsForm.form_method = 'put';
@@ -251,6 +252,7 @@
                                     functionsForm.fill('payment_status', data.payment_status);
                                     functionsForm.fill('id', data.id);
                                     console.log(functionsForm.form)
+                                    jQuery(button).prop('disabled', false)
                                     jQuery('#modalForm').modal('toggle');
                                 }
                             }
@@ -349,7 +351,7 @@
                                 status = 'Pendente'
                                 break;
                             default:
-                                status = !!data ? data : 'Pendente'
+                                status = data
                         }
                         return status
                     }
@@ -388,7 +390,8 @@
                         }
                         if (!!data) {
                             let date = new Date(data)
-                            return date.toLocaleString('pt-BR', {timeZone: 'UTC'})
+                            let options = {  year: 'numeric', month: 'numeric', day: 'numeric' };
+                            return date.toLocaleString('pt-BR', options)
                         }
                         return '';
                     }
@@ -402,7 +405,8 @@
                         console.log(data)
                         if (!!data && !subscribersStatus.cancelled) {
                             let date = new Date(data)
-                            return date.toLocaleString('pt-BR', {timeZone: 'UTC'})
+                            let options = {  year: 'numeric', month: 'numeric', day: 'numeric' };
+                            return date.toLocaleString('pt-BR', options)
                         }
                         return '';
                     }
@@ -416,7 +420,7 @@
                         let disabled = subscribersStatus.cancelled ? 'disabled' : ''
                         return `
                         <div class="button-group">
-                            <button class="btn btn-xs ${disabled}" onclick="functionsForm.subscriberEdit(${data})" ${disabled}>Editar</button>
+                            <button class="btn btn-xs ${disabled}" onclick="functionsForm.subscriberEdit(this,${data})" ${disabled}>Editar</button>
                         </div>`
                     }
                 },
