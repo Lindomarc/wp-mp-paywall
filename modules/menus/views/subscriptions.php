@@ -94,6 +94,8 @@
                             <div class="form-group">
                                 <label for="plan_id" class="col-form-label">* Plano</label>
                                 <select id="plan_id" name="plan_id" class="js-plan-data-ajax form-control"></select>
+                                <input type="hidden" id="reason" name="reason"/>
+
                             </div>
                         </div>
                     </div>
@@ -139,14 +141,14 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label
-                                    for="transaction_amount"
-                                    class="col-form-label">Valor da transação:
+                                        for="transaction_amount"
+                                        class="col-form-label">Valor da transação:
                                 </label>
                                 <input
-                                    type="text"
-                                    class="form-control money"
-                                    id="transaction_amount"
-                                    name="transaction_amount">
+                                        type="text"
+                                        class="form-control money"
+                                        id="transaction_amount"
+                                        name="transaction_amount">
                             </div>
                         </div>
                     </div>
@@ -185,10 +187,11 @@
     .hide {
         display: none;
     }
+
     input.error {
-         border-width: 2px !important;
-         border-color: red !important;
-     }
+        border-width: 2px !important;
+        border-color: red !important;
+    }
 
 </style>
 <script>
@@ -196,8 +199,14 @@
     formSubscriber.addEventListener("submit", handleFormSubmit);
     jQuery(document).ready(function ($) {
 
+        jQuery(`#plan_id`).change(function () {
+            let reason = jQuery(this).find(":selected").text();
+            jQuery(`#reason`).val(reason)
+            functionsForm.form['reason'] = reason
+        })
+
         functionsForm.subscriberAdd = () => {
-            jQuery(`input`).prop('disabled',false);
+            jQuery(`input`).prop('disabled', false);
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'subscribers'; ?>`;
             functionsForm.form_method = 'post';
         };
@@ -226,9 +235,8 @@
                                     pdiTools._pdi_alert_error(data);
                                 } else {
                                     // se for do mercado pago
-                                        jQuery('input#email').prop('disabled',!!data.mp_subscriber_id);
-                                        jQuery('input#due_day').prop('due_day',!!data.mp_subscriber_id);
-
+                                    jQuery('input#email').prop('disabled', !!data.mp_subscriber_id);
+                                    jQuery('input#due_day').prop('due_day', !!data.mp_subscriber_id);
                                     functionsForm.fill('last_name', data.last_name);
                                     functionsForm.fill('first_name', data.first_name);
                                     functionsForm.fill('email', data.payer_email);
@@ -289,7 +297,9 @@
             'serverMethod': 'post',
             'pageLength': 10,
             columns: [
-                {data: 'id'},
+                {
+                    data: 'id'
+                },
                 {data: 'first_name'},
                 {data: 'payer_email'},
                 {data: 'reason'},
@@ -336,8 +346,10 @@
                                 status = 'Estornado'
                                 break;
                             case 'pending':
+                                status = 'Pendente'
+                                break;
                             default:
-                                status = !!data?data:'Pendente'
+                                status = !!data ? data : 'Pendente'
                         }
                         return status
                     }
@@ -382,11 +394,12 @@
                     }
                 },
                 {
-                    data: 'next_retry_date',
+                    data: 'next_payment_date',
                     render: function (data, type, row) {
                         if (type === "sort" || type === "type") {
                             return data;
                         }
+                        console.log(data)
                         if (!!data && !subscribersStatus.cancelled) {
                             let date = new Date(data)
                             return date.toLocaleString('pt-BR', {timeZone: 'UTC'})
@@ -400,7 +413,7 @@
                         if (type === "sort" || type === "type") {
                             return data;
                         }
-                        let disabled = subscribersStatus.cancelled?'disabled':''
+                        let disabled = subscribersStatus.cancelled ? 'disabled' : ''
                         return `
                         <div class="button-group">
                             <button class="btn btn-xs ${disabled}" onclick="functionsForm.subscriberEdit(${data})" ${disabled}>Editar</button>
