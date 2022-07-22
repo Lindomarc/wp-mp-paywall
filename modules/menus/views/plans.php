@@ -170,10 +170,14 @@
     .hide {
         display: none;
     }
+
+    input.error {
+        border-width: 2px !important;
+        border-color: red !important;
+    }
 </style>
 
 <script>
-
 
 
     const formPlan = document.getElementById("form-plan");
@@ -185,15 +189,17 @@
             jQuery(`#${id}`).removeClass('error');
         }
         functionsForm.planAdd = () => {
-            jQuery(`input,select,textarea`).prop('disabled',false);
+            jQuery(`input, select, textarea`).prop('disabled', false);
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>`;
             functionsForm.form_method = 'post';
         }
 
-        functionsForm.planEdit = (plan_id) => {
+        functionsForm.planEdit = (button,plan_id) => {
+            jQuery(button).prop('disabled', true)
             functionsForm.formClear();
             functionsForm.form_action = `<?php echo PDI_PAYWALL_API_URI . 'plans'; ?>/${plan_id}`;
             functionsForm.form_method = 'put';
+
             return new Promise((resolve, reject) => {
                 fetch(functionsForm.form_action, {
                     method: "get",
@@ -223,6 +229,7 @@
                                     functionsForm.fill('extern_plan_id', data['pdi'].extern_plan_id)
                                     functionsForm.fill('free_trial', data['pdi'].free_trial)
                                     jQuery('#modalForm').modal('toggle');
+                                    jQuery(button).prop('disabled', false);
                                 }
                             }
                         })
@@ -230,12 +237,15 @@
                     .catch((error) => {
                         // get payment result error
                         reject();
+                        jQuery(button).prop('disabled', false)
+
                         error.then((data) => {
                             if ((!!data.status && data.status !== 200) && !!data.message) {
                                 pdiTools._pdi_alert_error(data)
                             }
                         })
                     })
+
             });
         }
 
@@ -380,7 +390,7 @@
                         }
                         return `
                         <div class="button-group">
-                            <button class="btn btn-xs" onclick="functionsForm.planEdit(${data})">Editar</button>
+                            <button class="btn btn-xs" onclick="functionsForm.planEdit(this,${data})">Editar</button>
                         </div>`
                     }
                 },
@@ -397,7 +407,7 @@
                 }
             ]
         });
-        functionsForm.tablePlans.order([0,'desc'])
+        functionsForm.tablePlans.order([0, 'desc'])
 
     })
 

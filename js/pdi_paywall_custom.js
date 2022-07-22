@@ -144,9 +144,8 @@ async function postFormDataAsJson({url, formData}) {
      * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
      */
     const plainFormData = Object.fromEntries(formData.entries());
-    console.log(formData.entries())
-    if (plainFormData['transaction_amount']){
-        functionsForm.form[plainFormData['transaction_amount']] = pdiTools.formatNumberDecimal(
+    if (!!plainFormData['transaction_amount']){
+        plainFormData['transaction_amount'] = pdiTools.formatNumberDecimal(
             plainFormData['transaction_amount'],'en-US'
         )
     }

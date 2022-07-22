@@ -95,7 +95,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="plan_id" class="col-form-label">* Plano</label>
-                                <select id="plan_id" name="plan_id" class="js-plan-data-ajax form-control"></select>
+                                <select id="plan_id" name="plan_id" class="js-plan-data-ajax form-control" required></select>
                             </div>
                         </div>
                     </div>
@@ -103,9 +103,9 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="due_day" class="col-form-label">Dia do pagamento:</label>
+                                <label for="due_day" class="col-form-label">* Dia do pagamento:</label>
                                 <input type="number" min="1" max="28" class="form-control" id="due_day"
-                                       name="due_day">
+                                       name="due_day" required>
                             </div>
                         </div>
                         <div class="col-6">
@@ -117,14 +117,14 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="period" class="col-form-label">Tipo de frequência:</label>
+                                <label for="period" class="col-form-label">* Tipo de frequência:</label>
                                 <?php
                                 $options_markup = '';
                                 $options = pdi_paywall_get_plans_period();
                                 foreach ($options as $key => $label) {
                                     $options_markup .= sprintf('<option value="%s" >%s</option>', $key, $label);
                                 }
-                                echo '<select name="period" id="period" class="form-control select2">' . $options_markup . '</select>';
+                                echo '<select name="period" id="period" class="form-control select2" required>' . $options_markup . '</select>';
                                 ?>
                             </div>
                         </div>
@@ -155,17 +155,17 @@
                             <div class="form-group">
                                 <label
                                         for="transaction_amount"
-                                        class="col-form-label">Valor da transação:
+                                        class="col-form-label">* Valor da transação:
                                 </label>
                                 <input
                                         type="text"
                                         class="form-control money"
                                         id="transaction_amount"
-                                        name="transaction_amount">
+                                        name="transaction_amount" required>
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" name="id" id="id" value="">
+                    <input type="hidden" name="id" id="id">
                     <input type="hidden" name="is-handler" value="1">
                 </div>
                 <div class="modal-footer">
@@ -211,12 +211,6 @@
     const formSubscriber = document.getElementById("form-subscriber");
     formSubscriber.addEventListener("submit", handleFormSubmit);
     jQuery(document).ready(function ($) {
-
-        jQuery(`#plan_id`).change(function () {
-            let reason = jQuery(this).find(":selected").text();
-            jQuery(`#reason`).val(reason)
-            functionsForm.form['reason'] = reason
-        })
 
         functionsForm.subscriberAdd = () => {
             jQuery(`input`).prop('disabled', false);
