@@ -132,18 +132,38 @@ if (!function_exists('pdi_paywall_verify_restrictions')) {
         return $is_restriction;
     }
 }
+
+
+if (!function_exists('pdi_paywall_verify_restrictions_no_content')) {
+    function pdi_paywall_verify_restrictions_no_content()
+    {
+        $post_categories = get_the_category();
+        if (!empty($post_categories)) {
+            foreach ($post_categories as $post_category) {
+                if (get_option('_pdi_paywall_restrictions_no_content_' . $post_category->term_id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
 if (!function_exists('pdi_paywall_content_restriction')) {
     function pdi_paywall_content_restriction($content)
     {
         if (pdi_paywall_verify_singular()) {
+
             if (pdi_paywall_verify_restrictions()) {
-                $limit_content = get_option('_pdi_paywall_page_limit_content');
-                if (!$limit_content){
-                    $limit_content = 200;
+                if (!pdi_paywall_verify_restrictions_no_content()){
+                    $limit_content = get_option('_pdi_paywall_page_limit_content');
+                    if (!$limit_content){
+                        $limit_content = 200;
+                    }
+                    $content = substr(strip_tags($content), 0, $limit_content); // verificar para colocar um valor custom ao invés de somente 100
+                } else {
+                    $content = '';
                 }
-
-                $content = substr(strip_tags($content), 0, $limit_content); // verificar para colocar um valor custom ao invés de somente 100
-
 
                 $login = get_page_link(get_option('_pdi_paywall_page_login'));
                 $register = get_page_link(get_option('_pdi_paywall_page_register'));

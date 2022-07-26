@@ -142,7 +142,7 @@
                             <div class="form-group">
                                 <label
                                         for="payment_method"
-                                        class="col-form-label">Método de Pag.:
+                                        class="col-form-label">* Método de Pag.:
                                 </label>
                                 <input
                                         type="text"

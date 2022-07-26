@@ -9,6 +9,8 @@ function pdi_paywall_settings_init()
 
     require_once('restrictions.php');
 
+    require_once('restrictions_no_content.php');
+
     require_once('restrictions_free.php');
 
 
