@@ -3,7 +3,7 @@
 /**
  * Liberação de conteúdo
  */
-add_settings_section('_pdi_paywall_restrictions_no_content_section', 'Bloqueio total do contúdo', 'pdi_paywall_section_callback', '_pdi_paywall_no_content_restrictions');
+add_settings_section('_pdi_paywall_restrictions_no_content_section', 'Bloqueio total de conteúdo', 'pdi_paywall_section_callback', '_pdi_paywall_no_content_restrictions');
 foreach ($list_categories as $value) {
 
     $default = get_option('_pdi_paywall_restrictions_no_content_' . $value->term_id);
